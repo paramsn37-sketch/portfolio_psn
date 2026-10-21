@@ -1,0 +1,134 @@
+---
+import Icon from '../Icon.astro';
+import Placeholder from '../Placeholder.astro';
+import PaperClip from '../ui/PaperClip.astro';
+import Folder from '../ui/Folder.astro';
+import Socials from '../ui/Socials.astro';
+import { profile } from '@/data/site';
+---
+<section id="enter" class="enter" data-chapter data-num="00" aria-labelledby="enter-title">
+  <div class="enter__in">
+    <div class="enter__copy" data-stagger="80">
+      <p class="hand hand--blue enter__hi" data-reveal>{profile.greeting}</p>
+      <h1 class="display enter__name" id="enter-title" data-reveal>{profile.name}</h1>
+      <p class="enter__tag" data-reveal>{profile.tagline}</p>
+      <p class="enter__intro" data-reveal>{profile.intro}</p>
+      <div class="enter__cta" data-reveal>
+        <p class="enter__start hand" aria-hidden="true">
+          Start here
+          <svg viewBox="0 0 54 24" width="46" height="20"><path d="M2 14 C 14 4, 30 4, 48 12 M48 12 l-9 -6 M48 12 l-10 5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" /></svg>
+        </p>
+        <a class="btn" href="#about"><Icon name="folder-open" size={16} /> Explore the archive <Icon name="arrow-right" size={16} data-nudge /></a>
+        <a class="enter__work link" href="#projects">or jump to the work</a>
+      </div>
+      <div data-reveal><Socials class="enter__social" /></div>
+    </div>
+
+    <div class="enter__collage" data-reveal="fade">
+      <figure class="polaroid enter__photo">
+        <span class="tape enter__tape" aria-hidden="true"></span>
+        <Placeholder alt={profile.heroPhoto.alt} ratio={profile.heroPhoto.ratio} label="Hero photo · 4:5" eager />
+        <figcaption>somewhere up there</figcaption>
+      </figure>
+      <div class="sticky enter__note" aria-hidden="true">
+        <PaperClip class="enter__clip" />
+        Better<br />ideas<br />ahead
+      </div>
+      <svg class="enter__sketch" viewBox="0 0 320 90" aria-hidden="true">
+        <path d="M4 82 L58 30 L84 54 L120 14 L168 66 L196 44 L240 78 L316 78" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" />
+        <path d="M58 30 l-8 22 M120 14 l-10 30 l8 -6 M196 44 l-6 18" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" />
+        <path d="M262 78 v-14 l6 -8 l6 8 v14 M286 78 v-10 l5 -7 l5 7 v10" fill="none" stroke="currentColor" stroke-width="1.3" />
+      </svg>
+      <p class="enter__aside hand" aria-hidden="true">Curiosity<br />builds better<br />paths.</p>
+    </div>
+  </div>
+
+  <nav class="enter__quick" aria-label="Quick access" data-reveal>
+    <p class="enter__quick-label">Quick access</p>
+    <ul role="list" data-stagger="60">
+      <li data-reveal><Folder href="#projects" label="Projects" tone="olive" page="03 / WORK" /></li>
+      <li data-reveal><Folder href="#story" label="My story" tone="blue" page="02 / STORY" /></li>
+      <li data-reveal><Folder href="#life" label="Interests" tone="kraft" page="05 / LIFE" /></li>
+      <li data-reveal><Folder href="#contact" label="Contact" tone="olive" page="06 / HELLO" /></li>
+    </ul>
+    <p class="enter__aside2 hand" aria-hidden="true">Same person,<br />new chapter.</p>
+  </nav>
+
+  <a class="enter__scroll" href="#about">
+    <span class="enter__scroll-dot" aria-hidden="true"><Icon name="arrow-down" size={14} /></span>
+    Scroll to explore
+  </a>
+</section>
+
+<style>
+  .enter {
+    position: relative;
+    min-height: calc(100dvh - var(--bar-h));
+    padding: clamp(2rem, 5vh, 4.5rem) var(--gutter) 5.5rem;
+    display: grid; grid-template-rows: 1fr auto;
+    max-width: 84rem; margin-inline: auto;
+  }
+  .enter__in {
+    display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+    align-items: center; gap: clamp(2rem, 5vw, 5rem);
+  }
+  .enter__hi { font-size: clamp(2rem, 1.5rem + 1.6vw, 3.25rem); transform: rotate(-4deg); transform-origin: 0 100%; margin-left: 0.15em; }
+  .enter__name { font-size: clamp(4.5rem, 1rem + 9.6vw, 11.5rem); margin-top: -0.06em; white-space: nowrap; }
+  .enter__tag {
+    margin-top: var(--s-5);
+    font-family: var(--font-mono); font-size: clamp(0.9375rem, 0.85rem + 0.35vw, 1.125rem); line-height: 1.6;
+    color: var(--ink); max-width: 30ch;
+  }
+  .enter__intro { margin-top: var(--s-4); max-width: 44ch; color: var(--ink-2); }
+  .enter__cta { position: relative; margin-top: var(--s-6); display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3) var(--s-5); }
+  .enter__work { font-size: 0.9375rem; }
+  .enter__start {
+    position: absolute; right: calc(100% + 0.6rem); top: -0.2rem;
+    display: flex; align-items: center; gap: 0.2rem; white-space: nowrap;
+    font-size: 1.6rem; color: var(--blue); transform: rotate(-6deg);
+  }
+  .enter__social { margin-top: var(--s-5); margin-left: -0.65rem; }
+
+  /* collage */
+  .enter__collage { position: relative; justify-self: center; width: min(100%, 25rem); padding: 1.5rem 3.5rem 4rem 0; }
+  .enter__photo { transform: rotate(2.4deg); }
+  .enter__tape { width: 6.5rem; top: -0.8rem; left: 50%; translate: -50% 0; rotate: -3deg; }
+  .enter__note {
+    position: absolute; right: -0.5rem; top: 2.5rem; z-index: 3;
+    width: 8.25rem; padding: 1.4rem 1rem 1rem; font-size: 1.75rem; line-height: 0.95;
+    transform: rotate(6deg);
+  }
+  .enter__note :global(.enter__clip) { top: -1.4rem; left: 1rem; }
+  .enter__sketch { position: absolute; left: -2.5rem; bottom: 0.4rem; width: 70%; color: var(--ink-3); }
+  .enter__aside { position: absolute; right: -1.5rem; bottom: 1.2rem; font-size: 1.45rem; line-height: 0.95; color: var(--ink-2); transform: rotate(-3deg); }
+
+  /* quick access */
+  .enter__quick { position: relative; margin-top: clamp(2rem, 5vh, 3.5rem); display: flex; align-items: flex-end; gap: var(--s-6); flex-wrap: wrap; }
+  .enter__quick-label { position: absolute; top: -1.6rem; left: 0.4rem; font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.06em; color: var(--ink-3); }
+  .enter__quick ul { display: flex; gap: clamp(0.5rem, 2vw, 1.75rem); }
+  .enter__aside2 { margin-left: auto; font-size: 1.5rem; line-height: 0.95; transform: rotate(-8deg); color: var(--ink-2); }
+
+  .enter__scroll {
+    position: absolute; left: 50%; bottom: 1.25rem; translate: -50% 0;
+    display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.4rem;
+    font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3);
+    text-decoration: none; white-space: nowrap;
+  }
+  .enter__scroll-dot { display: grid; place-items: center; width: 1.75rem; height: 1.75rem; border-radius: 50%; box-shadow: inset 0 0 0 1px var(--linen-2); }
+  @media (prefers-reduced-motion: no-preference) {
+    .enter__scroll-dot :global(svg) { animation: nudge-down 2.4s var(--ease-in-out) 2s infinite; }
+    @keyframes nudge-down { 0%, 70%, 100% { transform: none; } 35% { transform: translateY(3px); } }
+  }
+  @media (hover: hover) { .enter__scroll:hover { color: var(--ink); } }
+
+  @media (max-width: 1240px) { .enter__start { display: none; } }
+  @media (max-width: 860px) {
+    .enter { padding-bottom: 4.5rem; }
+    .enter__in { grid-template-columns: 1fr; gap: var(--s-6); }
+    .enter__name { font-size: clamp(3.75rem, 19vw, 7rem); }
+    .enter__collage { width: min(86%, 21rem); padding-right: 3rem; order: 2; }
+    .enter__aside2, .enter__scroll { display: none; }
+    .enter__quick { margin-top: var(--s-7); }
+    .enter__quick ul { width: 100%; justify-content: space-between; }
+  }
+</style>

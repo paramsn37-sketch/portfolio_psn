@@ -1,0 +1,45 @@
+---
+/** Chapter heading: number set on the heading's baseline, a mono sub-line below, an optional handwritten aside. */
+interface Props { num: string; title: string; sub?: string; note?: string; id?: string; align?: 'start' | 'center'; tone?: 'ink' | 'paper' }
+const { num, title, sub, note, id, align = 'start', tone = 'ink' } = Astro.props;
+---
+<header class:list={['ch-head', `ch-head--${align}`, `ch-head--${tone}`]} data-reveal>
+  <h2 class="ch-title display" id={id}>
+    <span class="ch-num">{num}</span>
+    <span class="ch-word">{title}</span>
+  </h2>
+  {sub && <p class="ch-sub">{sub}</p>}
+  {note && <p class="ch-note hand hand--blue" aria-hidden="true">{note}</p>}
+  <slot />
+</header>
+
+<style>
+  .ch-head { position: relative; display: grid; justify-items: start; }
+  .ch-head--center { justify-items: center; text-align: center; }
+  .ch-title {
+    display: flex; align-items: flex-start; gap: 0.18em;
+    font-size: var(--t-h2);
+  }
+  .ch-num {
+    font-family: var(--font-mono); font-weight: 500;
+    font-size: clamp(0.75rem, 0.6rem + 0.5vw, 1rem);
+    letter-spacing: 0.04em; line-height: 1;
+    padding-top: 0.55em;
+    color: var(--olive-deep);
+  }
+  .ch-head--paper .ch-title { color: var(--paper); }
+  .ch-head--paper .ch-num { color: var(--note); }
+  .ch-sub {
+    margin-top: var(--s-4);
+    font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink-2);
+  }
+  .ch-head--paper .ch-sub { color: rgb(243 239 227 / 0.78); }
+  .ch-note {
+    position: absolute; bottom: calc(100% - 0.6rem); right: 0;
+    width: max-content; max-width: 16ch; text-align: right;
+    font-size: var(--t-hand); transform: rotate(-5deg); transform-origin: 100% 100%;
+  }
+  .ch-head--center .ch-note { right: auto; left: 60%; text-align: left; }
+  @media (max-width: 900px) { .ch-note { position: static; margin-top: var(--s-3); max-width: none; transform: rotate(-2deg); } }
+</style>

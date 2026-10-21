@@ -83,7 +83,7 @@ export const timeline = [
     image: { alt: 'High school photo', ratio: '1 / 1' } as Img,
   },
   {
-    year: '2023', title: 'Joined SJBIT', kind: 'Turning point', turning: true,
+    year: '2023', title: 'Joined SJBIT', kind: 'Education', turning: true,
     body: 'Started a BE in AI & ML and began building small projects.', // DEMO (mockup)
     lesson: 'DEMO — why AI/ML, and what you expected versus what you found.',
     image: { alt: 'College campus', ratio: '1 / 1' } as Img,

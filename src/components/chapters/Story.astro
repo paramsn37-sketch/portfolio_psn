@@ -1,0 +1,175 @@
+---
+import Icon from '../Icon.astro';
+import Placeholder from '../Placeholder.astro';
+import ChapterTitle from '../ui/ChapterTitle.astro';
+import { timeline, profile } from '@/data/site';
+// A gently wandering vertical line in a 40 × 1000 box; stretched to the timeline's height.
+const wave = 'M20 0 C 34 60, 6 120, 20 180 S 34 300, 20 360 S 6 480, 20 540 S 34 660, 20 720 S 6 840, 20 900 S 26 970, 20 1000';
+---
+<section id="story" class="story chapter" data-chapter data-num="02" aria-labelledby="story-title">
+  <div class="story__head">
+    <ChapterTitle num="02" title="My story" id="story-title" sub={`${profile.coords} → wherever's next`} note="Different places, same curiosity." />
+    <p class="story__intro" data-reveal>Not a résumé — the turns, the experiments and what each one taught me. Open any note to read the lesson.</p>
+  </div>
+
+  <div class="tl" data-timeline>
+    <svg class="tl__line" viewBox="0 0 40 1000" preserveAspectRatio="none" aria-hidden="true">
+      <path class="tl__ghost" d={wave} />
+      <path class="tl__ink" d={wave} pathLength="1" data-tl-ink />
+    </svg>
+    <span class="tl__traveller" data-tl-tip aria-hidden="true"></span>
+
+    <ol class="tl__list" role="list">
+      {timeline.map((m, i) => (
+        <li class:list={['tl__item', i % 2 ? 'tl__item--r' : 'tl__item--l', m.turning && 'is-turning']} data-tl-item>
+          <span class="tl__pin" aria-hidden="true"></span>
+          <article class="tl__card sheet" data-reveal style={`--reveal-y:28px`}>
+            <span class="tape tl__tape" aria-hidden="true"></span>
+            <p class="tl__year display">{m.year}</p>
+            <p class="tl__kind">
+              {m.turning && <span class="tl__flag">Turning point</span>}
+              <span>{m.kind}</span>
+              {m.place && <span>· {m.place}</span>}
+            </p>
+            <h3 class="tl__title">{m.title}</h3>
+            <p class="tl__body">{m.body}</p>
+            <details class="tl__lesson">
+              <summary><Icon name="pin" size={15} /> <span>What it taught me</span> <Icon name="plus" size={14} class="tl__plus" /></summary>
+              <p class="tl__note">{m.lesson}</p>
+            </details>
+          </article>
+          <figure class="tl__photo polaroid" data-reveal="fade">
+            <Placeholder alt={m.image.alt} ratio={m.image.ratio} label={`${m.year} · photo`} />
+            <figcaption>{m.title.toLowerCase()}</figcaption>
+          </figure>
+        </li>
+      ))}
+    </ol>
+
+    <p class="tl__end hand hand--blue" data-reveal>
+      To be continued…
+      <a class="tl__next" href="#projects">see what I've built <Icon name="arrow-down" size={14} /></a>
+    </p>
+  </div>
+</section>
+
+<script>
+  /* The line inks itself as you read; the traveller rides its tip. */
+  const tl = document.querySelector<HTMLElement>('[data-timeline]');
+  const ink = document.querySelector<SVGPathElement>('[data-tl-ink]');
+  const tip = document.querySelector<HTMLElement>('[data-tl-tip]');
+  const items = [...document.querySelectorAll<HTMLElement>('[data-tl-item]')];
+  if (tl && ink && tip) {
+    const svg = ink.ownerSVGElement!;
+    const L = ink.getTotalLength();
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const r = tl.getBoundingClientRect();
+      const p = Math.min(1, Math.max(0, (innerHeight * 0.62 - r.top) / r.height));
+      ink.style.strokeDashoffset = String(1 - p);
+      const s = svg.getBoundingClientRect();
+      const pt = ink.getPointAtLength(p * L);
+      tip.style.transform = `translate(${(pt.x / 40) * s.width + (s.left - r.left)}px, ${(pt.y / 1000) * s.height + (s.top - r.top)}px)`;
+      tip.style.opacity = p > 0.002 && p < 0.998 ? '1' : '0';
+      const y = innerHeight * 0.62;
+      items.forEach((it) => it.classList.toggle('is-past', it.getBoundingClientRect().top + 40 < y));
+    };
+    const ask = () => { if (!raf) raf = requestAnimationFrame(update); };
+    addEventListener('scroll', ask, { passive: true });
+    addEventListener('resize', ask);
+    update();
+  }
+</script>
+
+<style>
+  .story { padding: var(--chapter-gap) var(--gutter) 0; max-width: 84rem; margin-inline: auto; }
+  .story__head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 22rem); gap: var(--s-6); align-items: end; }
+  .story__intro { color: var(--ink-2); max-width: 36ch; padding-bottom: 0.6rem; }
+
+  .tl { position: relative; margin-top: clamp(3rem, 7vw, 6rem); --line-x: 50%; }
+  .tl__line { position: absolute; top: 0; bottom: 4rem; left: var(--line-x); width: 40px; height: calc(100% - 4rem); translate: -50% 0; overflow: visible; }
+  .tl__ghost, .tl__ink { fill: none; vector-effect: non-scaling-stroke; stroke-linecap: round; }
+  .tl__ghost { stroke: var(--linen-2); stroke-width: 2; stroke-dasharray: 5 7; }
+  .tl__ink { stroke: var(--blue); stroke-width: 2.6; stroke-dasharray: 1; stroke-dashoffset: 1; }
+  html:not(.js) .tl__ink { stroke-dashoffset: 0; }
+  .tl__traveller {
+    position: absolute; left: 0; top: 0; z-index: 3; width: 18px; height: 18px; margin: -9px 0 0 -9px;
+    border-radius: 50%; background: var(--paper); box-shadow: inset 0 0 0 2.5px var(--blue), 0 0 0 5px rgb(49 93 134 / 0.14);
+    opacity: 0; transition: opacity var(--d-fast) ease; pointer-events: none;
+  }
+
+  .tl__list { display: grid; gap: clamp(3rem, 6vw, 5.5rem); }
+  .tl__item {
+    position: relative;
+    display: grid; grid-template-columns: minmax(0, 1fr) 6rem minmax(0, 1fr);
+    align-items: center;
+  }
+  .tl__pin {
+    grid-column: 2; grid-row: 1; justify-self: center; z-index: 2;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--paper); box-shadow: inset 0 0 0 2px var(--ink-3);
+    transition: background-color var(--d-base) ease, box-shadow var(--d-base) ease, transform var(--d-base) var(--ease-out);
+  }
+  .tl__item.is-past .tl__pin { background: var(--blue); box-shadow: 0 0 0 4px var(--blue-wash); }
+  .tl__item.is-turning .tl__pin { width: 18px; height: 18px; background: var(--red-string); box-shadow: 0 2px 0 rgb(0 0 0 / 0.2), 0 0 0 4px rgb(163 53 43 / 0.15); }
+  .tl__card { grid-row: 1; padding: var(--s-6) var(--s-6) var(--s-5); max-width: 27rem; position: relative; }
+  .tl__tape { top: -0.7rem; width: 4.5rem; height: 1.4rem; }
+  .tl__item--l .tl__tape { right: 1.5rem; rotate: 4deg; }
+  .tl__item--r .tl__tape { left: 1.5rem; rotate: -4deg; }
+  .tl__item--l .tl__card { grid-column: 1; justify-self: end; transform-origin: right center; }
+  .tl__item--r .tl__card { grid-column: 3; justify-self: start; }
+  .tl__photo { grid-row: 1; width: min(12.5rem, 70%); }
+  .tl__item--l .tl__photo { grid-column: 3; justify-self: start; margin-left: 1rem; rotate: 3deg; }
+  .tl__item--r .tl__photo { grid-column: 1; justify-self: end; margin-right: 1rem; rotate: -3deg; }
+  .tl__photo figcaption { font-size: 1.2rem; }
+
+  .tl__year { font-size: clamp(3rem, 2.2rem + 2.6vw, 4.75rem); color: var(--olive); }
+  .tl__kind { margin-top: var(--s-2); display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-3); }
+  .tl__flag { padding: 0.1rem 0.45rem; border-radius: 2px; background: var(--red-string); color: var(--paper); }
+  .tl__title { margin-top: var(--s-3); font-size: var(--t-h4); font-weight: 650; line-height: 1.2; }
+  .tl__body { margin-top: var(--s-2); color: var(--ink-2); }
+
+  .tl__lesson { margin-top: var(--s-4); }
+  .tl__lesson summary {
+    list-style: none; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 0.45rem; min-height: 2.5rem; padding: 0 0.75rem 0 0.6rem;
+    border-radius: var(--r-pill); box-shadow: inset 0 0 0 1px var(--linen-2);
+    font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.03em; color: var(--ink-2);
+    transition: background-color var(--d-fast) ease, color var(--d-fast) ease, transform var(--d-press) var(--ease-out);
+  }
+  .tl__lesson summary::-webkit-details-marker { display: none; }
+  .tl__lesson summary:active { transform: scale(0.97); }
+  @media (hover: hover) { .tl__lesson summary:hover { background: var(--paper-2); color: var(--ink); } }
+  .tl__lesson :global(.tl__plus) { transition: transform var(--d-base) var(--ease-out); }
+  .tl__lesson[open] :global(.tl__plus) { transform: rotate(45deg); }
+  .tl__lesson[open] summary { background: var(--note); color: var(--ink); box-shadow: none; }
+  .tl__note {
+    margin-top: var(--s-3);
+    padding: 0.9rem 1rem; background: var(--note);
+    font-family: var(--font-hand); font-size: 1.5rem; line-height: 1.05; color: var(--ink);
+    box-shadow: 0 10px 18px -12px rgb(80 60 10 / 0.6);
+    transform: rotate(-1deg); transform-origin: 0 0;
+  }
+  .tl__lesson::details-content { block-size: 0; overflow: clip; transition: block-size var(--d-base) var(--ease-out), content-visibility var(--d-base) allow-discrete; }
+  .tl__lesson[open]::details-content { block-size: auto; }
+  @supports (interpolate-size: allow-keywords) { :root { interpolate-size: allow-keywords; } }
+
+  .tl__end {
+    position: relative; margin-top: clamp(3rem, 6vw, 5rem);
+    display: grid; justify-items: center; gap: 0.5rem; text-align: center;
+    font-size: 2.2rem;
+  }
+  .tl__next { display: inline-flex; align-items: center; gap: 0.35rem; font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-2); padding: 0.5rem; }
+
+  @media (max-width: 860px) {
+    .story__head { grid-template-columns: 1fr; }
+    .tl { --line-x: 14px; }
+    .tl__item { grid-template-columns: 28px minmax(0, 1fr); gap: 0 var(--s-4); align-items: start; }
+    .tl__pin { grid-column: 1; margin-top: 2.2rem; }
+    .tl__item--l .tl__card, .tl__item--r .tl__card { grid-column: 2; justify-self: stretch; max-width: none; }
+    .tl__item--l .tl__photo, .tl__item--r .tl__photo { grid-column: 2; grid-row: 2; justify-self: end; margin: -1.5rem 0.5rem 0 0; width: 9rem; z-index: 2; }
+    .tl__end { justify-items: start; text-align: left; padding-left: 2.6rem; }
+  }
+  @media (prefers-reduced-motion: reduce) { .tl__ink { stroke-dashoffset: 0 !important; } .tl__traveller { display: none; } }
+</style>

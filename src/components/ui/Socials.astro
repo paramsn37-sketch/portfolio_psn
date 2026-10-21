@@ -1,0 +1,36 @@
+---
+import Brand from '../Brand.astro';
+import Icon from '../Icon.astro';
+import { links } from '@/data/site';
+interface Props { class?: string; tone?: 'ink' | 'paper' }
+const { class: cls, tone = 'ink' } = Astro.props;
+const items = [
+  { href: links.linkedin, label: 'LinkedIn', brand: 'linkedin' as const },
+  { href: links.github, label: 'GitHub', brand: 'github' as const },
+  { href: `mailto:${links.email}`, label: 'Email', icon: 'mail' },
+  { href: links.x, label: 'X', brand: 'x' as const },
+];
+---
+<ul class:list={['socials', `socials--${tone}`, cls]} role="list">
+  {items.map((i) => (
+    <li>
+      <a href={i.href} aria-label={i.label} rel={i.href.startsWith('http') ? 'me noopener' : undefined} target={i.href.startsWith('http') ? '_blank' : undefined}>
+        {i.brand ? <Brand name={i.brand} size={17} /> : <Icon name={i.icon!} size={19} />}
+      </a>
+    </li>
+  ))}
+</ul>
+<style>
+  .socials { display: flex; gap: 0.25rem; }
+  .socials a {
+    display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: var(--r-2);
+    color: var(--ink-2);
+    transition: color var(--d-fast) ease, background-color var(--d-fast) ease, transform var(--d-press) var(--ease-out);
+  }
+  .socials a:active { transform: scale(0.94); }
+  .socials--paper a { color: rgb(243 239 227 / 0.8); }
+  @media (hover: hover) {
+    .socials a:hover { color: var(--ink); background: var(--paper-2); }
+    .socials--paper a:hover { color: var(--paper); background: rgb(255 255 255 / 0.08); }
+  }
+</style>

@@ -1,0 +1,274 @@
+---
+import Icon from '../Icon.astro';
+import Placeholder from '../Placeholder.astro';
+import PaperClip from '../ui/PaperClip.astro';
+import ChapterTitle from '../ui/ChapterTitle.astro';
+import { profile } from '@/data/site';
+const tones = ['linen', 'olive', 'blue', 'kraft'];
+---
+<section id="about" class="about chapter" data-chapter data-num="01" aria-labelledby="about-title">
+  <div class="about__grid">
+    <!-- collage -->
+    <div class="about__collage" data-reveal="fade">
+      <div class="about__land sheet" aria-hidden="true">
+        <Placeholder alt="A landscape you love" ratio="4 / 3" label="Landscape" tone="linen" />
+      </div>
+      <figure class="polaroid about__portrait">
+        <PaperClip class="about__clip" size={20} />
+        <Placeholder alt={profile.portrait.alt} ratio={profile.portrait.ratio} label="Portrait · 4:5" />
+        <figcaption>Just a curious human :)</figcaption>
+      </figure>
+      <div class="about__map grid-paper" aria-hidden="true">
+        <svg viewBox="0 0 160 120"><path d="M10 100 C 40 70, 30 40, 70 46 S 120 20, 150 18" fill="none" stroke="var(--blue)" stroke-width="1.6" stroke-dasharray="4 4" /><circle cx="150" cy="18" r="4" fill="var(--red-string)" /><circle cx="10" cy="100" r="3" fill="var(--ink)" /></svg>
+      </div>
+      <p class="about__mantra hand" aria-hidden="true">Build<br />Learn<br />Explore<br />Repeat</p>
+    </div>
+
+    <!-- words -->
+    <div class="about__copy" data-stagger="80">
+      <ChapterTitle num="01" title="About me" id="about-title" note="Same person, new chapter." />
+      <p class="about__pixel pixel" data-reveal>Hi, I'm {profile.firstName}.<span class="about__caret" aria-hidden="true"></span></p>
+      <p class="about__text lead" data-reveal>{profile.about}</p>
+      <ul class="about__traits" role="list" data-reveal>
+        {profile.traits.map((t) => <li class="chip">{t}</li>)}
+      </ul>
+      <div class="about__actions" data-reveal>
+        <button class="btn" type="button" data-open="story-drawer" aria-haspopup="dialog"><Icon name="book-open" size={16} /> Read my story</button>
+        <a class="link about__resume" href="#story">See the timeline</a>
+      </div>
+    </div>
+
+    <!-- ID card on a lanyard: the quick facts -->
+    <div class="about__pass-wrap" data-reveal>
+      <div class="lanyard" data-lanyard>
+        <svg class="lanyard__cord" viewBox="0 0 120 140" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M20 0 C 30 60, 52 110, 58 140 M100 0 C 90 60, 68 110, 62 140" fill="none" stroke="var(--blue)" stroke-width="7" stroke-linecap="round" />
+          <path d="M20 0 C 30 60, 52 110, 58 140 M100 0 C 90 60, 68 110, 62 140" fill="none" stroke="var(--blue-deep)" stroke-width="1.4" stroke-dasharray="2 7" />
+        </svg>
+        <article class="pass" aria-label="Quick facts">
+          <span class="pass__slot" aria-hidden="true"></span>
+          <header class="pass__head">
+            <span>Archive pass</span><span>No. 01</span>
+          </header>
+          <div class="pass__id">
+            <div class="pass__photo"><Placeholder alt="ID photo" ratio="1 / 1" label="Photo" /></div>
+            <div>
+              <p class="pass__name display">{profile.name}</p>
+              <p class="pass__role pixel">{profile.role}</p>
+            </div>
+          </div>
+          <dl class="pass__facts">
+            {profile.facts.map((f) => (
+              <div class="pass__fact">
+                <dt><Icon name={f.icon} size={15} /> {f.label}</dt>
+                <dd>{f.value}</dd>
+              </div>
+            ))}
+          </dl>
+          <p class="pass__barcode" aria-hidden="true"></p>
+        </article>
+      </div>
+    </div>
+
+    <!-- many hats: stacked folder tabs -->
+    <div class="hats" data-reveal>
+      <p class="hats__title">The hats I wear</p>
+      <div class="hats__tabs" role="tablist" aria-label="Roles">
+        {profile.hats.map((h, i) => (
+          <button class={`hats__tab hats__tab--${tones[i % 4]}`} role="tab" type="button" id={`hat-tab-${i}`} aria-controls={`hat-panel-${i}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} style={`--i:${i}`}>
+            {h.label}
+          </button>
+        ))}
+      </div>
+      <div class="hats__stack">
+        {profile.hats.map((h, i) => (
+          <div class={`hats__panel hats__panel--${tones[i % 4]}`} role="tabpanel" id={`hat-panel-${i}`} aria-labelledby={`hat-tab-${i}`} hidden={i !== 0}>
+            <p class="hats__num meta">{String(i + 1).padStart(2, '0')} / {String(profile.hats.length).padStart(2, '0')}</p>
+            <p class="hats__note">{h.note}</p>
+            <p class="hats__hint hand">— DEMO, rewrite in your words</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <dialog id="story-drawer" class="drawer story-drawer" aria-labelledby="story-drawer-title">
+    <div class="drawer__body">
+      <div class="story-drawer__head">
+        <p class="meta">01 · About · the long version</p>
+        <button class="drawer__x" type="button" data-close aria-label="Close"><Icon name="x" size={20} /></button>
+      </div>
+      <h3 id="story-drawer-title" class="display story-drawer__title">The longer story</h3>
+      <div class="story-drawer__img"><Placeholder alt="A photo that says something about you" ratio="16 / 10" label="Photo · 16:10" /></div>
+      <div class="prose story-drawer__text">
+        {profile.longStory.map((p) => <p>{p}</p>)}
+      </div>
+      <p class="hand hand--blue story-drawer__sign">— {profile.firstName}</p>
+    </div>
+  </dialog>
+</section>
+
+<script>
+  /* Roles: an accessible tablist with arrow keys */
+  document.querySelectorAll<HTMLElement>('.hats').forEach((root) => {
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+    const select = (t: HTMLButtonElement, focus = false) => {
+      tabs.forEach((x) => {
+        const on = x === t;
+        x.setAttribute('aria-selected', String(on));
+        x.tabIndex = on ? 0 : -1;
+        const panel = document.getElementById(x.getAttribute('aria-controls')!)!;
+        panel.hidden = !on;
+      });
+      if (focus) t.focus();
+    };
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => select(t));
+      t.addEventListener('keydown', (e) => {
+        const k = e.key;
+        const n = k === 'ArrowRight' ? i + 1 : k === 'ArrowLeft' ? i - 1 : k === 'Home' ? 0 : k === 'End' ? tabs.length - 1 : null;
+        if (n === null) return;
+        e.preventDefault();
+        select(tabs[(n + tabs.length) % tabs.length], true);
+      });
+    });
+  });
+
+  /* The lanyard swings when your pointer brushes past it (a damped pendulum; decorative) */
+  const lanyard = document.querySelector<HTMLElement>('[data-lanyard]');
+  if (lanyard && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    let a = 0, v = 0, raf = 0, lastX: number | null = null;
+    const step = () => {
+      v += -a * 0.045;
+      v *= 0.94;
+      a += v;
+      lanyard.style.transform = `rotate(${a}deg)`;
+      raf = Math.abs(v) > 0.005 || Math.abs(a) > 0.01 ? requestAnimationFrame(step) : 0;
+      if (!raf) lanyard.style.transform = '';
+    };
+    const kick = (dx: number) => {
+      v += Math.max(-1.4, Math.min(1.4, dx * 0.05));
+      if (!raf) raf = requestAnimationFrame(step);
+    };
+    lanyard.addEventListener('pointermove', (e) => {
+      if (lastX !== null) kick(e.clientX - lastX);
+      lastX = e.clientX;
+    });
+    lanyard.addEventListener('pointerleave', () => (lastX = null));
+    lanyard.addEventListener('click', () => kick(14));
+  }
+</script>
+
+<style>
+  .about { padding: var(--chapter-gap) var(--gutter) 0; max-width: 84rem; margin-inline: auto; }
+  .about__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    grid-template-areas: "collage copy" "pass hats";
+    gap: clamp(3rem, 6vw, 6rem) clamp(2rem, 5vw, 5.5rem);
+    align-items: start;
+  }
+
+  /* collage */
+  .about__collage { grid-area: collage; position: relative; width: min(100%, 27rem); justify-self: center; padding: 2rem 2rem 4rem 1rem; }
+  .about__land { position: absolute; right: -1rem; top: 0; width: 64%; padding: 0.45rem; transform: rotate(5deg); }
+  .about__portrait { position: relative; z-index: 2; width: 84%; transform: rotate(-3deg); }
+  .about__portrait :global(.about__clip) { top: -1.8rem; right: 2.2rem; }
+  .about__map { position: absolute; z-index: 3; left: 52%; bottom: 0.5rem; width: 9.5rem; padding: 0.4rem; transform: rotate(4deg); box-shadow: var(--shadow-paper); }
+  .about__mantra {
+    position: absolute; z-index: 3; right: -1rem; top: 38%;
+    padding: 0.7rem 0.9rem; background: var(--olive-wash); box-shadow: var(--shadow-paper);
+    font-size: 1.5rem; line-height: 0.95; color: var(--olive-ink); transform: rotate(7deg);
+  }
+
+  /* copy */
+  .about__copy { grid-area: copy; padding-top: 1rem; }
+  .about__pixel { margin-top: var(--s-6); font-size: clamp(2.25rem, 1.4rem + 2.8vw, 3.75rem); line-height: 1; color: var(--ink); display: flex; align-items: center; }
+  .about__caret { display: inline-block; width: 0.5em; height: 0.85em; margin-left: 0.12em; background: var(--olive-deep); }
+  @media (prefers-reduced-motion: no-preference) { .about__caret { animation: caret 1.1s steps(1) infinite; } @keyframes caret { 50% { opacity: 0; } } }
+  .about__text { margin-top: var(--s-5); max-width: 44ch; }
+  .about__traits { list-style: none; padding: 0; margin-top: var(--s-5); display: flex; flex-wrap: wrap; gap: var(--s-2); }
+  .about__traits .chip { color: var(--ink); }
+  .about__actions { margin-top: var(--s-6); display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3) var(--s-5); }
+  .about__resume { font-size: 0.9375rem; }
+
+  /* lanyard pass */
+  .about__pass-wrap { grid-area: pass; justify-self: center; width: min(100%, 21rem); margin-top: -2rem; }
+  .lanyard { transform-origin: 50% 0; display: grid; justify-items: center; will-change: transform; cursor: grab; }
+  .lanyard__cord { width: 7.5rem; height: 5.5rem; margin-bottom: -0.9rem; filter: drop-shadow(1px 2px 1px rgb(40 30 15 / 0.3)); }
+  .pass {
+    position: relative; width: 100%;
+    background: var(--card); border-radius: 10px;
+    padding: 1.6rem 1.25rem 1.1rem;
+    box-shadow: var(--shadow-lift), inset 0 0 0 1px rgb(216 209 192 / 0.8);
+  }
+  .pass__slot { position: absolute; top: 0.6rem; left: 50%; translate: -50% 0; width: 3.2rem; height: 0.55rem; border-radius: 99px; background: var(--paper-3); box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.25); }
+  .pass__head { display: flex; justify-content: space-between; margin-top: 0.5rem; font-family: var(--font-mono); font-size: 0.625rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--olive-deep); }
+  .pass__id { margin-top: var(--s-4); display: grid; grid-template-columns: 4.75rem 1fr; gap: var(--s-4); align-items: center; }
+  .pass__photo :global(.ph__label), .pass__photo :global(.ph__hint) { display: none; }
+  .pass__name { font-size: 2.1rem; }
+  .pass__role { margin-top: 0.3rem; font-size: 0.9375rem; line-height: 1.2; color: var(--ink-2); }
+  .pass__facts { margin-top: var(--s-5); display: grid; }
+  .pass__fact { display: grid; grid-template-columns: 7.2rem 1fr; gap: var(--s-3); padding: 0.55rem 0; border-top: 1px dashed var(--linen-2); font-size: 0.875rem; }
+  .pass__fact dt { display: flex; align-items: center; gap: 0.4rem; color: var(--ink-3); font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.03em; }
+  .pass__fact dd { color: var(--ink); }
+  .pass__barcode { margin-top: var(--s-3); height: 1.6rem; background: repeating-linear-gradient(90deg, var(--ink) 0 2px, transparent 2px 4px, var(--ink) 4px 5px, transparent 5px 8px, var(--ink) 8px 11px, transparent 11px 13px); opacity: 0.75; }
+
+  /* hats */
+  .hats { grid-area: hats; max-width: 36rem; }
+  .hats__title { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2); margin-bottom: var(--s-4); }
+  .hats__tabs { display: flex; gap: 0.3rem; padding-left: 0.75rem; position: relative; z-index: 2; }
+  .hats__tab {
+    --bg: var(--linen);
+    position: relative; min-height: 2.6rem; padding: 0 1.1rem;
+    border-radius: 8px 8px 0 0;
+    background: var(--bg); color: var(--ink-2);
+    font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.04em; text-transform: uppercase;
+    transform: translateY(5px);
+    transition: transform var(--d-base) var(--ease-out), color var(--d-fast) ease, filter var(--d-fast) ease;
+    filter: brightness(0.94);
+  }
+  .hats__tab--olive { --bg: #cfd2b4; }
+  .hats__tab--blue { --bg: #cbd8e3; }
+  .hats__tab--kraft { --bg: #e2cda4; }
+  .hats__tab[aria-selected="true"] { transform: none; color: var(--ink); filter: none; font-weight: 500; }
+  @media (hover: hover) { .hats__tab[aria-selected="false"]:hover { transform: translateY(1px); filter: none; } }
+  .hats__stack { position: relative; }
+  .hats__stack::before, .hats__stack::after {
+    content: ""; position: absolute; inset: 0; border-radius: 4px 10px 10px 10px; z-index: -1;
+  }
+  .hats__stack::before { background: var(--paper-3); transform: translate(10px, 10px) rotate(0.8deg); }
+  .hats__stack::after { background: var(--linen); transform: translate(5px, 5px) rotate(0.3deg); }
+  .hats__panel {
+    --bg: var(--linen);
+    min-height: 12rem; padding: var(--s-6) var(--s-6) var(--s-5);
+    border-radius: 4px 10px 10px 10px;
+    background: var(--bg);
+    box-shadow: var(--shadow-paper);
+    animation: hat-in var(--d-base) var(--ease-out);
+  }
+  .hats__panel--olive { --bg: #cfd2b4; }
+  .hats__panel--blue { --bg: #cbd8e3; }
+  .hats__panel--kraft { --bg: #e2cda4; }
+  @keyframes hat-in { from { opacity: 0.4; transform: translateY(6px); } }
+  .hats__num { color: var(--ink-2); }
+  .hats__note { margin-top: var(--s-3); font-family: var(--font-display); font-weight: 800; font-size: clamp(1.75rem, 1.2rem + 1.6vw, 2.6rem); line-height: 1; text-transform: uppercase; max-width: 18ch; }
+  .hats__hint { margin-top: var(--s-4); font-size: 1.3rem; color: var(--ink-2); }
+
+  /* drawer */
+  .story-drawer__head { display: flex; justify-content: space-between; align-items: center; }
+  .story-drawer__title { margin-top: var(--s-6); font-size: clamp(2.5rem, 2rem + 2vw, 3.75rem); }
+  .story-drawer__img { margin-top: var(--s-5); }
+  .story-drawer__text { margin-top: var(--s-5); color: var(--ink); }
+  .story-drawer__sign { margin-top: var(--s-5); font-size: 2rem; }
+
+  @media (max-width: 960px) {
+    .about__grid { grid-template-columns: 1fr; grid-template-areas: "copy" "collage" "pass" "hats"; }
+    .about__collage { width: min(92%, 24rem); }
+    .about__pass-wrap { margin-top: 0; }
+    .hats__tabs { overflow-x: auto; scrollbar-width: none; }
+  }
+  @media (max-width: 480px) {
+    .hats__tab { padding: 0 0.7rem; font-size: 0.6875rem; }
+  }
+</style>
