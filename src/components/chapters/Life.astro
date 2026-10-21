@@ -1,0 +1,589 @@
+---
+import Icon from '../Icon.astro';
+import Brand from '../Brand.astro';
+import Placeholder from '../Placeholder.astro';
+import PaperClip from '../ui/PaperClip.astro';
+import { vibes, topics, moments, journal, playlist, links } from '@/data/site';
+const featured = journal[0];
+---
+<section id="life" class="life chapter" data-chapter data-num="05" aria-labelledby="life-title">
+  <!-- ───────── banner + featured journal ───────── -->
+  <div class="life__top">
+    <div class="banner" data-reveal>
+      <div class="banner__paper">
+        <p class="banner__num">05 / Life &amp; interests</p>
+        <h2 class="banner__title display" id="life-title">Life &amp;<br />interests</h2>
+        <p class="banner__text">A collection of the things that keep me curious, grounded and inspired — beyond the screen.</p>
+        <a class="btn" href="#life-topics"><Icon name="compass" size={16} /> Explore my world <Icon name="arrow-right" size={16} data-nudge /></a>
+        <p class="banner__aside hand" aria-hidden="true">Different interests,<br />same curiosity.</p>
+      </div>
+      <div class="banner__collage">
+        <div class="banner__map" aria-hidden="true">
+          <svg viewBox="0 0 300 260"><path d="M0 60 C 60 40, 90 90, 150 70 S 250 20, 300 50 M0 160 C 70 140, 120 190, 180 160 S 260 120, 300 150 M40 0 C 60 80, 30 150, 70 260 M210 0 C 190 90, 240 160, 220 260" fill="none" stroke="#b9ad92" stroke-width="1.4" /><path d="M60 210 C 100 170, 120 120, 170 110 S 230 80, 250 40" fill="none" stroke="var(--red-string)" stroke-width="2" stroke-dasharray="5 5" /><circle cx="250" cy="40" r="5" fill="var(--red-string)" /></svg>
+        </div>
+        <figure class="polaroid banner__photo">
+          <PaperClip class="banner__clip" />
+          <Placeholder alt="A favourite place outdoors" ratio="1 / 1" label="Photo · 1:1" />
+          <figcaption>Better ideas outside.</figcaption>
+        </figure>
+        <fieldset class="vibes sticky" data-vibes>
+          <legend class="vibes__title">Current vibes:</legend>
+          {vibes.map((v, i) => (
+            <label class="vibes__row">
+              <input type="checkbox" name="vibe" value={v} data-vibe={i} />
+              <span class="vibes__box" aria-hidden="true"><Icon name="check" size={14} stroke={3} /></span>
+              <span class="vibes__label">{v}</span>
+            </label>
+          ))}
+        </fieldset>
+      </div>
+    </div>
+
+    <aside class="fjournal sheet" aria-label="Featured journal" data-reveal data-fj>
+      <header class="fjournal__head">
+        <h3 class="fjournal__h"><Icon name="book-open" size={18} /> Featured journal</h3>
+        <span class="fjournal__count meta" data-fj-count>01 / {String(journal.length).padStart(2, '0')}</span>
+      </header>
+      <div class="fjournal__slides" data-fj-slides>
+        {journal.map((j, i) => (
+          <article class="fjournal__slide" data-fj-slide hidden={i !== 0} aria-roledescription="slide" aria-label={`${i + 1} of ${journal.length}`}>
+            <div class="fjournal__img"><Placeholder alt={j.image.alt} ratio="16 / 10" label={j.image.alt} /></div>
+            <p class="fjournal__title">{j.title}</p>
+            <p class="fjournal__meta">{j.tags[0]} · {j.date}</p>
+            <button class="link fjournal__more" type="button" data-open="journal" data-hash={`journal/${j.slug}`} data-entry={j.slug}>Read more <Icon name="arrow-right" size={14} /></button>
+          </article>
+        ))}
+      </div>
+      <div class="fjournal__nav">
+        <button type="button" class="fjournal__btn" data-fj-prev aria-label="Previous entry"><Icon name="arrow-left" size={16} /></button>
+        <button type="button" class="fjournal__btn" data-fj-next aria-label="Next entry"><Icon name="arrow-right" size={16} /></button>
+      </div>
+      <p class="fjournal__note hand" aria-hidden="true">The mountains always have a way of resetting you.</p>
+    </aside>
+  </div>
+
+  <!-- ───────── topics ───────── -->
+  <div class="topics" id="life-topics">
+    <h3 class="life__h3" data-reveal>Explore by topic</h3>
+    <ul class="topics__grid" role="list" data-stagger="60">
+      {topics.map((t, i) => (
+        <li class="topic" data-reveal style={`--r:${[-1.5, 1, -0.6, 1.4, 0.8, -1.2, 1.2, -0.8][i]}deg`}>
+          <div class="topic__photo">
+            <span class="tape topic__tape" aria-hidden="true"></span>
+            <Placeholder alt={`${t.label} photo`} ratio="4 / 3" label={t.label} />
+          </div>
+          <h4 class="topic__title"><Icon name={t.icon} size={18} /> {t.label}</h4>
+          <p class="topic__blurb">{t.blurb}</p>
+          <button class="topic__open" type="button" data-open="topic-drawer" data-hash={`life/${t.id}`} data-topic={t.id}>
+            View collection <Icon name="arrow-right" size={14} />
+            <span class="topic__hit" aria-hidden="true"></span>
+          </button>
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  <!-- ───────── moments + latest entries ───────── -->
+  <div class="life__bottom">
+    <div class="moments" data-reveal>
+      <h3 class="life__h3">Recent moments</h3>
+      <ul class="moments__strip" role="list">
+        {moments.map((m, i) => (
+          <li style={`--r:${[-4, 3, -2][i % 3]}deg`}>
+            <button class="moment polaroid" type="button" data-zoom data-caption={`${m.caption} — ${m.date}`}>
+              <Placeholder alt={m.image.alt} ratio="1 / 1" label="Moment" />
+              <span class="moment__cap">{m.caption}</span>
+              <span class="moment__date">{m.date}</span>
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <div class="entries" data-reveal>
+      <div class="entries__head">
+        <h3 class="life__h3"><Icon name="notebook-pen" size={16} /> Latest journal entries</h3>
+        <button class="link entries__all" type="button" data-open="journal" data-hash={`journal/${journal[0].slug}`} data-entry={journal[0].slug}>Open the journal</button>
+      </div>
+      <ol class="entries__list" role="list">
+        {journal.map((j) => (
+          <li>
+            <button class="entry" type="button" data-open="journal" data-hash={`journal/${j.slug}`} data-entry={j.slug}>
+              <span class="entry__date">{j.date.split(' ').slice(0, 2).join(' ')}</span>
+              <span class="entry__main">
+                <span class="entry__title">{j.title}</span>
+                <span class="entry__tags">{j.tags.map((t) => <span class="tag">{t}</span>)}</span>
+              </span>
+              <span class="entry__thumb"><Placeholder alt={j.image.alt} ratio="1 / 1" label="" /></span>
+            </button>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </div>
+
+  <!-- ───────── topic drawer (one section per topic) ───────── -->
+  <dialog id="topic-drawer" class="drawer topic-drawer" aria-label="Collection" data-topic-drawer>
+    <div class="drawer__body">
+      <div class="topic-drawer__head">
+        <p class="meta">05 · Life · collection</p>
+        <button class="drawer__x" type="button" data-close aria-label="Close collection"><Icon name="x" size={20} /></button>
+      </div>
+      {topics.map((t) => (
+        <section class="tsec" data-tsec={t.id} hidden aria-labelledby={`tsec-${t.id}`}>
+          <h3 class="tsec__title display" id={`tsec-${t.id}`}><Icon name={t.icon} size={30} stroke={1.5} /> {t.label}</h3>
+          <p class="tsec__blurb">{t.blurb}</p>
+          {t.id === 'music' && (
+            <div class="cassette" data-cassette>
+              <div class="cassette__body">
+                <div class="cassette__label">
+                  <span class="cassette__side">Side A · on repeat</span>
+                  <span class="cassette__track hand" data-track aria-live="polite">{playlist[0].title} — {playlist[0].artist}</span>
+                </div>
+                <div class="cassette__window">
+                  <span class="reel" data-reel></span>
+                  <span class="cassette__tape"></span>
+                  <span class="reel" data-reel></span>
+                </div>
+              </div>
+              <div class="cassette__deck">
+                <button type="button" class="deck__key" data-deck="prev" aria-label="Previous track"><Icon name="skip-back" size={16} /></button>
+                <button type="button" class="deck__key deck__key--play" data-deck="play" aria-label="Play" aria-pressed="false"><Icon name="play" size={18} class="deck__play" /><Icon name="pause" size={18} class="deck__pause" /></button>
+                <button type="button" class="deck__key" data-deck="next" aria-label="Next track"><Icon name="skip-forward" size={16} /></button>
+                <a class="deck__spotify" href={links.spotify} target="_blank" rel="noopener"><Brand name="spotify" size={16} /> Listen on Spotify</a>
+              </div>
+              <ol class="cassette__list" role="list">
+                {playlist.map((p, i) => <li data-track-item={i} aria-current={i === 0 ? 'true' : undefined}><span>{String(i + 1).padStart(2, '0')}</span> {p.title} <em>{p.artist}</em></li>)}
+              </ol>
+              <script is:inline type="application/json" data-playlist set:html={JSON.stringify(playlist)} />
+            </div>
+          )}
+          <div class="tsec__grid">
+            {[0, 1, 2].map((k) => (
+              <figure class:list={['tsec__fig', k === 0 && 'tsec__fig--wide']}>
+                <Placeholder alt={`${t.label} photo ${k + 1}`} ratio={k === 0 ? '16 / 9' : '1 / 1'} label={`${t.label} · photo`} />
+              </figure>
+            ))}
+          </div>
+          <ul class="tsec__items" role="list">
+            {t.items.map((it) => <li><Icon name="check" size={14} stroke={2.4} /> {it}</li>)}
+          </ul>
+        </section>
+      ))}
+    </div>
+  </dialog>
+
+  <!-- ───────── journal: a notebook page that flips ───────── -->
+  <dialog id="journal" class="modal journal" aria-label="Journal" data-journal>
+    <div class="jbook" data-jbook>
+      {journal.map((j, i) => (
+        <article class="jpage grid-paper" data-jpage={j.slug} hidden aria-labelledby={`jt-${j.slug}`}>
+          <span class="jpage__rings" aria-hidden="true"></span>
+          <header class="jpage__top">
+            <button class="jpage__back" type="button" data-close><Icon name="arrow-left" size={15} /> Back to the archive</button>
+            <span class="jpage__date">{j.date}</span>
+          </header>
+          <div class="jpage__grid">
+            <div class="jpage__words">
+              <h3 class="jpage__title hand" id={`jt-${j.slug}`}>{j.title}</h3>
+              <p class="jpage__place"><Icon name="map-pin" size={14} /> {j.place}</p>
+              <div class="jpage__body">{j.body.map((b) => <p>{b}</p>)}</div>
+              <div class="jpage__hl">
+                <p class="jpage__hl-t">Highlights</p>
+                <ul role="list">{j.highlights.map((h) => <li>{h}</li>)}</ul>
+              </div>
+            </div>
+            <div class="jpage__photos" aria-hidden="true">
+              <figure class="polaroid jpage__p1"><PaperClip class="jpage__clip" size={18} /><Placeholder alt={j.image.alt} ratio="4 / 3" label="Photo" /></figure>
+              <figure class="polaroid jpage__p2"><Placeholder alt="Second photo" ratio="1 / 1" label="Photo" /><figcaption>{j.place.toLowerCase()}</figcaption></figure>
+              <ul class="sticky jpage__tags" role="list">{j.tags.map((t) => <li>☑ {t}</li>)}</ul>
+              <svg class="jpage__trees" viewBox="0 0 140 70"><path d="M20 66 l12 -30 l12 30 z M32 66 v4 M60 66 l16 -44 l16 44 z M76 66 v4 M104 66 l10 -24 l10 24 z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" /><path d="M0 70 h140" stroke="currentColor" stroke-width="1.2" /></svg>
+            </div>
+          </div>
+          <footer class="jpage__foot">
+            <button class="jpage__nav" type="button" data-jnav="-1" disabled={i === 0}><Icon name="arrow-left" size={15} /> Newer</button>
+            <span class="jpage__count">{String(i + 1).padStart(2, '0')} / {String(journal.length).padStart(2, '0')}</span>
+            <button class="jpage__nav" type="button" data-jnav="1" disabled={i === journal.length - 1}>Older <Icon name="arrow-right" size={15} /></button>
+          </footer>
+        </article>
+      ))}
+    </div>
+  </dialog>
+
+  <!-- ───────── lightbox for moments ───────── -->
+  <dialog id="lightbox" class="modal lightbox" aria-label="Moment" data-lightbox>
+    <figure class="lightbox__fig polaroid" data-lightbox-fig>
+      <div class="lightbox__img" data-lightbox-img></div>
+      <figcaption data-lightbox-cap></figcaption>
+    </figure>
+    <button class="lightbox__x" type="button" data-close aria-label="Close"><Icon name="x" size={20} /></button>
+  </dialog>
+</section>
+
+<script>
+  import { openDialog } from '@/scripts/dialogs';
+  const reduce = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* Current vibes: tick them off; remembered on this device only */
+  const KEY = 'archive:vibes';
+  const boxes = [...document.querySelectorAll<HTMLInputElement>('[data-vibe]')];
+  try { const saved = JSON.parse(localStorage.getItem(KEY) ?? '[]') as number[]; boxes.forEach((b, i) => (b.checked = saved.includes(i))); } catch {}
+  boxes.forEach((b) => b.addEventListener('change', () => {
+    try { localStorage.setItem(KEY, JSON.stringify(boxes.flatMap((x, i) => (x.checked ? [i] : [])))); } catch {}
+  }));
+
+  /* Featured journal carousel */
+  const fj = document.querySelector<HTMLElement>('[data-fj]');
+  if (fj) {
+    const slides = [...fj.querySelectorAll<HTMLElement>('[data-fj-slide]')];
+    const count = fj.querySelector<HTMLElement>('[data-fj-count]')!;
+    let i = 0;
+    const go = (d: number) => {
+      const prev = slides[i];
+      i = (i + d + slides.length) % slides.length;
+      const next = slides[i];
+      prev.hidden = true;
+      next.hidden = false;
+      if (!reduce()) next.animate([{ opacity: 0, transform: `translateX(${d * 14}px)` }, { opacity: 1, transform: 'none' }], { duration: 280, easing: 'cubic-bezier(0.23,1,0.32,1)' });
+      count.textContent = `${String(i + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
+    };
+    fj.querySelector('[data-fj-prev]')!.addEventListener('click', () => go(-1));
+    fj.querySelector('[data-fj-next]')!.addEventListener('click', () => go(1));
+  }
+
+  /* Topic drawer: show the chosen collection */
+  const td = document.querySelector<HTMLDialogElement>('[data-topic-drawer]');
+  td?.addEventListener('dialog:open', (e) => {
+    const id = ((e as CustomEvent).detail.opener as HTMLElement | null)?.dataset.topic;
+    td.querySelectorAll<HTMLElement>('[data-tsec]').forEach((s) => (s.hidden = s.dataset.tsec !== id));
+    td.querySelector('.drawer__body')?.scrollTo(0, 0);
+  });
+  td?.addEventListener('close', () => stopTape());
+
+  /* Cassette deck: real controls, honest about having no audio file yet */
+  const cas = document.querySelector<HTMLElement>('[data-cassette]');
+  const list = JSON.parse(document.querySelector('[data-playlist]')?.textContent ?? '[]') as { title: string; artist: string }[];
+  let track = 0;
+  const stopTape = () => {
+    cas?.classList.remove('is-playing');
+    cas?.querySelector('[data-deck="play"]')?.setAttribute('aria-pressed', 'false');
+    cas?.querySelector('[data-deck="play"]')?.setAttribute('aria-label', 'Play');
+  };
+  cas?.addEventListener('click', (e) => {
+    const k = (e.target as Element).closest<HTMLElement>('[data-deck]')?.dataset.deck;
+    if (!k) return;
+    if (k === 'play') {
+      const on = !cas.classList.contains('is-playing');
+      cas.classList.toggle('is-playing', on);
+      const b = cas.querySelector('[data-deck="play"]')!;
+      b.setAttribute('aria-pressed', String(on));
+      b.setAttribute('aria-label', on ? 'Pause' : 'Play');
+      return;
+    }
+    track = (track + (k === 'next' ? 1 : -1) + list.length) % list.length;
+    cas.querySelector('[data-track]')!.textContent = `${list[track].title} — ${list[track].artist}`;
+    cas.querySelectorAll('[data-track-item]').forEach((li, n) => (n === track ? li.setAttribute('aria-current', 'true') : li.removeAttribute('aria-current')));
+    if (!reduce()) cas.querySelectorAll<HTMLElement>('[data-reel]').forEach((r) => r.animate([{ rotate: '0deg' }, { rotate: `${k === 'next' ? 540 : -540}deg` }], { duration: 520, easing: 'cubic-bezier(0.77,0,0.175,1)' }));
+  });
+
+  /* Journal: open on an entry, turn pages with a flip */
+  const jd = document.querySelector<HTMLDialogElement>('[data-journal]');
+  if (jd) {
+    const pages = [...jd.querySelectorAll<HTMLElement>('[data-jpage]')];
+    let cur = 0;
+    const show = (n: number) => { pages.forEach((p, k) => (p.hidden = k !== n)); cur = n; };
+    jd.addEventListener('dialog:open', (e) => {
+      const slug = ((e as CustomEvent).detail.opener as HTMLElement | null)?.dataset.entry;
+      show(Math.max(0, pages.findIndex((p) => p.dataset.jpage === slug)));
+    });
+    jd.addEventListener('click', async (e) => {
+      const nb = (e.target as Element).closest<HTMLButtonElement>('[data-jnav]');
+      if (!nb || nb.disabled) return;
+      const d = Number(nb.dataset.jnav);
+      const n = cur + d;
+      if (n < 0 || n >= pages.length) return;
+      const out = pages[cur];
+      const next = pages[n];
+      const slug = next.dataset.jpage!;
+      if (location.hash.startsWith('#journal/')) history.replaceState(history.state, '', `#journal/${slug}`);
+      if (reduce()) { show(n); next.querySelector<HTMLElement>('[data-jnav]')?.focus(); return; }
+      // the old page turns away around its spine, the next one settles in beneath it
+      next.hidden = false;
+      next.classList.add('is-under');
+      out.style.transformOrigin = d > 0 ? '0% 50%' : '100% 50%';
+      out.classList.add('is-turning');
+      const turn = out.animate(
+        [
+          { transform: 'perspective(1800px) rotateY(0deg)', filter: 'brightness(1)' },
+          { transform: `perspective(1800px) rotateY(${d > 0 ? -96 : 96}deg)`, filter: 'brightness(0.82)' },
+        ],
+        { duration: 560, easing: 'cubic-bezier(0.645, 0.045, 0.355, 1)', fill: 'forwards' },
+      );
+      await turn.finished.catch(() => {});
+      turn.cancel();
+      out.classList.remove('is-turning');
+      out.style.transformOrigin = '';
+      next.classList.remove('is-under');
+      show(n);
+      next.querySelector<HTMLElement>(`[data-jnav="${d}"]:not([disabled])`)?.focus({ preventScroll: true });
+    });
+    jd.addEventListener('keydown', (e) => {
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      const b = pages[cur].querySelector<HTMLButtonElement>(`[data-jnav="${e.key === 'ArrowRight' ? 1 : -1}"]`);
+      b?.click();
+    });
+  }
+
+  /* Moments: the polaroid zooms up to fill the screen, and back down when closed */
+  const lb = document.querySelector<HTMLDialogElement>('[data-lightbox]');
+  let lbFrom: HTMLElement | null = null;
+  document.querySelectorAll<HTMLElement>('[data-zoom]').forEach((m) =>
+    m.addEventListener('click', () => {
+      if (!lb) return;
+      lbFrom = m;
+      lb.querySelector('[data-lightbox-img]')!.innerHTML = m.querySelector('.ph, img')!.outerHTML;
+      lb.querySelector('[data-lightbox-cap]')!.textContent = m.dataset.caption ?? '';
+      openDialog(lb, m);
+      if (reduce()) return;
+      const fig = lb.querySelector<HTMLElement>('[data-lightbox-fig]')!;
+      const a = m.getBoundingClientRect();
+      requestAnimationFrame(() => {
+        const b = fig.getBoundingClientRect();
+        fig.animate(
+          [
+            { transform: `translate(${a.left - b.left}px, ${a.top - b.top}px) scale(${a.width / b.width}) rotate(-3deg)` },
+            { transform: 'none' },
+          ],
+          { duration: 420, easing: 'cubic-bezier(0.23, 1, 0.32, 1)', fill: 'backwards' },
+        );
+      });
+    }),
+  );
+  lb?.addEventListener('close', () => {
+    if (!lbFrom || reduce()) return;
+    lbFrom.animate([{ transform: 'scale(1.06)' }, { transform: 'none' }], { duration: 300, easing: 'cubic-bezier(0.23,1,0.32,1)' });
+  });
+</script>
+
+<style>
+  .life { padding: var(--chapter-gap) var(--gutter) 0; max-width: 84rem; margin-inline: auto; }
+  .life__h3 { display: flex; align-items: center; gap: 0.5rem; font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 400; color: var(--ink-2); }
+
+  /* banner */
+  .life__top { display: grid; grid-template-columns: minmax(0, 1fr) 21rem; gap: clamp(1.5rem, 3vw, 2.5rem); align-items: stretch; }
+  .banner {
+    position: relative; display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr); align-items: center;
+    background: var(--card); box-shadow: var(--shadow-paper);
+    /* torn right edge, drawn as an authored mask */
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 400' preserveAspectRatio='none'%3E%3Cpath d='M0 0H14L18 12L13 26L19 40L12 58L17 74L11 90L18 108L13 122L19 140L12 156L17 174L13 190L18 206L11 224L17 240L13 256L19 272L12 290L17 306L12 322L18 338L13 354L17 370L12 386L16 400H0Z'/%3E%3C/svg%3E") right / 20px 100% no-repeat, linear-gradient(#000, #000) left / calc(100% - 19px) 100% no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 400' preserveAspectRatio='none'%3E%3Cpath d='M0 0H14L18 12L13 26L19 40L12 58L17 74L11 90L18 108L13 122L19 140L12 156L17 174L13 190L18 206L11 224L17 240L13 256L19 272L12 290L17 306L12 322L18 338L13 354L17 370L12 386L16 400H0Z'/%3E%3C/svg%3E") right / 20px 100% no-repeat, linear-gradient(#000, #000) left / calc(100% - 19px) 100% no-repeat;
+  }
+  .banner__paper { position: relative; padding: clamp(1.75rem, 3.5vw, 3rem); }
+  .banner__num { font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--olive-deep); }
+  .banner__title { margin-top: var(--s-4); font-size: clamp(3.25rem, 0.9rem + 4.6vw, 5.25rem); }
+  .banner__text { margin-top: var(--s-5); max-width: 34ch; color: var(--ink-2); }
+  .banner .btn { margin-top: var(--s-6); }
+  .banner__aside { position: absolute; right: 1.25rem; bottom: 1.75rem; font-size: 1.5rem; line-height: 0.95; transform: rotate(-5deg); color: var(--ink-2); }
+  .banner__collage { position: relative; align-self: stretch; min-height: 22rem; }
+  .banner__map { position: absolute; inset: 1rem 1.5rem 1rem 0; background: #e8dfc9; box-shadow: var(--shadow-paper); transform: rotate(-2deg); }
+  .banner__map svg { width: 100%; height: 100%; }
+  .banner__photo { position: absolute; left: 6%; top: 10%; width: 52%; transform: rotate(-4deg); z-index: 2; }
+  .banner__photo :global(.banner__clip) { top: -1.7rem; right: 1.6rem; }
+  .vibes { position: absolute; right: 2.4rem; top: 16%; z-index: 3; width: 9.75rem; border: 0; padding: 1rem 0.9rem 0.8rem; transform: rotate(4deg); font-size: 1.4rem; }
+  .vibes__title { float: left; width: 100%; margin-bottom: 0.4rem; font-family: var(--font-hand); font-size: 1.55rem; text-decoration: underline; text-underline-offset: 0.18em; }
+  .vibes__row { clear: both; position: relative; display: flex; align-items: center; gap: 0.5rem; min-height: 1.85rem; cursor: pointer; }
+  .vibes__row input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+  .vibes__box { display: grid; place-items: center; width: 1rem; height: 1rem; flex: none; border: 1.5px solid var(--ink); border-radius: 2px; color: transparent; transition: background-color var(--d-fast) ease, color var(--d-fast) ease; }
+  .vibes__box :global(svg) { width: 0.8rem; height: 0.8rem; transform: scale(0.6); transition: transform var(--d-base) var(--ease-out); }
+  .vibes__label { font-family: var(--font-hand); font-size: 1.45rem; line-height: 1; background-image: linear-gradient(var(--ink), var(--ink)); background-size: 0% 1.5px; background-repeat: no-repeat; background-position: 0 55%; transition: background-size var(--d-base) var(--ease-out); }
+  .vibes__row input:checked ~ .vibes__box { background: var(--ink); color: var(--note); }
+  .vibes__row input:checked ~ .vibes__box :global(svg) { transform: none; }
+  .vibes__row input:checked ~ .vibes__label { background-size: 100% 1.5px; }
+  .vibes__row input:focus-visible ~ .vibes__box { outline: 2px solid var(--blue); outline-offset: 2px; }
+
+  /* featured journal */
+  .fjournal { position: relative; display: flex; flex-direction: column; padding: 1.25rem; }
+  .fjournal__head { display: flex; justify-content: space-between; align-items: center; }
+  .fjournal__h { display: flex; align-items: center; gap: 0.5rem; font-size: 1rem; font-weight: 650; }
+  .fjournal__slides { margin-top: var(--s-4); flex: 1; }
+  .fjournal__img { overflow: hidden; border-radius: 2px; }
+  .fjournal__title { margin-top: var(--s-4); font-size: 1.0625rem; font-weight: 600; line-height: 1.35; }
+  .fjournal__meta { margin-top: 0.35rem; font-family: var(--font-mono); font-size: 0.6875rem; color: var(--ink-3); }
+  .fjournal__more { margin-top: var(--s-3); display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.5rem; font-size: 0.9375rem; }
+  .fjournal__nav { display: flex; justify-content: flex-end; gap: 0.35rem; margin-top: var(--s-3); }
+  .fjournal__btn { display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: 50%; box-shadow: inset 0 0 0 1px var(--linen-2); transition: background-color var(--d-fast) ease, transform var(--d-press) var(--ease-out); }
+  .fjournal__btn:active { transform: scale(0.92); }
+  @media (hover: hover) { .fjournal__btn:hover { background: var(--paper-2); } }
+  .fjournal__note { position: absolute; left: -1.8rem; bottom: -2.4rem; max-width: 13ch; font-size: 1.4rem; line-height: 0.95; color: var(--ink-2); transform: rotate(-6deg); display: none; }
+
+  /* topics */
+  .topics { margin-top: clamp(3.5rem, 6vw, 5.5rem); }
+  .topics__grid { margin-top: var(--s-5); display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(1.25rem, 2.4vw, 2.25rem) clamp(1rem, 2vw, 1.75rem); }
+  .topic {
+    position: relative; display: flex; flex-direction: column;
+    padding: 0.7rem 0.7rem 0.8rem; background: var(--card); box-shadow: var(--shadow-paper);
+    transition: transform var(--d-base) var(--ease-out), box-shadow var(--d-base) var(--ease-out);
+  }
+  .topic__photo { position: relative; transform: rotate(var(--r)); transition: transform var(--d-base) var(--ease-out); }
+  .topic__photo :global(.ph) { box-shadow: 0 0 0 5px #fbf9f3, 0 6px 14px -8px rgb(40 30 15 / 0.6); }
+  .topic__tape { top: -0.7rem; left: 50%; translate: -50% 0; width: 3.8rem; height: 1.2rem; rotate: -4deg; }
+  .topic__title { margin-top: 1rem; display: flex; align-items: center; gap: 0.5rem; font-size: 1.0625rem; font-weight: 700; }
+  .topic__blurb { margin-top: 0.3rem; font-size: 0.875rem; color: var(--ink-2); line-height: 1.45; }
+  .topic__open { margin-top: auto; padding-top: 0.8rem; align-self: flex-start; display: inline-flex; align-items: center; gap: 0.35rem; font-family: var(--font-mono); font-size: 0.6875rem; color: var(--blue); text-decoration: underline; text-decoration-color: rgb(49 93 134 / 0.3); text-underline-offset: 0.3em; }
+  .topic__open :global(svg) { transition: transform var(--d-fast) var(--ease-out); }
+  .topic__hit { position: absolute; inset: 0; }
+  .topic:has(.topic__open:active) { transform: scale(0.985); }
+  @media (hover: hover) and (pointer: fine) {
+    .topic:hover { transform: translateY(-5px); box-shadow: var(--shadow-lift); }
+    .topic:hover .topic__photo { transform: rotate(0deg) scale(1.02); }
+    .topic:hover .topic__open :global(svg) { transform: translateX(3px); }
+  }
+  .topic:has(.topic__open:focus-visible) { transform: translateY(-5px); box-shadow: var(--shadow-lift); }
+
+  /* moments + entries */
+  .life__bottom { margin-top: clamp(3.5rem, 6vw, 5.5rem); display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: clamp(2rem, 5vw, 4.5rem); align-items: start; }
+  .moments__strip { margin-top: var(--s-5); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-3); }
+  .moments__strip li { transform: rotate(var(--r)); }
+  .moment { position: relative; display: block; width: 100%; padding-bottom: 3.2rem; text-align: left; transition: transform var(--d-base) var(--ease-out), box-shadow var(--d-base) var(--ease-out); }
+  .moment__cap { position: absolute; left: 0.7rem; right: 0.6rem; bottom: 1.35rem; font-family: var(--font-hand); font-size: 1.2rem; line-height: 1; color: var(--ink); }
+  .moment__date { position: absolute; left: 0.7rem; bottom: 0.45rem; font-family: var(--font-mono); font-size: 0.5625rem; color: var(--ink-3); }
+  .moment:active { transform: scale(0.97); }
+  @media (hover: hover) and (pointer: fine) { .moment:hover { transform: translateY(-6px) rotate(1deg) scale(1.03); box-shadow: var(--shadow-float); } }
+
+  .entries__head { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+  .entries__all { font-size: 0.875rem; }
+  .entries__list { margin-top: var(--s-4); display: grid; }
+  .entries__list li + li { border-top: var(--hair); }
+  .entry { display: grid; grid-template-columns: 4.25rem minmax(0, 1fr) 4rem; gap: var(--s-4); align-items: center; width: 100%; padding: 0.9rem 0.5rem; text-align: left; border-radius: var(--r-2); transition: background-color var(--d-fast) ease; }
+  .entry__date { font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-3); }
+  .entry__main { display: grid; gap: 0.4rem; }
+  .entry__title { font-weight: 600; line-height: 1.35; }
+  .entry__tags { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+  .entry__thumb { transform: rotate(3deg); transition: transform var(--d-base) var(--ease-out); }
+  .entry__thumb :global(.ph) { box-shadow: 0 0 0 4px #fbf9f3, 0 4px 10px -6px rgb(40 30 15 / 0.6); }
+  .entry__thumb :global(.ph svg) { width: 1.1rem; }
+  @media (hover: hover) and (pointer: fine) { .entry:hover { background: var(--paper-2); } .entry:hover .entry__thumb { transform: rotate(-2deg) scale(1.06); } }
+
+  /* topic drawer */
+  .topic-drawer { width: min(40rem, 100vw); }
+  .topic-drawer__head { display: flex; justify-content: space-between; align-items: center; }
+  .tsec__title { margin-top: var(--s-6); display: flex; align-items: center; gap: 0.75rem; font-size: clamp(2.5rem, 2rem + 2vw, 3.75rem); }
+  .tsec__blurb { margin-top: var(--s-3); color: var(--ink-2); font-size: var(--t-lead); }
+  .tsec__grid { margin-top: var(--s-6); display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-3); }
+  .tsec__fig--wide { grid-column: 1 / -1; }
+  .tsec__items { margin-top: var(--s-6); display: grid; gap: 0.6rem; }
+  .tsec__items li { display: flex; gap: 0.6rem; align-items: baseline; }
+  .tsec__items :global(svg) { color: var(--olive-deep); flex: none; translate: 0 2px; }
+
+  /* cassette */
+  .cassette { margin-top: var(--s-6); padding: 1.1rem; border-radius: 12px; background: #2f2c27; color: var(--paper); box-shadow: var(--shadow-lift); }
+  .cassette__body { border-radius: 8px; background: #3b3732; padding: 0.9rem; }
+  .cassette__label { display: grid; gap: 0.2rem; padding: 0.6rem 0.8rem; border-radius: 4px; background: #e9e1cd; color: var(--ink); }
+  .cassette__side { font-family: var(--font-mono); font-size: 0.5625rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--olive-deep); }
+  .cassette__track { font-size: 1.6rem; color: var(--blue); }
+  .cassette__window { margin: 0.8rem auto 0; width: 70%; height: 3.4rem; border-radius: 99px; background: #1d1b18; display: flex; align-items: center; justify-content: space-between; padding: 0 0.6rem; position: relative; }
+  .cassette__tape { position: absolute; left: 30%; right: 30%; top: 50%; height: 1.6rem; translate: 0 -50%; background: #5a4630; border-radius: 4px; }
+  .reel {
+    position: relative; z-index: 1; width: 2.4rem; height: 2.4rem; border-radius: 50%;
+    background: radial-gradient(circle, #1d1b18 0 18%, #e9e1cd 19% 100%);
+    -webkit-mask: radial-gradient(circle, #000 0 22%, transparent 23% 32%, #000 33%);
+    mask: radial-gradient(circle, #000 0 22%, transparent 23% 32%, #000 33%);
+  }
+  .reel::after { content: ""; position: absolute; inset: 30%; border-radius: 50%; background: repeating-conic-gradient(#1d1b18 0 20deg, transparent 20deg 60deg); }
+  .cassette.is-playing .reel { animation: reel 1.8s linear infinite; }
+  @keyframes reel { to { rotate: 360deg; } }
+  @media (prefers-reduced-motion: reduce) { .cassette.is-playing .reel { animation: none; } }
+  .cassette__deck { margin-top: 0.9rem; display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
+  .deck__key {
+    display: grid; place-items: center; width: 3rem; height: 2.6rem; border-radius: 6px;
+    background: linear-gradient(#f1ebdd, #d8cfbb); color: var(--ink);
+    box-shadow: 0 3px 0 #8f8674, 0 4px 8px -2px rgb(0 0 0 / 0.5);
+    transition: transform var(--d-press) var(--ease-out), box-shadow var(--d-press) var(--ease-out);
+  }
+  .deck__key:active, .deck__key[aria-pressed="true"] { transform: translateY(2px); box-shadow: 0 1px 0 #8f8674, 0 2px 4px -1px rgb(0 0 0 / 0.5); }
+  .deck__key--play { width: 3.6rem; }
+  .deck__key[aria-pressed="true"] { background: linear-gradient(#cfe0a6, #a9bd7c); }
+  .deck__pause { display: none; }
+  .deck__key[aria-pressed="true"] .deck__play { display: none; }
+  .deck__key[aria-pressed="true"] .deck__pause { display: block; }
+  .deck__spotify { margin-left: auto; display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.6rem; padding: 0 0.8rem; border-radius: 6px; color: var(--paper); font-family: var(--font-mono); font-size: 0.6875rem; text-decoration: none; box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.25); }
+  .cassette__list { margin-top: 0.9rem; display: grid; gap: 0.15rem; font-size: 0.875rem; color: rgb(243 239 227 / 0.7); }
+  .cassette__list li { display: flex; gap: 0.6rem; padding: 0.35rem 0.5rem; border-radius: 4px; }
+  .cassette__list li span { font-family: var(--font-mono); font-size: 0.6875rem; opacity: 0.7; }
+  .cassette__list li em { margin-left: auto; font-style: normal; opacity: 0.6; }
+  .cassette__list li[aria-current="true"] { background: rgb(255 255 255 / 0.08); color: var(--paper); }
+
+  /* journal notebook */
+  .journal { width: min(62rem, calc(100vw - 2 * var(--gutter))); }
+  .jbook { position: relative; }
+  .jpage {
+    position: relative;
+    padding: 1.5rem 2rem 1.25rem 4rem;
+    border-radius: 4px 8px 8px 4px;
+    box-shadow: var(--shadow-float);
+    max-height: calc(100dvh - 2 * var(--gutter)); overflow: auto;
+    backface-visibility: hidden;
+  }
+  .jpage.is-under { position: absolute; inset: 0; z-index: 0; }
+  .jpage.is-turning { position: relative; z-index: 2; box-shadow: 0 30px 60px -20px rgb(0 0 0 / 0.5); }
+  .jpage__rings {
+    position: absolute; left: 0.9rem; top: 1rem; bottom: 1rem; width: 1.4rem;
+    background: radial-gradient(circle at 50% 50%, #2d2b27 0 0.32rem, transparent 0.34rem) center top / 1.4rem 1.9rem repeat-y;
+  }
+  .jpage__top { display: flex; justify-content: space-between; align-items: center; }
+  .jpage__back { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.5rem; font-family: var(--font-mono); font-size: 0.6875rem; color: var(--ink-2); }
+  .jpage__date { font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-2); }
+  .jpage__grid { margin-top: var(--s-4); display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); gap: var(--s-6); }
+  .jpage__title { font-size: clamp(2.4rem, 1.8rem + 2vw, 3.6rem); line-height: 0.95; color: var(--ink); }
+  .jpage__place { margin-top: var(--s-3); display: flex; align-items: center; gap: 0.35rem; font-family: var(--font-mono); font-size: 0.6875rem; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.06em; }
+  .jpage__body { margin-top: var(--s-4); display: grid; gap: 0.8rem; color: var(--ink); }
+  .jpage__hl { margin-top: var(--s-5); }
+  .jpage__hl-t { font-weight: 700; font-size: 0.9375rem; }
+  .jpage__hl ul { margin-top: 0.4rem; padding-left: 1.1rem; list-style: disc; color: var(--ink-2); font-size: 0.9375rem; }
+  .jpage__photos { position: relative; min-height: 22rem; }
+  .jpage__p1 { position: absolute; right: 0; top: 0.5rem; width: 82%; transform: rotate(3deg); }
+  .jpage__p1 :global(.jpage__clip) { top: -1.5rem; right: 1.5rem; }
+  .jpage__p2 { position: absolute; left: 0; top: 52%; width: 52%; transform: rotate(-5deg); z-index: 2; }
+  .jpage__p2 figcaption { font-size: 1.2rem; }
+  .jpage__tags { position: absolute; right: 0.2rem; bottom: 1.5rem; z-index: 3; width: 9rem; transform: rotate(4deg); font-size: 1.35rem; display: grid; gap: 0.1rem; }
+  .jpage__trees { position: absolute; right: 9.5rem; bottom: 0; width: 7rem; color: var(--ink-3); }
+  .jpage__foot { margin-top: var(--s-5); padding-top: var(--s-3); border-top: 1px dashed var(--linen-2); display: flex; justify-content: space-between; align-items: center; }
+  .jpage__nav { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.5rem; padding: 0 0.8rem; border-radius: var(--r-pill); font-family: var(--font-mono); font-size: 0.6875rem; box-shadow: inset 0 0 0 1px var(--linen-2); background: var(--paper); transition: background-color var(--d-fast) ease, transform var(--d-press) var(--ease-out); }
+  .jpage__nav:active { transform: scale(0.96); }
+  .jpage__nav:disabled { opacity: 0.4; cursor: default; }
+  @media (hover: hover) { .jpage__nav:not(:disabled):hover { background: var(--paper-2); } }
+  .jpage__count { font-family: var(--font-mono); font-size: 0.6875rem; color: var(--ink-3); }
+
+  /* lightbox */
+  .lightbox { width: min(36rem, calc(100vw - 2 * var(--gutter))); opacity: 1; transform: none; }
+  .lightbox[open] { animation: none; }
+  .lightbox__fig { padding-bottom: 3rem; }
+  .lightbox__fig figcaption { font-size: 1.6rem; bottom: 0.8rem; }
+  .lightbox__img :global(.ph) { aspect-ratio: 1 / 1 !important; }
+  .lightbox__x { position: absolute; top: -0.9rem; right: -0.9rem; display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: 50%; background: var(--ink); color: var(--paper); box-shadow: var(--shadow-lift); transition: transform var(--d-press) var(--ease-out); }
+  .lightbox__x:active { transform: scale(0.92); }
+
+  @media (max-width: 1180px) {
+    .life__top { grid-template-columns: 1fr; }
+    .fjournal { display: grid; grid-template-columns: 1fr; }
+    .topics__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 860px) {
+    .banner { grid-template-columns: 1fr; -webkit-mask: none; mask: none; }
+    .banner__collage { min-height: 20rem; margin: 0 1rem 1.5rem; }
+    .banner__aside { display: none; }
+    .life__bottom { grid-template-columns: 1fr; }
+    .jpage { padding: 1.25rem 1.1rem 1rem 2.6rem; }
+    .jpage__rings { left: 0.45rem; width: 1.2rem; }
+    .jpage__grid { grid-template-columns: 1fr; }
+    .jpage__photos { min-height: 17rem; }
+  }
+  @media (max-width: 560px) {
+    .topics__grid { gap: 1rem 0.75rem; }
+    .topic__blurb { display: none; }
+    .topic { padding: 0.5rem 0.5rem 0.6rem; }
+    .vibes { right: 0.4rem; width: 8.5rem; }
+    .banner__photo { width: 56%; left: 2%; }
+    .entry { grid-template-columns: 3.4rem minmax(0, 1fr) 3rem; gap: 0.75rem; }
+  }
+</style>

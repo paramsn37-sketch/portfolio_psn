@@ -1,0 +1,371 @@
+---
+import Icon from '../Icon.astro';
+import ChapterTitle from '../ui/ChapterTitle.astro';
+import { toolbox, process, experiments, learning } from '@/data/site';
+const icons = [
+  ...toolbox.map((t, i) => ({ id: t.id, label: t.label, kind: 'folder' as const, tone: ['olive', 'blue', 'kraft', 'olive', 'blue'][i % 5] })),
+  { id: 'learning', label: 'learning.txt', kind: 'file' as const, tone: 'paper' },
+];
+// process flow nodes laid out on a gentle curve
+const nodes = process.map((p, i) => ({ ...p, x: 70 + i * 165, y: i % 2 ? 150 : 80 }));
+---
+<section id="mind" class="mind chapter" data-chapter data-num="04" aria-labelledby="mind-title">
+  <div class="mind__head">
+    <ChapterTitle num="04" title="Working mind" id="mind-title" sub="Tools / process / experiments" note="Build, break, learn, repeat." />
+    <p class="mind__intro" data-reveal>No skill bars and no percentages — open a folder to see what I actually reach for, and why.</p>
+  </div>
+
+  <!-- the desktop -->
+  <div class="desk2" data-desktop data-reveal>
+    <div class="desk2__screen grid-paper">
+      <ul class="desk2__icons" role="list" aria-label="Folders">
+        {icons.map((ic) => (
+          <li>
+            <button class:list={['dicon', `dicon--${ic.tone}`]} type="button" data-win-open={ic.id} aria-controls={`win-${ic.id}`} aria-expanded={ic.id === 'languages' || ic.id === 'ai' ? 'true' : 'false'}>
+              {ic.kind === 'folder' ? (
+                <span class="dicon__folder" aria-hidden="true"><span></span></span>
+              ) : (
+                <span class="dicon__file" aria-hidden="true"><Icon name="file-text" size={26} stroke={1.4} /></span>
+              )}
+              <span class="dicon__label">{ic.label}</span>
+            </button>
+          </li>
+        ))}
+      </ul>
+
+      <div class="desk2__windows" data-win-layer>
+        {toolbox.map((t, i) => (
+          <section class="win" id={`win-${t.id}`} data-win={t.id} hidden={t.id !== 'languages' && t.id !== 'ai'} aria-labelledby={`win-${t.id}-t`} style={`--wx:${[4, 30, 47, 18, 38][i % 5]}%;--wy:${[6, 12, 30, 36, 8][i % 5]}%`}>
+            <header class="win__bar" data-win-drag>
+              <span class="win__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <h3 class="win__title pixel" id={`win-${t.id}-t`}>C:\PARAM\mind\{t.id}</h3>
+              <button class="win__x" type="button" data-win-close aria-label={`Close ${t.label}`}><Icon name="x" size={14} stroke={2} /></button>
+            </header>
+            <div class="win__body">
+              <p class="win__meta">{t.items.length} items · {t.label}</p>
+              <ul class="win__items" role="list">
+                {t.items.map((it) => (
+                  <li class="win__item">
+                    <span class="win__item-name">{it.name}</span>
+                    <span class="win__item-note">{it.note}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </section>
+        ))}
+        <section class="win win--note" id="win-learning" data-win="learning" hidden aria-labelledby="win-learning-t" style="--wx:58%;--wy:8%">
+          <header class="win__bar" data-win-drag>
+            <span class="win__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+            <h3 class="win__title pixel" id="win-learning-t">learning.txt — Notepad</h3>
+            <button class="win__x" type="button" data-win-close aria-label="Close learning.txt"><Icon name="x" size={14} stroke={2} /></button>
+          </header>
+          <div class="win__body win__body--text">
+            <p class="pixel">Currently learning:</p>
+            <ul role="list">{learning.map((l) => <li class="pixel">- {l}</li>)}</ul>
+            <p class="pixel win__cursor">_</p>
+          </div>
+        </section>
+      </div>
+      <p class="desk2__hint hand" aria-hidden="true">tap a folder ↖</p>
+    </div>
+    <footer class="desk2__task">
+      <span class="desk2__start pixel"><Icon name="folder" size={14} /> Start</span>
+      <span class="desk2__open" data-win-tasks></span>
+      <span class="desk2__clock pixel" data-clock title="Bengaluru time">--:--</span>
+    </footer>
+  </div>
+
+  <div class="mind__lower">
+    <!-- process sketch -->
+    <div class="proc" data-reveal>
+      <h3 class="mind__h3">How I work</h3>
+      <div class="proc__paper grid-paper">
+        <svg class="proc__svg" viewBox="0 0 780 230" aria-hidden="true">
+          <path class="proc__path" d={`M${nodes.map((n) => `${n.x} ${n.y}`).join(' L')}`} />
+          <path class="proc__loop" d={`M${nodes[nodes.length - 1].x} ${nodes[nodes.length - 1].y + 30} C 700 230, 120 240, ${nodes[0].x} ${nodes[0].y + 34}`} />
+          <path class="proc__loop-head" d={`M${nodes[0].x} ${nodes[0].y + 34} l-4 14 m4 -14 l12 8`} />
+          <text x="390" y="222" text-anchor="middle" class="proc__loop-label">and again</text>
+        </svg>
+        <ol class="proc__nodes" role="list">
+          {nodes.map((n, i) => (
+            <li style={`--x:${(n.x / 780) * 100}%;--y:${(n.y / 230) * 100}%`}>
+              <button class="proc__node" type="button" aria-pressed={i === 0 ? 'true' : 'false'} data-proc={i}>
+                <span class="proc__n">{i + 1}</span>
+                <span class="proc__step">{n.step}</span>
+              </button>
+            </li>
+          ))}
+        </ol>
+      </div>
+      <p class="proc__caption" aria-live="polite" data-proc-caption><span class="hand hand--blue">{process[0].step}:</span> {process[0].note}</p>
+    </div>
+
+    <!-- experiments -->
+    <div class="exp" data-reveal>
+      <h3 class="mind__h3">Experiments</h3>
+      <ul class="exp__list" role="list" data-stagger="70">
+        {experiments.map((e, i) => (
+          <li class="exp__card" data-reveal style={`--r:${[-1.2, 0.8, -0.5][i % 3]}deg`}>
+            <span class:list={['exp__stamp', `exp__stamp--${e.status.toLowerCase()}`]}>{e.status}</span>
+            <h4 class="exp__title">{e.title}</h4>
+            <p class="exp__note">{e.note}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<script>
+  /* ── Desktop windows: open, focus, close, drag (pointer), Esc ── */
+  const desk = document.querySelector<HTMLElement>('[data-desktop]');
+  if (desk) {
+    const layer = desk.querySelector<HTMLElement>('[data-win-layer]')!;
+    const tasks = desk.querySelector<HTMLElement>('[data-win-tasks]')!;
+    let z = 10;
+    const win = (id: string) => layer.querySelector<HTMLElement>(`[data-win="${id}"]`);
+    const btn = (id: string) => desk.querySelector<HTMLButtonElement>(`[data-win-open="${id}"]`);
+    const renderTasks = () => {
+      tasks.innerHTML = '';
+      layer.querySelectorAll<HTMLElement>('[data-win]:not([hidden])').forEach((w) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'desk2__taskbtn pixel';
+        b.textContent = w.dataset.win!;
+        b.addEventListener('click', () => focus(w));
+        tasks.append(b);
+      });
+    };
+    const focus = (w: HTMLElement) => {
+      w.style.zIndex = String(++z);
+      layer.querySelectorAll('.win').forEach((x) => x.classList.toggle('is-front', x === w));
+    };
+    const open = (id: string) => {
+      const w = win(id);
+      if (!w) return;
+      const was = !w.hidden;
+      w.hidden = false;
+      btn(id)?.setAttribute('aria-expanded', 'true');
+      focus(w);
+      if (!was) { w.classList.remove('is-opening'); void w.offsetWidth; w.classList.add('is-opening'); }
+      w.querySelector<HTMLElement>('.win__x')?.focus({ preventScroll: true });
+      renderTasks();
+    };
+    const close = (w: HTMLElement) => {
+      w.hidden = true;
+      const b = btn(w.dataset.win!);
+      b?.setAttribute('aria-expanded', 'false');
+      b?.focus({ preventScroll: true });
+      renderTasks();
+    };
+    desk.addEventListener('click', (e) => {
+      const t = e.target as Element;
+      const o = t.closest<HTMLElement>('[data-win-open]');
+      if (o) return open(o.dataset.winOpen!);
+      const c = t.closest<HTMLElement>('[data-win-close]');
+      if (c) return close(c.closest<HTMLElement>('[data-win]')!);
+      const w = t.closest<HTMLElement>('[data-win]');
+      if (w) focus(w);
+    });
+    desk.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return;
+      const front = layer.querySelector<HTMLElement>('.win.is-front:not([hidden])');
+      if (front) { e.stopPropagation(); close(front); }
+    });
+
+    // Drag by the title bar (fine pointers only). Pointer capture keeps the drag even off the bar.
+    if (matchMedia('(pointer: fine)').matches) {
+      layer.querySelectorAll<HTMLElement>('[data-win-drag]').forEach((bar) => {
+        const w = bar.closest<HTMLElement>('[data-win]')!;
+        let sx = 0, sy = 0, ox = 0, oy = 0, dragging = false;
+        bar.addEventListener('pointerdown', (e) => {
+          if ((e.target as Element).closest('button') || dragging) return;
+          dragging = true;
+          bar.setPointerCapture(e.pointerId);
+          const lr = layer.getBoundingClientRect(), wr = w.getBoundingClientRect();
+          ox = wr.left - lr.left; oy = wr.top - lr.top; sx = e.clientX; sy = e.clientY;
+          w.style.left = `${ox}px`; w.style.top = `${oy}px`; w.style.translate = '0 0';
+          focus(w);
+          w.classList.add('is-dragging');
+        });
+        bar.addEventListener('pointermove', (e) => {
+          if (!dragging) return;
+          const lr = layer.getBoundingClientRect();
+          const nx = Math.min(Math.max(ox + e.clientX - sx, -w.offsetWidth * 0.5), lr.width - w.offsetWidth * 0.5);
+          const ny = Math.min(Math.max(oy + e.clientY - sy, 0), lr.height - 40);
+          w.style.transform = `translate(${nx - ox}px, ${ny - oy}px)`;
+        });
+        const end = (e: PointerEvent) => {
+          if (!dragging) return;
+          dragging = false;
+          const m = /translate\(([-\d.]+)px, ([-\d.]+)px\)/.exec(w.style.transform);
+          if (m) { w.style.left = `${ox + parseFloat(m[1])}px`; w.style.top = `${oy + parseFloat(m[2])}px`; }
+          w.style.transform = '';
+          w.classList.remove('is-dragging');
+          bar.releasePointerCapture(e.pointerId);
+        };
+        bar.addEventListener('pointerup', end);
+        bar.addEventListener('pointercancel', end);
+      });
+    }
+    renderTasks();
+    const first = win('languages');
+    if (first) focus(first);
+
+    // A live clock in Bengaluru time — the one thing on this desktop that is always true.
+    const clock = desk.querySelector<HTMLElement>('[data-clock]');
+    const fmt = new Intl.DateTimeFormat('en-IN', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Kolkata' });
+    const tick = () => { if (clock) clock.textContent = `${fmt.format(new Date())} IST`; };
+    tick();
+    setInterval(tick, 15_000);
+  }
+
+  /* ── Process sketch: pick a step, read its note ── */
+  const nodesBtns = [...document.querySelectorAll<HTMLButtonElement>('[data-proc]')];
+  const caption = document.querySelector<HTMLElement>('[data-proc-caption]');
+  const steps = nodesBtns.map((b) => b.querySelector('.proc__step')!.textContent!);
+  const notes = JSON.parse(document.querySelector('[data-proc-notes]')?.textContent ?? '[]') as string[];
+  nodesBtns.forEach((b, i) => {
+    const show = () => {
+      nodesBtns.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      if (caption) caption.innerHTML = `<span class="hand hand--blue">${steps[i]}:</span> ${notes[i] ?? ''}`;
+    };
+    b.addEventListener('click', show);
+    b.addEventListener('mouseenter', show);
+    b.addEventListener('focus', show);
+  });
+</script>
+<script is:inline type="application/json" data-proc-notes set:html={JSON.stringify(process.map((p) => p.note))} />
+
+<style>
+  .mind { padding: var(--chapter-gap) var(--gutter) 0; max-width: 84rem; margin-inline: auto; }
+  .mind__head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 24rem); gap: var(--s-6); align-items: end; }
+  .mind__intro { color: var(--ink-2); max-width: 36ch; padding-bottom: 0.6rem; }
+
+  /* desktop */
+  .desk2 {
+    margin-top: clamp(2.5rem, 5vw, 4rem);
+    border-radius: 10px; overflow: hidden;
+    box-shadow: var(--shadow-lift), 0 0 0 1.5px var(--ink);
+    background: var(--card);
+  }
+  .desk2__screen { position: relative; min-height: clamp(26rem, 46vw, 34rem); display: grid; grid-template-columns: 7.5rem 1fr; }
+  .desk2__icons { display: grid; align-content: start; gap: 0.35rem; padding: 1.25rem 0.5rem; z-index: 1; }
+  .dicon {
+    display: grid; justify-items: center; gap: 0.35rem; width: 100%; padding: 0.55rem 0.25rem; border-radius: 6px;
+    color: var(--ink);
+    transition: background-color var(--d-fast) ease, transform var(--d-press) var(--ease-out);
+  }
+  .dicon:active { transform: scale(0.95); }
+  .dicon[aria-expanded="true"] { background: rgb(49 93 134 / 0.12); }
+  @media (hover: hover) { .dicon:hover { background: rgb(49 93 134 / 0.08); } }
+  .dicon__label { font-family: var(--font-pixel); font-size: 0.8125rem; line-height: 1.1; text-align: center; word-break: break-word; }
+  .dicon[aria-expanded="true"] .dicon__label { background: var(--blue); color: var(--paper); padding: 0 0.25rem; }
+  .dicon__folder { position: relative; width: 2.8rem; height: 2.2rem; }
+  .dicon__folder::before { content: ""; position: absolute; left: 0; top: 0; width: 45%; height: 30%; border-radius: 3px 4px 0 0; background: var(--c-back, #5e6646); }
+  .dicon__folder span { position: absolute; inset: 18% 0 0; border-radius: 2px 3px 4px 4px; background: var(--c, var(--olive)); box-shadow: inset 0 1px 0 rgb(255 255 255 / .25), 0 3px 6px -3px rgb(0 0 0 / .5); transition: transform var(--d-base) var(--ease-out); transform-origin: 50% 100%; }
+  .dicon[aria-expanded="true"] .dicon__folder span { transform: perspective(80px) rotateX(-24deg); }
+  .dicon--blue { --c: #3f6d96; --c-back: #2c5274; }
+  .dicon--kraft { --c: #c9a15f; --c-back: #a9844a; }
+  .dicon__file { display: grid; place-items: center; width: 2.8rem; height: 2.4rem; color: var(--ink-2); }
+
+  .desk2__windows { position: relative; }
+  .win {
+    position: absolute; left: var(--wx); top: var(--wy);
+    width: min(25rem, 88%);
+    background: #f6f2e8; border-radius: 6px;
+    box-shadow: 0 0 0 1.5px var(--ink), 6px 8px 0 -1px rgb(37 37 34 / 0.12), var(--shadow-lift);
+    overflow: hidden;
+  }
+  .win.is-front { box-shadow: 0 0 0 1.5px var(--ink), 8px 10px 0 -1px rgb(37 37 34 / 0.14), var(--shadow-float); }
+  .win.is-opening { animation: win-open 260ms var(--ease-out); transform-origin: 0 0; }
+  @keyframes win-open { from { opacity: 0; scale: 0.94; } }
+  .win.is-dragging { cursor: grabbing; user-select: none; }
+  .win__bar { display: flex; align-items: center; gap: 0.6rem; height: 2.2rem; padding: 0 0.4rem 0 0.7rem; background: var(--olive); color: var(--paper); cursor: grab; touch-action: none; }
+  .win:not(.is-front) .win__bar { background: #8c917a; }
+  .win__dots { display: flex; gap: 0.3rem; }
+  .win__dots i { width: 0.55rem; height: 0.55rem; border-radius: 50%; background: var(--paper); opacity: 0.85; }
+  .win__title { flex: 1; font-size: 0.875rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .win__x { display: grid; place-items: center; width: 1.6rem; height: 1.6rem; border-radius: 4px; background: #e2897c; color: #3a1510; box-shadow: inset 0 0 0 1px rgb(0 0 0 / .25); transition: transform var(--d-press) var(--ease-out); }
+  .win__x:active { transform: scale(0.9); }
+  .win__body { padding: 1rem 1.1rem 1.2rem; }
+  .win__meta { font-family: var(--font-mono); font-size: 0.625rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); }
+  .win__items { margin-top: 0.7rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+  .win__item { display: grid; gap: 0.15rem; padding: 0.65rem 0.75rem; border-radius: 4px; background: var(--card); box-shadow: inset 0 0 0 1px var(--linen); }
+  .win__item-name { font-weight: 650; font-size: 0.9375rem; }
+  .win__item-note { font-size: 0.75rem; color: var(--ink-3); line-height: 1.35; }
+  .win--note { width: min(19rem, 80%); }
+  .win__body--text { background: #fffdf6; min-height: 9rem; }
+  .win__body--text .pixel { font-size: 1rem; line-height: 1.5; }
+  .win__body--text ul { margin-top: 0.4rem; }
+  @media (prefers-reduced-motion: no-preference) { .win__cursor { animation: caret 1.1s steps(1) infinite; } @keyframes caret { 50% { opacity: 0; } } }
+  .desk2__hint { position: absolute; left: 7.8rem; bottom: 0.7rem; font-size: 1.35rem; color: var(--ink-3); }
+  @media (pointer: fine) { .desk2__hint { display: none; } }
+
+  .desk2__task { display: flex; align-items: center; gap: 0.75rem; height: 2.6rem; padding: 0 0.6rem; background: var(--olive-deep); color: var(--paper); }
+  .desk2__start { display: inline-flex; align-items: center; gap: 0.4rem; height: 1.8rem; padding: 0 0.7rem; border-radius: 4px; background: rgb(255 255 255 / 0.12); font-size: 0.875rem; }
+  .desk2__open { display: flex; gap: 0.35rem; flex: 1; overflow: hidden; }
+  .desk2__open :global(.desk2__taskbtn) { height: 1.8rem; padding: 0 0.65rem; border-radius: 4px; background: rgb(0 0 0 / 0.18); color: var(--paper); font-size: 0.8125rem; white-space: nowrap; }
+  .desk2__clock { font-size: 0.875rem; padding-right: 0.3rem; }
+
+  /* lower */
+  .mind__lower { margin-top: clamp(3rem, 6vw, 5rem); display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 4.5rem); align-items: start; }
+  .mind__h3 { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2); font-weight: 400; }
+
+  .proc__paper { position: relative; margin-top: var(--s-4); aspect-ratio: 780 / 240; border-radius: 3px; box-shadow: var(--shadow-paper); }
+  .proc__svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .proc__path, .proc__loop { fill: none; stroke: var(--blue); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+  .proc__loop { stroke-dasharray: 6 6; opacity: 0.7; }
+  .proc__loop-head { fill: none; stroke: var(--blue); stroke-width: 2; stroke-linecap: round; opacity: 0.7; }
+  .proc__loop-label { font-family: var(--font-hand); font-size: 26px; fill: var(--blue); }
+  .proc__nodes li { position: absolute; left: var(--x); top: var(--y); translate: -50% -50%; }
+  .proc__node {
+    display: inline-flex; align-items: center; gap: 0.45rem; min-height: 2.6rem; padding: 0 0.85rem 0 0.4rem;
+    border-radius: var(--r-pill); background: var(--paper); box-shadow: inset 0 0 0 1.5px var(--ink), 0 4px 10px -6px rgb(40 30 15 / 0.6);
+    font-weight: 650; font-size: 0.9375rem; white-space: nowrap;
+    transition: transform var(--d-base) var(--ease-out), background-color var(--d-fast) ease, color var(--d-fast) ease;
+  }
+  .proc__n { display: grid; place-items: center; width: 1.8rem; height: 1.8rem; border-radius: 50%; background: var(--paper-2); font-family: var(--font-mono); font-size: 0.6875rem; font-weight: 500; }
+  .proc__node[aria-pressed="true"] { background: var(--ink); color: var(--paper); transform: scale(1.06) rotate(-2deg); }
+  .proc__node[aria-pressed="true"] .proc__n { background: var(--note); color: var(--ink); }
+  .proc__node:active { transform: scale(0.97); }
+  .proc__caption { margin-top: var(--s-4); min-height: 2.2rem; font-size: 1rem; color: var(--ink); }
+  .proc__caption :global(.hand) { font-size: 1.6rem; margin-right: 0.3rem; }
+
+  .exp__list { margin-top: var(--s-4); display: grid; gap: var(--s-4); }
+  .exp__card {
+    position: relative; padding: 1.1rem 1.25rem 1.2rem 1.25rem;
+    background: var(--card); box-shadow: var(--shadow-paper);
+    background-image: linear-gradient(to bottom, transparent 2.6rem, rgb(163 53 43 / 0.25) 2.6rem, rgb(163 53 43 / 0.25) calc(2.6rem + 1px), transparent calc(2.6rem + 1px)), repeating-linear-gradient(to bottom, transparent 0 1.4rem, rgb(49 93 134 / 0.1) 1.4rem calc(1.4rem + 1px));
+    transform: rotate(var(--r));
+    transition: transform var(--d-base) var(--ease-out);
+  }
+  @media (hover: hover) and (pointer: fine) { .exp__card:hover { transform: rotate(0deg) translateY(-3px); } }
+  .exp__title { font-size: 1.0625rem; font-weight: 700; }
+  .exp__note { margin-top: 0.65rem; font-size: 0.9375rem; color: var(--ink-2); }
+  .exp__stamp {
+    position: absolute; right: 1rem; top: 0.8rem;
+    padding: 0.15rem 0.45rem; border: 1.5px solid currentColor; border-radius: 3px;
+    font-family: var(--font-mono); font-size: 0.5625rem; letter-spacing: 0.12em; text-transform: uppercase;
+    transform: rotate(-6deg); color: var(--olive-deep);
+  }
+  .exp__stamp--shelved { color: var(--ink-3); }
+  .exp__stamp--idea { color: var(--blue); }
+
+  @media (max-width: 960px) {
+    .mind__head, .mind__lower { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    .desk2__screen { grid-template-columns: 1fr; min-height: 0; }
+    .desk2__icons { grid-template-columns: repeat(3, 1fr); padding: 1rem 0.5rem 0.5rem; }
+    .desk2__windows { min-height: 21rem; }
+    .win { left: 0.6rem !important; right: 0.6rem; top: 0.5rem !important; width: auto; }
+    .win__items { grid-template-columns: 1fr; }
+    .desk2__hint { display: none; }
+    .proc__paper { aspect-ratio: auto; height: auto; padding: 1rem; background-size: 22px 22px; }
+    .proc__svg { display: none; }
+    .proc__nodes { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .proc__nodes li { position: static; translate: none; }
+  }
+</style>

@@ -4,16 +4,16 @@ import Enter from '@/components/chapters/Enter.astro';
 import About from '@/components/chapters/About.astro';
 import Story from '@/components/chapters/Story.astro';
 import Projects from '@/components/chapters/Projects.astro';
-import { chapters } from '@/data/site';
+import Mind from '@/components/chapters/Mind.astro';
+import Life from '@/components/chapters/Life.astro';
+import Next from '@/components/chapters/Next.astro';
 ---
 <Archive>
   <Enter />
   <About />
   <Story />
   <Projects />
-  {chapters.slice(4).map((c) => (
-    <section id={c.id} data-chapter data-num={c.num} style="min-height:80vh;padding:8rem 2rem">
-      <h2 class="display" style="font-size:var(--t-h2)">{c.title}</h2>
-    </section>
-  ))}
+  <Mind />
+  <Life />
+  <Next />
 </Archive>
