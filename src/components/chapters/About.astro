@@ -83,7 +83,6 @@ const tones = ['linen', 'olive', 'blue', 'kraft'];
       <div class="hats__stack">
         {profile.hats.map((h, i) => (
           <div class={`hats__panel hats__panel--${tones[i % 4]}`} role="tabpanel" id={`hat-panel-${i}`} aria-labelledby={`hat-tab-${i}`} hidden={i !== 0}>
-            <p class="hats__num meta">{String(i + 1).padStart(2, '0')} / {String(profile.hats.length).padStart(2, '0')}</p>
             <p class="hats__note">{h.note}</p>
             <p class="hats__hint hand">— DEMO, rewrite in your words</p>
           </div>
@@ -203,7 +202,7 @@ const tones = ['linen', 'olive', 'blue', 'kraft'];
     box-shadow: var(--shadow-lift), inset 0 0 0 1px rgb(216 209 192 / 0.8);
   }
   .pass__slot { position: absolute; top: 0.6rem; left: 50%; translate: -50% 0; width: 3.2rem; height: 0.55rem; border-radius: 99px; background: var(--paper-3); box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.25); }
-  .pass__head { display: flex; justify-content: space-between; margin-top: 0.5rem; font-family: var(--font-mono); font-size: 0.625rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--olive-deep); }
+  .pass__head { display: flex; justify-content: space-between; margin-top: 0.5rem; font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--olive-deep); }
   .pass__id { margin-top: var(--s-4); display: grid; grid-template-columns: 4.75rem 1fr; gap: var(--s-4); align-items: center; }
   .pass__photo :global(.ph__label), .pass__photo :global(.ph__hint) { display: none; }
   .pass__name { font-size: 2.1rem; }
@@ -252,7 +251,7 @@ const tones = ['linen', 'olive', 'blue', 'kraft'];
   .hats__panel--kraft { --bg: #e2cda4; }
   @keyframes hat-in { from { opacity: 0.4; transform: translateY(6px); } }
   .hats__num { color: var(--ink-2); }
-  .hats__note { margin-top: var(--s-3); font-family: var(--font-display); font-weight: 800; font-size: clamp(1.75rem, 1.2rem + 1.6vw, 2.6rem); line-height: 1; text-transform: uppercase; max-width: 18ch; }
+  .hats__note { margin-top: 0; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.75rem, 1.2rem + 1.6vw, 2.6rem); line-height: 1; text-transform: uppercase; max-width: 18ch; }
   .hats__hint { margin-top: var(--s-4); font-size: 1.3rem; color: var(--ink-2); }
 
   /* drawer */
@@ -263,7 +262,7 @@ const tones = ['linen', 'olive', 'blue', 'kraft'];
   .story-drawer__sign { margin-top: var(--s-5); font-size: 2rem; }
 
   @media (max-width: 960px) {
-    .about__grid { grid-template-columns: 1fr; grid-template-areas: "copy" "collage" "pass" "hats"; }
+    .about__grid { grid-template-columns: minmax(0, 1fr); grid-template-areas: "copy" "collage" "pass" "hats"; }
     .about__collage { width: min(92%, 24rem); }
     .about__pass-wrap { margin-top: 0; }
     .hats__tabs { overflow-x: auto; scrollbar-width: none; }

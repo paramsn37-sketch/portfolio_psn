@@ -28,19 +28,23 @@ const { src, alt, ratio = '4 / 3', label, tone = 'paper', class: cls, eager = fa
     gap: 0.4rem;
     padding: 0.75rem;
     text-align: center;
-    color: var(--ink-3);
+    color: var(--ink-2);
     background-color: var(--paper-2);
-    background-image:
-      linear-gradient(to right, rgb(49 93 134 / 0.06) 1px, transparent 1px),
-      linear-gradient(to bottom, rgb(49 93 134 / 0.06) 1px, transparent 1px);
-    background-size: 18px 18px;
     overflow: hidden;
     container-type: inline-size;
   }
+  /* an empty photo slot: dashed frame inset from the edge, like the corners of an album page */
+  .ph::before {
+    content: ""; position: absolute; inset: clamp(4px, 4%, 12px);
+    border: 1px dashed var(--linen-2); border-radius: 1px;
+    pointer-events: none;
+  }
   .ph--linen { background-color: var(--linen); color: var(--ink-2); }
-  .ph--dark { background-color: #33302a; color: #b9b2a2; background-image: linear-gradient(to right, rgb(255 255 255 / 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgb(255 255 255 / 0.05) 1px, transparent 1px); }
+  .ph--linen::before { border-color: #b9ae96; }
+  .ph--dark { background-color: #33302a; color: #b9b2a2; }
+  .ph--dark::before { border-color: rgb(255 255 255 / 0.16); }
   .ph__label {
-    font-family: var(--font-mono); font-size: 0.625rem; letter-spacing: 0.04em; text-transform: uppercase;
+    font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.04em; text-transform: uppercase;
     max-width: 22ch; line-height: 1.45;
   }
   .ph__hint { font-family: var(--font-hand); font-size: 1.15rem; line-height: 1; color: var(--blue); opacity: 0.85; }

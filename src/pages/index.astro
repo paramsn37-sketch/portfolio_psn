@@ -31,14 +31,12 @@ import grain from '@/assets/textures/grain.webp';
     <div class="desk__scene" data-scene>
       <div class="desk__wood" aria-hidden="true"></div>
       <div class="desk__stage" data-stage>
-        <DeskObjects />
 
         <article class="sheet" data-sheet aria-labelledby="desk-title">
           <span class="tape sheet__tape sheet__tape--l" aria-hidden="true"></span>
           <span class="tape sheet__tape sheet__tape--r" aria-hidden="true"></span>
-          <RouteMap />
           <div class="sheet__content" data-sheet-content>
-            <p class="sheet__meta">Est. {profile.est} · {profile.location}<span class="sheet__coords"> · {profile.coords}</span></p>
+            <p class="sheet__meta">{profile.role} · {profile.location}</p>
             <p class="sheet__hi">{profile.greeting}</p>
             <h1 id="desk-title" class="display sheet__name">{profile.name}</h1>
             <p class="sheet__line">{profile.tagline}</p>
@@ -54,7 +52,9 @@ import grain from '@/assets/textures/grain.webp';
               <a class="sheet__hello" href={url('archive/#contact')} data-travel="contact">Say hello <Icon name="arrow-up-right" size={14} /></a>
             </div>
           </div>
+          <RouteMap />
         </article>
+        <DeskObjects />
       </div>
     </div>
 
@@ -213,7 +213,7 @@ import grain from '@/assets/textures/grain.webp';
     .sheet__content { inset: 0; padding: 2.5rem 1.25rem 2rem; }
     .sheet__name { font-size: clamp(3.6rem, 19vw, 5rem); }
     .sheet__hi { font-size: 1.9rem; }
-    .sheet__meta { font-size: 0.5625rem; }
+    .sheet__meta { font-size: 0.625rem; }
     .sheet__coords { display: none; }
     .sheet__actions { flex-direction: column; align-items: stretch; width: 100%; max-width: 18rem; }
     .sheet__actions .btn { justify-content: center; }

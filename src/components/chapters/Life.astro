@@ -11,8 +11,7 @@ const featured = journal[0];
   <div class="life__top">
     <div class="banner" data-reveal>
       <div class="banner__paper">
-        <p class="banner__num">05 / Life &amp; interests</p>
-        <h2 class="banner__title display" id="life-title">Life &amp;<br />interests</h2>
+        <h2 class="banner__title display" id="life-title"><span class="banner__num">05</span><span>Life &amp;<br />interests</span></h2>
         <p class="banner__text">A collection of the things that keep me curious, grounded and inspired — beyond the screen.</p>
         <a class="btn" href="#life-topics"><Icon name="compass" size={16} /> Explore my world <Icon name="arrow-right" size={16} data-nudge /></a>
         <p class="banner__aside hand" aria-hidden="true">Different interests,<br />same curiosity.</p>
@@ -50,7 +49,7 @@ const featured = journal[0];
             <div class="fjournal__img"><Placeholder alt={j.image.alt} ratio="16 / 10" label={j.image.alt} /></div>
             <p class="fjournal__title">{j.title}</p>
             <p class="fjournal__meta">{j.tags[0]} · {j.date}</p>
-            <button class="link fjournal__more" type="button" data-open="journal" data-hash={`journal/${j.slug}`} data-entry={j.slug}>Read more <Icon name="arrow-right" size={14} /></button>
+            <button class="link fjournal__more" type="button" data-open="journal" data-hash={`journal/${j.slug}`} data-entry={j.slug}>Read the entry <Icon name="arrow-right" size={14} /></button>
           </article>
         ))}
       </div>
@@ -196,7 +195,7 @@ const featured = journal[0];
             <div class="jpage__photos" aria-hidden="true">
               <figure class="polaroid jpage__p1"><PaperClip class="jpage__clip" size={18} /><Placeholder alt={j.image.alt} ratio="4 / 3" label="Photo" /></figure>
               <figure class="polaroid jpage__p2"><Placeholder alt="Second photo" ratio="1 / 1" label="Photo" /><figcaption>{j.place.toLowerCase()}</figcaption></figure>
-              <ul class="sticky jpage__tags" role="list">{j.tags.map((t) => <li>☑ {t}</li>)}</ul>
+              <ul class="sticky jpage__tags" role="list">{j.tags.map((t) => <li><Icon name="square-check" size={16} stroke={1.8} /> {t}</li>)}</ul>
               <svg class="jpage__trees" viewBox="0 0 140 70"><path d="M20 66 l12 -30 l12 30 z M32 66 v4 M60 66 l16 -44 l16 44 z M76 66 v4 M104 66 l10 -24 l10 24 z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" /><path d="M0 70 h140" stroke="currentColor" stroke-width="1.2" /></svg>
             </div>
           </div>
@@ -379,8 +378,8 @@ const featured = journal[0];
     mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 400' preserveAspectRatio='none'%3E%3Cpath d='M0 0H14L18 12L13 26L19 40L12 58L17 74L11 90L18 108L13 122L19 140L12 156L17 174L13 190L18 206L11 224L17 240L13 256L19 272L12 290L17 306L12 322L18 338L13 354L17 370L12 386L16 400H0Z'/%3E%3C/svg%3E") right / 20px 100% no-repeat, linear-gradient(#000, #000) left / calc(100% - 19px) 100% no-repeat;
   }
   .banner__paper { position: relative; padding: clamp(1.75rem, 3.5vw, 3rem); }
-  .banner__num { font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--olive-deep); }
-  .banner__title { margin-top: var(--s-4); font-size: clamp(3.25rem, 0.9rem + 4.6vw, 5.25rem); }
+  .banner__num { font-family: var(--font-mono); font-weight: 500; font-size: clamp(0.75rem, 0.6rem + 0.5vw, 1rem); letter-spacing: 0.04em; line-height: 1; padding-top: 0.5em; color: var(--olive-deep); }
+  .banner__title { display: flex; align-items: flex-start; gap: 0.18em; font-size: clamp(3.25rem, 0.9rem + 4.6vw, 5.25rem); }
   .banner__text { margin-top: var(--s-5); max-width: 34ch; color: var(--ink-2); }
   .banner .btn { margin-top: var(--s-6); }
   .banner__aside { position: absolute; right: 1.25rem; bottom: 1.75rem; font-size: 1.5rem; line-height: 0.95; transform: rotate(-5deg); color: var(--ink-2); }
@@ -446,7 +445,7 @@ const featured = journal[0];
   .moments__strip li { transform: rotate(var(--r)); }
   .moment { position: relative; display: block; width: 100%; padding-bottom: 3.2rem; text-align: left; transition: transform var(--d-base) var(--ease-out), box-shadow var(--d-base) var(--ease-out); }
   .moment__cap { position: absolute; left: 0.7rem; right: 0.6rem; bottom: 1.35rem; font-family: var(--font-hand); font-size: 1.2rem; line-height: 1; color: var(--ink); }
-  .moment__date { position: absolute; left: 0.7rem; bottom: 0.45rem; font-family: var(--font-mono); font-size: 0.5625rem; color: var(--ink-3); }
+  .moment__date { position: absolute; left: 0.7rem; bottom: 0.45rem; font-family: var(--font-mono); font-size: 0.625rem; color: var(--ink-3); }
   .moment:active { transform: scale(0.97); }
   @media (hover: hover) and (pointer: fine) { .moment:hover { transform: translateY(-6px) rotate(1deg) scale(1.03); box-shadow: var(--shadow-float); } }
 
@@ -479,7 +478,7 @@ const featured = journal[0];
   .cassette { margin-top: var(--s-6); padding: 1.1rem; border-radius: 12px; background: #2f2c27; color: var(--paper); box-shadow: var(--shadow-lift); }
   .cassette__body { border-radius: 8px; background: #3b3732; padding: 0.9rem; }
   .cassette__label { display: grid; gap: 0.2rem; padding: 0.6rem 0.8rem; border-radius: 4px; background: #e9e1cd; color: var(--ink); }
-  .cassette__side { font-family: var(--font-mono); font-size: 0.5625rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--olive-deep); }
+  .cassette__side { font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--olive-deep); }
   .cassette__track { font-size: 1.6rem; color: var(--blue); }
   .cassette__window { margin: 0.8rem auto 0; width: 70%; height: 3.4rem; border-radius: 99px; background: #1d1b18; display: flex; align-items: center; justify-content: space-between; padding: 0 0.6rem; position: relative; }
   .cassette__tape { position: absolute; left: 30%; right: 30%; top: 50%; height: 1.6rem; translate: 0 -50%; background: #5a4630; border-radius: 4px; }
@@ -546,6 +545,7 @@ const featured = journal[0];
   .jpage__p2 { position: absolute; left: 0; top: 52%; width: 52%; transform: rotate(-5deg); z-index: 2; }
   .jpage__p2 figcaption { font-size: 1.2rem; }
   .jpage__tags { position: absolute; right: 0.2rem; bottom: 1.5rem; z-index: 3; width: 9rem; transform: rotate(4deg); font-size: 1.35rem; display: grid; gap: 0.1rem; }
+  .jpage__tags li { display: flex; align-items: center; gap: 0.35rem; }
   .jpage__trees { position: absolute; right: 9.5rem; bottom: 0; width: 7rem; color: var(--ink-3); }
   .jpage__foot { margin-top: var(--s-5); padding-top: var(--s-3); border-top: 1px dashed var(--linen-2); display: flex; justify-content: space-between; align-items: center; }
   .jpage__nav { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.5rem; padding: 0 0.8rem; border-radius: var(--r-pill); font-family: var(--font-mono); font-size: 0.6875rem; box-shadow: inset 0 0 0 1px var(--linen-2); background: var(--paper); transition: background-color var(--d-fast) ease, transform var(--d-press) var(--ease-out); }
@@ -564,18 +564,18 @@ const featured = journal[0];
   .lightbox__x:active { transform: scale(0.92); }
 
   @media (max-width: 1180px) {
-    .life__top { grid-template-columns: 1fr; }
-    .fjournal { display: grid; grid-template-columns: 1fr; }
+    .life__top { grid-template-columns: minmax(0, 1fr); }
+    .fjournal { display: grid; grid-template-columns: minmax(0, 1fr); }
     .topics__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
   @media (max-width: 860px) {
-    .banner { grid-template-columns: 1fr; -webkit-mask: none; mask: none; }
+    .banner { grid-template-columns: minmax(0, 1fr); -webkit-mask: none; mask: none; }
     .banner__collage { min-height: 20rem; margin: 0 1rem 1.5rem; }
     .banner__aside { display: none; }
-    .life__bottom { grid-template-columns: 1fr; }
+    .life__bottom { grid-template-columns: minmax(0, 1fr); }
     .jpage { padding: 1.25rem 1.1rem 1rem 2.6rem; }
     .jpage__rings { left: 0.45rem; width: 1.2rem; }
-    .jpage__grid { grid-template-columns: 1fr; }
+    .jpage__grid { grid-template-columns: minmax(0, 1fr); }
     .jpage__photos { min-height: 17rem; }
   }
   @media (max-width: 560px) {

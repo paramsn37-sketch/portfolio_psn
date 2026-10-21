@@ -71,12 +71,15 @@ function init() {
     });
   });
 
-  // Deep link: #journal/slug etc.
-  const h = decodeURIComponent(location.hash.slice(1));
-  if (h) {
+  // Deep link: #journal/slug etc. Wait until every page script has registered its listeners.
+  const deepLink = () => {
+    const h = decodeURIComponent(location.hash.slice(1));
+    if (!h) return;
     const opener = document.querySelector<HTMLElement>(`[data-open][data-hash="${CSS.escape(h)}"]`);
-    if (opener) requestAnimationFrame(() => opener.click());
-  }
+    if (opener) opener.click();
+  };
+  if (document.readyState === 'complete') setTimeout(deepLink, 0);
+  else addEventListener('load', () => setTimeout(deepLink, 0), { once: true });
 }
 
 init();

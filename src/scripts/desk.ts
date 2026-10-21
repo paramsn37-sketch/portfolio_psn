@@ -53,7 +53,7 @@ function travel(href: string, from: Element) {
     scene.animate([{ transform: 'none' }, { transform: zoomTo(x, y, k) }], { duration: D, easing: EASE, fill: 'forwards' }),
     content.animate([{ opacity: 1, filter: 'blur(0px)' }, { opacity: 0, filter: 'blur(4px)' }], { duration: 320, easing: 'ease-out', fill: 'forwards' }),
     light.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 500, delay: 380, easing: 'ease-out', fill: 'forwards' }),
-    veil.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 320, delay: D - 320, easing: 'ease-in', fill: 'forwards' }),
+    veil.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 320, delay: D - 320, easing: 'cubic-bezier(0.77, 0, 0.175, 1)', fill: 'forwards' }),
     ...chrome.map((el) => el.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 220, easing: 'ease-out', fill: 'forwards' })),
   ];
   running[0].finished.then(() => location.assign(href)).catch(() => {});

@@ -92,11 +92,17 @@ const f = featured.data;
   const status = document.querySelector<HTMLElement>('[data-filter-status]');
   const items = () => [...grid!.querySelectorAll<HTMLElement>('[data-project]')];
   let current = 'all';
+  let busy = false;
 
   const vt = (fn: () => void) => {
-    const doc = document as Document & { startViewTransition?: (cb: () => void) => unknown };
-    if (doc.startViewTransition && !matchMedia('(prefers-reduced-motion: reduce)').matches) doc.startViewTransition(fn);
-    else fn();
+    type VT = { finished: Promise<void>; ready: Promise<void>; updateCallbackDone: Promise<void> };
+    const doc = document as Document & { startViewTransition?: (cb: () => void) => VT };
+    if (!doc.startViewTransition || matchMedia('(prefers-reduced-motion: reduce)').matches || busy) return fn();
+    busy = true;
+    const t = doc.startViewTransition(fn);
+    t.finished.catch(() => {}).finally(() => (busy = false));
+    // a quick second click skips the first transition; that's expected, not an error
+    [t.finished, t.ready, t.updateCallbackDone].forEach((pr) => pr.catch(() => {}));
   };
 
   function apply() {
@@ -181,7 +187,7 @@ const f = featured.data;
   .feat__link:focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
   .feat__media { position: relative; grid-column: 1 / span 2; grid-row: 1; width: 72%; overflow: hidden; border-radius: 3px; box-shadow: var(--shadow-lift); }
   .feat__media :global(.ph) { transition: transform 700ms var(--ease-out); }
-  .feat__label { position: absolute; left: 0.9rem; top: 0.9rem; padding: 0.3rem 0.6rem; background: rgb(243 239 227 / 0.92); font-family: var(--font-mono); font-size: 0.625rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink); transform: rotate(-2deg); }
+  .feat__label { position: absolute; left: 0.9rem; top: 0.9rem; padding: 0.3rem 0.6rem; background: rgb(243 239 227 / 0.92); font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink); transform: rotate(-2deg); }
   .feat__card {
     position: relative; z-index: 2; grid-column: 2; grid-row: 1; margin-left: -10%;
     padding: 2rem 1.75rem 1.6rem; background: var(--card); box-shadow: var(--shadow-lift);
@@ -213,15 +219,17 @@ const f = featured.data;
     .projects__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .feat { grid-column: 1 / -1; grid-row: auto; }
   }
-  @media (max-width: 860px) {
-    .projects__head { grid-template-columns: 1fr; grid-template-areas: "title" "sub" "intro"; }
+  @media (max-width: 640px) {
+    .projects__head { grid-template-columns: minmax(0, 1fr); grid-template-areas: "title" "sub" "intro"; }
     .projects__intro { margin-top: var(--s-5); }
+  }
+  @media (max-width: 860px) {
     .projects__note { position: static; margin-top: var(--s-3); transform: rotate(-3deg); }
     .projects__aside { display: none; }
   }
   @media (max-width: 620px) {
-    .projects__grid { grid-template-columns: 1fr; }
-    .feat { grid-template-columns: 1fr; }
+    .projects__grid { grid-template-columns: minmax(0, 1fr); }
+    .feat { grid-template-columns: minmax(0, 1fr); }
     .feat__media { width: 100%; grid-column: 1; }
     .feat__card { grid-column: 1; grid-row: 2; margin: -2.5rem 0.75rem 0; }
     .feat__annot { display: none; }

@@ -1,0 +1,31 @@
+---
+import Base from '@/layouts/Base.astro';
+import Icon from '@/components/Icon.astro';
+import { url } from '@/lib/url';
+---
+<Base title="Misfiled — The Personal Archive" bodyClass="paper-world">
+  <main class="lost">
+    <div class="lost__card sheet">
+      <span class="tape lost__tape" aria-hidden="true"></span>
+      <p class="lost__code">Error 404 · drawer empty</p>
+      <h1 class="display lost__title">This page<br />was misfiled.</h1>
+      <p class="lost__text">Whatever you were looking for isn't in this drawer. It may have moved, or the link has a typo.</p>
+      <div class="lost__actions">
+        <a class="btn" href={url('archive/')}><Icon name="folder-open" size={16} /> Open the archive</a>
+        <a class="btn btn--ghost" href={url('')}>Back to the desk</a>
+      </div>
+      <p class="lost__note hand hand--blue" aria-hidden="true">happens to the best archives</p>
+    </div>
+  </main>
+</Base>
+
+<style>
+  .lost { min-height: 100dvh; display: grid; place-items: center; padding: var(--gutter); }
+  .lost__card { position: relative; width: min(100%, 34rem); padding: clamp(2rem, 6vw, 3.5rem); transform: rotate(-1deg); box-shadow: var(--shadow-lift); }
+  .lost__tape { top: -0.8rem; left: 50%; translate: -50% 0; rotate: 3deg; }
+  .lost__code { font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--red-string); }
+  .lost__title { margin-top: var(--s-4); font-size: clamp(3rem, 2rem + 4vw, 4.75rem); }
+  .lost__text { margin-top: var(--s-4); color: var(--ink-2); max-width: 36ch; }
+  .lost__actions { margin-top: var(--s-6); display: flex; flex-wrap: wrap; gap: var(--s-3); }
+  .lost__note { position: absolute; right: 1.5rem; bottom: -2.4rem; font-size: 1.6rem; transform: rotate(-4deg); }
+</style>

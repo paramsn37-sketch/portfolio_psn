@@ -290,7 +290,7 @@ const nodes = process.map((p, i) => ({ ...p, x: 70 + i * 165, y: i % 2 ? 150 : 8
   .win__x { display: grid; place-items: center; width: 1.6rem; height: 1.6rem; border-radius: 4px; background: #e2897c; color: #3a1510; box-shadow: inset 0 0 0 1px rgb(0 0 0 / .25); transition: transform var(--d-press) var(--ease-out); }
   .win__x:active { transform: scale(0.9); }
   .win__body { padding: 1rem 1.1rem 1.2rem; }
-  .win__meta { font-family: var(--font-mono); font-size: 0.625rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); }
+  .win__meta { font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); }
   .win__items { margin-top: 0.7rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
   .win__item { display: grid; gap: 0.15rem; padding: 0.65rem 0.75rem; border-radius: 4px; background: var(--card); box-shadow: inset 0 0 0 1px var(--linen); }
   .win__item-name { font-weight: 650; font-size: 0.9375rem; }
@@ -347,21 +347,24 @@ const nodes = process.map((p, i) => ({ ...p, x: 70 + i * 165, y: i % 2 ? 150 : 8
   .exp__stamp {
     position: absolute; right: 1rem; top: 0.8rem;
     padding: 0.15rem 0.45rem; border: 1.5px solid currentColor; border-radius: 3px;
-    font-family: var(--font-mono); font-size: 0.5625rem; letter-spacing: 0.12em; text-transform: uppercase;
+    font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.12em; text-transform: uppercase;
     transform: rotate(-6deg); color: var(--olive-deep);
   }
   .exp__stamp--shelved { color: var(--ink-3); }
   .exp__stamp--idea { color: var(--blue); }
 
   @media (max-width: 960px) {
-    .mind__head, .mind__lower { grid-template-columns: 1fr; }
+    .mind__lower { grid-template-columns: minmax(0, 1fr); }
   }
   @media (max-width: 640px) {
-    .desk2__screen { grid-template-columns: 1fr; min-height: 0; }
+    .mind__head { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 640px) {
+    .desk2__screen { grid-template-columns: minmax(0, 1fr); min-height: 0; }
     .desk2__icons { grid-template-columns: repeat(3, 1fr); padding: 1rem 0.5rem 0.5rem; }
     .desk2__windows { min-height: 21rem; }
     .win { left: 0.6rem !important; right: 0.6rem; top: 0.5rem !important; width: auto; }
-    .win__items { grid-template-columns: 1fr; }
+    .win__items { grid-template-columns: minmax(0, 1fr); }
     .desk2__hint { display: none; }
     .proc__paper { aspect-ratio: auto; height: auto; padding: 1rem; background-size: 22px 22px; }
     .proc__svg { display: none; }

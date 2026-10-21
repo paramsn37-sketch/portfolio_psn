@@ -38,21 +38,21 @@ export const profile = {
     { label: 'Leader', note: 'Learning to lead people, not just code.' }, // DEMO
   ],
   longStory: [
-    'DEMO — This drawer holds the longer version of your story: where you grew up, what first pulled you toward technology, and the moment you realised you wanted to build things for a living.',
-    'DEMO — Use a second paragraph for how you think: the way you approach a new problem, the kind of teams you do your best work in, and what you are unwilling to compromise on.',
-    'DEMO — Close with what you are chasing now. Keep it honest and specific; one concrete sentence beats three adjectives.',
+    'DEMO: This drawer holds the longer version of your story: where you grew up, what first pulled you toward technology, and the moment you realised you wanted to build things for a living.',
+    'DEMO: Use a second paragraph for how you think: the way you approach a new problem, the kind of teams you do your best work in, and what you are unwilling to compromise on.',
+    'DEMO: Close with what you are chasing now. Keep it honest and specific; one concrete sentence beats three adjectives.',
   ],
   quote: 'Build a life you’re excited to wake up to.', // DEMO (from mockup)
 };
 
 export const links = {
-  email: 'hello@example.com', // DEMO — replace with your real address
+  email: 'hello@example.com', // DEMO: replace with your real address
   github: 'https://github.com/paramsn37-sketch',
   linkedin: '#', // DEMO
   x: '#', // DEMO
   instagram: '#', // DEMO
   spotify: '#', // DEMO
-  resume: '#', // DEMO — link a PDF in /public when ready
+  resume: '#', // DEMO: link a PDF in /public when ready
 };
 
 export const chapters = [
@@ -72,38 +72,38 @@ export const timeline = [
   {
     year: '2007', title: 'Early days', kind: 'Beginnings',
     body: 'Started my journey — curious and full of questions.', // DEMO (mockup)
-    lesson: 'DEMO — the habit from childhood that still shows up in how you work.',
+    lesson: 'DEMO: the habit from childhood that still shows up in how you work.',
     place: 'Bengaluru',
     image: { alt: 'Childhood photo', ratio: '1 / 1' } as Img,
   },
   {
     year: '2018', title: 'High school', kind: 'Education',
     body: 'Discovered my interest in technology and problem solving.', // DEMO (mockup)
-    lesson: 'DEMO — the first thing you built, and what broke.',
+    lesson: 'DEMO: the first thing you built, and what broke.',
     image: { alt: 'High school photo', ratio: '1 / 1' } as Img,
   },
   {
     year: '2023', title: 'Joined SJBIT', kind: 'Education', turning: true,
     body: 'Started a BE in AI & ML and began building small projects.', // DEMO (mockup)
-    lesson: 'DEMO — why AI/ML, and what you expected versus what you found.',
+    lesson: 'DEMO: why AI/ML, and what you expected versus what you found.',
     image: { alt: 'College campus', ratio: '1 / 1' } as Img,
   },
   {
     year: '2024', title: 'Started building projects', kind: 'Experiments',
     body: 'Moved from tutorials to shipping things other people could use.', // DEMO
-    lesson: 'DEMO — the project that taught you the most by failing.',
+    lesson: 'DEMO: the project that taught you the most by failing.',
     image: { alt: 'Early project screenshot', ratio: '1 / 1' } as Img,
   },
   {
     year: '2025', title: 'First steps in the industry', kind: 'Work', turning: true,
     body: 'Internships and exploration — hands-on experience with real-world problems.', // DEMO (mockup)
-    lesson: 'DEMO — what changed when your code met real users and real teams.',
+    lesson: 'DEMO: what changed when your code met real users and real teams.',
     image: { alt: 'Office or team photo', ratio: '1 / 1' } as Img,
   },
   {
     year: '2026', title: "What's next?", kind: 'Now',
     body: 'Building, learning and exploring new opportunities.', // DEMO (mockup)
-    lesson: 'DEMO — the question you are trying to answer this year.',
+    lesson: 'DEMO: the question you are trying to answer this year.',
     image: { alt: 'Mountain view', ratio: '1 / 1' } as Img,
   },
 ];
@@ -113,7 +113,7 @@ export const toolbox = [
   {
     id: 'languages', label: 'Languages', icon: 'folder',
     items: [
-      { name: 'Python', note: 'DEMO — what you reach for it for.' },
+      { name: 'Python', note: 'DEMO: what you reach for it for.' },
       { name: 'TypeScript', note: 'DEMO' },
       { name: 'C#', note: 'DEMO' },
       { name: 'SQL', note: 'DEMO' },
@@ -166,24 +166,24 @@ export const process = [
 ];
 
 export const experiments = [
-  { title: 'Experiment one', status: 'Running', note: 'DEMO — a one-line hypothesis you are testing.' },
-  { title: 'Experiment two', status: 'Shelved', note: 'DEMO — something you tried and parked, and why.' },
-  { title: 'Experiment three', status: 'Idea', note: 'DEMO — a question you want to answer next.' },
+  { title: 'Experiment one', status: 'Running', note: 'DEMO: a one-line hypothesis you are testing.' },
+  { title: 'Experiment two', status: 'Shelved', note: 'DEMO: something you tried and parked, and why.' },
+  { title: 'Experiment three', status: 'Idea', note: 'DEMO: a question you want to answer next.' },
 ];
 
-export const learning = ['DEMO — topic one', 'DEMO — topic two', 'DEMO — topic three'];
+export const learning = ['DEMO: topic one', 'DEMO: topic two', 'DEMO: topic three'];
 
 /* ---------- 05 · Life ---------- */
 export const vibes = ['Read', 'Build', 'Explore', 'Create', 'Be present']; // from mockup
 
 export const topics = [
-  { id: 'travel', label: 'Travel', icon: 'mountain', blurb: 'Mountains, cities, roads & new perspectives.', items: ['DEMO — a trip', 'DEMO — a road', 'DEMO — a place you want to go'] },
-  { id: 'music', label: 'Music', icon: 'music', blurb: 'Sounds, playlists, concerts & late nights.', items: ['DEMO — an album on repeat', 'DEMO — a gig', 'DEMO — a playlist'] },
-  { id: 'photography', label: 'Photography', icon: 'camera', blurb: 'Moments, people, places & everyday beauty.', items: ['DEMO — a favourite shot', 'DEMO — what you shoot on', 'DEMO — a series'] },
-  { id: 'books', label: 'Books', icon: 'book', blurb: 'Stories, ideas, thoughts & recommendations.', items: ['DEMO — reading now', 'DEMO — re-read every year', 'DEMO — recommend to everyone'] },
-  { id: 'food', label: 'Food', icon: 'utensils', blurb: 'Local flavours, new tastes & guilty pleasures.', items: ['DEMO — a place', 'DEMO — a dish', 'DEMO — a recipe'] },
+  { id: 'travel', label: 'Travel', icon: 'mountain', blurb: 'Mountains, cities, roads & new perspectives.', items: ['DEMO: a trip', 'DEMO: a road', 'DEMO: a place you want to go'] },
+  { id: 'music', label: 'Music', icon: 'music', blurb: 'Sounds, playlists, concerts & late nights.', items: ['DEMO: an album on repeat', 'DEMO: a gig', 'DEMO: a playlist'] },
+  { id: 'photography', label: 'Photography', icon: 'camera', blurb: 'Moments, people, places & everyday beauty.', items: ['DEMO: a favourite shot', 'DEMO: what you shoot on', 'DEMO: a series'] },
+  { id: 'books', label: 'Books', icon: 'book', blurb: 'Stories, ideas, thoughts & recommendations.', items: ['DEMO: reading now', 'DEMO: re-read every year', 'DEMO: recommend to everyone'] },
+  { id: 'food', label: 'Food', icon: 'utensils', blurb: 'Local flavours, new tastes & guilty pleasures.', items: ['DEMO: a place', 'DEMO: a dish', 'DEMO: a recipe'] },
   { id: 'hobbies', label: 'Hobbies', icon: 'gamepad-2', blurb: 'Build, create, tinker, repeat.', items: ['DEMO', 'DEMO', 'DEMO'] },
-  { id: 'communities', label: 'Communities', icon: 'users', blurb: 'People, groups, shared passions.', items: ['DEMO — a community', 'DEMO — a role you held', 'DEMO'] },
+  { id: 'communities', label: 'Communities', icon: 'users', blurb: 'People, groups, shared passions.', items: ['DEMO: a community', 'DEMO: a role you held', 'DEMO'] },
   { id: 'experiments', label: 'Side quests', icon: 'flask-conical', blurb: 'Side projects, learning & random ideas.', items: ['DEMO', 'DEMO', 'DEMO'] },
 ]; // topic list from your mockup — keep only the ones that are true for you
 
@@ -196,29 +196,29 @@ export const moments = [
 export const journal = [
   {
     slug: 'mountains-reset', date: '12 Aug 2026', title: 'The mountains always have a way of resetting you.', place: 'Himachal', tags: ['Travel', 'Reflections'],
-    highlights: ['DEMO — highlight one', 'DEMO — highlight two', 'DEMO — highlight three'],
+    highlights: ['DEMO: highlight one', 'DEMO: highlight two', 'DEMO: highlight three'],
     body: [
-      'DEMO — The first paragraph of a journal entry. Write the way you talk: where you were, who you were with, what the air felt like.',
-      'DEMO — The second paragraph is the turn: the small moment that made the trip worth writing about.',
+      'DEMO: The first paragraph of a journal entry. Write the way you talk: where you were, who you were with, what the air felt like.',
+      'DEMO: The second paragraph is the turn: the small moment that made the trip worth writing about.',
     ],
     image: { alt: 'Mountain valley', ratio: '4 / 3' } as Img,
   },
   {
     slug: 'good-music', date: '03 Aug 2026', title: 'A night of good music and great company.', place: 'Bengaluru', tags: ['Music', 'Friends'],
     highlights: ['DEMO', 'DEMO'],
-    body: ['DEMO — journal entry body.', 'DEMO — a second paragraph.'],
+    body: ['DEMO: journal entry body.', 'DEMO: a second paragraph.'],
     image: { alt: 'Live music', ratio: '4 / 3' } as Img,
   },
   {
     slug: 'small-steps', date: '21 Jul 2026', title: 'Small steps, big dreams.', place: 'Home', tags: ['Life', 'Growth'],
     highlights: ['DEMO', 'DEMO'],
-    body: ['DEMO — journal entry body.', 'DEMO — a second paragraph.'],
+    body: ['DEMO: journal entry body.', 'DEMO: a second paragraph.'],
     image: { alt: 'Open notebook', ratio: '4 / 3' } as Img,
   },
   {
     slug: 'new-recipe', date: '10 Jul 2026', title: 'A new recipe, same happiness.', place: 'Kitchen', tags: ['Food', 'Experiments'],
     highlights: ['DEMO', 'DEMO'],
-    body: ['DEMO — journal entry body.', 'DEMO — a second paragraph.'],
+    body: ['DEMO: journal entry body.', 'DEMO: a second paragraph.'],
     image: { alt: 'A plate of food', ratio: '4 / 3' } as Img,
   },
 ]; // titles from your mockup — DEMO
@@ -233,9 +233,9 @@ export const playlist = [
 /* ---------- 06 · What comes next ---------- */
 export const next = {
   exploring: [
-    'DEMO — what you are exploring right now',
-    'DEMO — a technical area you are going deep on',
-    'DEMO — a question you would love to work on with others',
+    'DEMO: what you are exploring right now',
+    'DEMO: a technical area you are going deep on',
+    'DEMO: a question you would love to work on with others',
   ],
   openTo: ['Full-time roles', 'Internships', 'Collaborations', 'Freelance builds'], // DEMO
   intents: [

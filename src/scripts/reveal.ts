@@ -9,7 +9,7 @@ document.querySelectorAll<HTMLElement>('[data-stagger]').forEach((group) => {
   });
 });
 
-if (!('IntersectionObserver' in window)) {
+if (!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) {
   els.forEach((el) => el.classList.add('is-in'));
 } else {
   const io = new IntersectionObserver(

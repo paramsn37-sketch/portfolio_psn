@@ -162,8 +162,8 @@ const wave = 'M20 0 C 34 60, 6 120, 20 180 S 34 300, 20 360 S 6 480, 20 540 S 34
   }
   .tl__next { display: inline-flex; align-items: center; gap: 0.35rem; font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-2); padding: 0.5rem; }
 
+  @media (max-width: 640px) { .story__head { grid-template-columns: minmax(0, 1fr); } }
   @media (max-width: 860px) {
-    .story__head { grid-template-columns: 1fr; }
     .tl { --line-x: 14px; }
     .tl__item { grid-template-columns: 28px minmax(0, 1fr); gap: 0 var(--s-4); align-items: start; }
     .tl__pin { grid-column: 1; margin-top: 2.2rem; }
