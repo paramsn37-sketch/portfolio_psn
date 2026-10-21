@@ -3,8 +3,20 @@ import Icon from '../Icon.astro';
 import Brand from '../Brand.astro';
 import Placeholder from '../Placeholder.astro';
 import PaperClip from '../ui/PaperClip.astro';
+import DemoNote from '../ui/DemoNote.astro';
 import { vibes, topics, moments, journal, playlist, links, photos } from '@/data/site';
 const featured = journal[0];
+// How each topic is pinned on the board: kind of paper, tack colour, tilt, grid area, and whether the red string runs through it.
+const boardKinds = [
+  { k: 'photo', big: true, tack: 'red', r: -2, area: 'a', string: true },
+  { k: 'note', tack: 'blue', r: 3, area: 'b' },
+  { k: 'photo', tack: 'red', r: 2, area: 'c', string: true },
+  { k: 'card', tack: 'olive', r: -1.5, area: 'd' },
+  { k: 'photo', tack: 'blue', r: -3, area: 'e' },
+  { k: 'note2', tack: 'red', r: -2.5, area: 'f', string: true },
+  { k: 'card', tack: 'blue', r: 1.8, area: 'g' },
+  { k: 'photo', tack: 'olive', r: 2.6, area: 'h', string: true },
+];
 ---
 <section id="life" class="life chapter" data-chapter data-num="05" aria-labelledby="life-title">
   <!-- ───────── banner + featured journal ───────── -->
@@ -13,8 +25,9 @@ const featured = journal[0];
       <div class="banner__paper">
         <h2 class="banner__title display" id="life-title"><span class="banner__num">05</span><span>Life &amp;<br />interests</span></h2>
         <p class="banner__text">A collection of the things that keep me curious, grounded and inspired — beyond the screen.</p>
+        <DemoNote />
         <a class="btn" href="#life-topics"><Icon name="compass" size={16} /> Explore my world <Icon name="arrow-right" size={16} data-nudge /></a>
-        <p class="banner__aside hand" aria-hidden="true">Different interests,<br />same curiosity.</p>
+        <p class="banner__aside hand" aria-hidden="true">Off the clock.</p>
       </div>
       <div class="banner__collage">
         <div class="banner__map" aria-hidden="true">
@@ -61,25 +74,31 @@ const featured = journal[0];
     </aside>
   </div>
 
-  <!-- ───────── topics ───────── -->
+  <!-- ───────── topics: a pinboard, not a card grid ───────── -->
   <div class="topics" id="life-topics">
     <h3 class="life__h3" data-reveal>Explore by topic</h3>
-    <ul class="topics__grid" role="list" data-stagger="60">
-      {topics.map((t, i) => (
-        <li class="topic" data-reveal style={`--r:${[-1.5, 1, -0.6, 1.4, 0.8, -1.2, 1.2, -0.8][i]}deg`}>
-          <div class="topic__photo">
-            <span class="tape topic__tape" aria-hidden="true"></span>
-            <Placeholder {...t.cover} label={t.label} />
-          </div>
-          <h4 class="topic__title"><Icon name={t.icon} size={18} /> {t.label}</h4>
-          <p class="topic__blurb">{t.blurb}</p>
-          <button class="topic__open" type="button" data-open="topic-drawer" data-hash={`life/${t.id}`} data-topic={t.id}>
-            View collection <Icon name="arrow-right" size={14} />
-            <span class="topic__hit" aria-hidden="true"></span>
-          </button>
-        </li>
-      ))}
-    </ul>
+    <div class="board" data-board data-reveal>
+      <svg class="board__strings" data-strings aria-hidden="true"></svg>
+      <ul class="board__items" role="list">
+        {topics.map((t, i) => {
+          const kind = boardKinds[i % boardKinds.length];
+          return (
+            <li class:list={['pin', `pin--${kind.k}`, `pin--${t.id}`]} style={`--r:${kind.r}deg;grid-area:${kind.area}`} data-pin={kind.string ? '1' : undefined}>
+              <span class:list={['pin__tack', `pin__tack--${kind.tack}`]} aria-hidden="true"></span>
+              {kind.k === 'photo' && (
+                <div class="pin__photo"><Placeholder {...t.cover} label={t.label} /></div>
+              )}
+              <h4 class="pin__title"><Icon name={t.icon} size={kind.k === 'photo' ? 17 : 19} /> {t.label}</h4>
+              {kind.k !== 'photo' || kind.big ? <p class="pin__blurb">{t.blurb}</p> : null}
+              <button class="pin__open" type="button" data-open="topic-drawer" data-hash={`life/${t.id}`} data-topic={t.id}>
+                Open<span class="visually-hidden"> {t.label}</span> <Icon name="arrow-right" size={14} />
+                <span class="pin__hit" aria-hidden="true"></span>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
   </div>
 
   <!-- ───────── moments + latest entries ───────── -->
@@ -149,7 +168,7 @@ const featured = journal[0];
                 <button type="button" class="deck__key" data-deck="prev" aria-label="Previous track"><Icon name="skip-back" size={16} /></button>
                 <button type="button" class="deck__key deck__key--play" data-deck="play" aria-label="Play" aria-pressed="false"><Icon name="play" size={18} class="deck__play" /><Icon name="pause" size={18} class="deck__pause" /></button>
                 <button type="button" class="deck__key" data-deck="next" aria-label="Next track"><Icon name="skip-forward" size={16} /></button>
-                <a class="deck__spotify" href={links.spotify} target="_blank" rel="noopener"><Brand name="spotify" size={16} /> Listen on Spotify</a>
+                {links.spotify !== '#' && <a class="deck__spotify" href={links.spotify} target="_blank" rel="noopener"><Brand name="spotify" size={16} /> Listen on Spotify</a>}
               </div>
               <ol class="cassette__list" role="list">
                 {playlist.map((p, i) => <li data-track-item={i} aria-current={i === 0 ? 'true' : undefined}><span>{String(i + 1).padStart(2, '0')}</span> {p.title} <em>{p.artist}</em></li>)}
@@ -248,6 +267,32 @@ const featured = journal[0];
     };
     fj.querySelector('[data-fj-prev]')!.addEventListener('click', () => go(-1));
     fj.querySelector('[data-fj-next]')!.addEventListener('click', () => go(1));
+  }
+
+  /* Red string between the pinned photos (decorative; redrawn on resize) */
+  const board = document.querySelector<HTMLElement>('[data-board]');
+  const strings = board?.querySelector<SVGSVGElement>('[data-strings]');
+  const drawStrings = () => {
+    if (!board || !strings) return;
+    const b = board.getBoundingClientRect();
+    const tacks = [...board.querySelectorAll<HTMLElement>('[data-pin] .pin__tack')].map((el) => {
+      const r = el.getBoundingClientRect();
+      return { x: r.left + r.width / 2 - b.left, y: r.top + r.height / 2 - b.top, visible: r.width > 0 };
+    });
+    if (tacks.some((t) => !t.visible) || tacks.length < 2) { strings.innerHTML = ''; return; }
+    strings.setAttribute('viewBox', `0 0 ${b.width} ${b.height}`);
+    let d = '';
+    for (let i = 0; i < tacks.length - 1; i++) {
+      const a = tacks[i], c = tacks[i + 1];
+      const sag = Math.min(60, Math.hypot(c.x - a.x, c.y - a.y) * 0.12);
+      d += `M${a.x} ${a.y} Q ${(a.x + c.x) / 2} ${Math.max(a.y, c.y) + sag} ${c.x} ${c.y} `;
+    }
+    strings.innerHTML = `<path d="${d}" />`;
+  };
+  if (board) {
+    new ResizeObserver(() => requestAnimationFrame(drawStrings)).observe(board);
+    board.addEventListener('transitionend', (e) => { if ((e.target as Element).matches('.pin, [data-board]')) drawStrings(); });
+    document.fonts?.ready.then(drawStrings);
   }
 
   /* Topic drawer: show the chosen collection */
@@ -415,29 +460,75 @@ const featured = journal[0];
   @media (hover: hover) { .fjournal__btn:hover { background: var(--paper-2); } }
   .fjournal__note { position: absolute; left: -1.8rem; bottom: -2.4rem; max-width: 13ch; font-size: 1.4rem; line-height: 0.95; color: var(--ink-2); transform: rotate(-6deg); display: none; }
 
-  /* topics */
+  /* topics — pinboard */
   .topics { margin-top: clamp(3.5rem, 6vw, 5.5rem); }
-  .topics__grid { margin-top: var(--s-5); display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(1.25rem, 2.4vw, 2.25rem) clamp(1rem, 2vw, 1.75rem); }
-  .topic {
+  .board {
+    position: relative; margin-top: var(--s-5);
+    padding: clamp(1.75rem, 3vw, 2.75rem);
+    background: #ddd3bd url("../../assets/textures/grain.webp");
+    background-size: 180px;
+    background-blend-mode: multiply;
+    border-radius: 6px;
+    box-shadow: inset 0 0 0 10px #c9bb9b, inset 0 0 0 11px rgb(0 0 0 / 0.08), inset 0 6px 18px rgb(60 45 20 / 0.18);
+  }
+  .board__items {
+    position: relative; z-index: 1;
+    display: grid; grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-areas:
+      "a a a a b b b c c c . ."
+      "a a a a b b b c c c d d"
+      "a a a a e e e f f f d d"
+      "g g g . e e e f f f h h"
+      "g g g . . . . . . . h h";
+    gap: 1.25rem 1.5rem; align-items: start;
+  }
+  .board__strings { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; overflow: visible; }
+  .board__strings :global(path) { fill: none; stroke: var(--red-string); stroke-width: 1.8; stroke-linecap: round; filter: drop-shadow(1px 2px 1px rgb(60 20 10 / 0.35)); }
+
+  .pin {
     position: relative; display: flex; flex-direction: column;
-    padding: 0.7rem 0.7rem 0.8rem; background: var(--card); box-shadow: var(--shadow-paper);
+    transform: rotate(var(--r));
     transition: transform var(--d-base) var(--ease-out), box-shadow var(--d-base) var(--ease-out);
+    box-shadow: 0 1px 1px rgb(60 45 20 / 0.12), 0 10px 18px -10px rgb(60 45 20 / 0.55);
   }
-  .topic__photo { position: relative; transform: rotate(var(--r)); transition: transform var(--d-base) var(--ease-out); }
-  .topic__photo :global(.ph) { box-shadow: 0 0 0 5px #fbf9f3, 0 6px 14px -8px rgb(40 30 15 / 0.6); }
-  .topic__tape { top: -0.7rem; left: 50%; translate: -50% 0; width: 3.8rem; height: 1.2rem; rotate: -4deg; }
-  .topic__title { margin-top: 1rem; display: flex; align-items: center; gap: 0.5rem; font-size: 1.0625rem; font-weight: 700; }
-  .topic__blurb { margin-top: 0.3rem; font-size: 0.875rem; color: var(--ink-2); line-height: 1.45; }
-  .topic__open { margin-top: auto; padding-top: 0.8rem; align-self: flex-start; display: inline-flex; align-items: center; gap: 0.35rem; font-family: var(--font-mono); font-size: 0.6875rem; color: var(--blue); text-decoration: underline; text-decoration-color: rgb(49 93 134 / 0.3); text-underline-offset: 0.3em; }
-  .topic__open :global(svg) { transition: transform var(--d-fast) var(--ease-out); }
-  .topic__hit { position: absolute; inset: 0; }
-  .topic:has(.topic__open:active) { transform: scale(0.985); }
+  .pin__tack {
+    position: absolute; z-index: 5; left: 50%; top: -0.55rem; translate: -50% 0;
+    width: 1.05rem; height: 1.05rem; border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, rgb(255 255 255 / 0.65) 0 18%, transparent 22%), var(--tack, var(--red-string));
+    box-shadow: 0 3px 3px -1px rgb(0 0 0 / 0.45), inset 0 -2px 2px rgb(0 0 0 / 0.25);
+  }
+  .pin__tack--blue { --tack: var(--blue); }
+  .pin__tack--olive { --tack: var(--olive-deep); }
+  .pin__title { display: flex; align-items: center; gap: 0.45rem; font-size: 1.0625rem; font-weight: 700; line-height: 1.2; }
+  .pin__blurb { margin-top: 0.35rem; font-size: 0.875rem; color: var(--ink-2); line-height: 1.45; }
+  .pin__open {
+    margin-top: auto; padding-top: 0.75rem; align-self: flex-start;
+    display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2rem;
+    font-family: var(--font-mono); font-size: 0.6875rem; color: var(--blue);
+    text-decoration: underline; text-decoration-color: rgb(49 93 134 / 0.3); text-underline-offset: 0.3em;
+  }
+  .pin__open :global(svg) { transition: transform var(--d-fast) var(--ease-out); }
+  .pin__hit { position: absolute; inset: 0; }
+
+  /* paper kinds */
+  .pin--photo { background: #fbf9f3; padding: 0.6rem 0.6rem 0.75rem; }
+  .pin--photo .pin__title { margin-top: 0.75rem; }
+  .pin--note { background: var(--note); padding: 1.35rem 1.1rem 0.9rem; min-height: 11rem; }
+  .pin--note2 { background: #cfe0e9; padding: 1.35rem 1.1rem 0.9rem; min-height: 11rem; }
+  .pin--note .pin__blurb, .pin--note2 .pin__blurb { font-family: var(--font-hand); font-size: 1.45rem; line-height: 1.02; color: var(--ink); }
+  .pin--card {
+    padding: 1.35rem 1.1rem 0.9rem;
+    background-color: var(--card);
+    background-image: linear-gradient(to bottom, transparent 2.9rem, rgb(163 53 43 / 0.28) 2.9rem, rgb(163 53 43 / 0.28) calc(2.9rem + 1px), transparent calc(2.9rem + 1px)), repeating-linear-gradient(to bottom, transparent 0 1.45rem, rgb(49 93 134 / 0.1) 1.45rem calc(1.45rem + 1px));
+  }
+  .pin--card .pin__blurb { margin-top: 0.9rem; }
+
+  .pin:has(.pin__open:active) { transform: rotate(var(--r)) scale(0.98); }
   @media (hover: hover) and (pointer: fine) {
-    .topic:hover { transform: translateY(-5px); box-shadow: var(--shadow-lift); }
-    .topic:hover .topic__photo { transform: rotate(0deg) scale(1.02); }
-    .topic:hover .topic__open :global(svg) { transform: translateX(3px); }
+    .pin:hover { transform: rotate(0deg) translateY(-6px) scale(1.02); box-shadow: 0 2px 2px rgb(60 45 20 / 0.1), 0 22px 34px -14px rgb(60 45 20 / 0.6); z-index: 4; }
+    .pin:hover .pin__open :global(svg) { transform: translateX(3px); }
   }
-  .topic:has(.topic__open:focus-visible) { transform: translateY(-5px); box-shadow: var(--shadow-lift); }
+  .pin:has(.pin__open:focus-visible) { transform: rotate(0deg) translateY(-6px) scale(1.02); z-index: 4; }
 
   /* moments + entries */
   .life__bottom { margin-top: clamp(3.5rem, 6vw, 5.5rem); display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: clamp(2rem, 5vw, 4.5rem); align-items: start; }
@@ -496,10 +587,10 @@ const featured = journal[0];
   .deck__key {
     display: grid; place-items: center; width: 3rem; height: 2.6rem; border-radius: 6px;
     background: linear-gradient(#f1ebdd, #d8cfbb); color: var(--ink);
-    box-shadow: 0 3px 0 #8f8674, 0 4px 8px -2px rgb(0 0 0 / 0.5);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.7), 0 1px 1px rgb(0 0 0 / 0.3), 0 6px 12px -4px rgb(0 0 0 / 0.6);
     transition: transform var(--d-press) var(--ease-out), box-shadow var(--d-press) var(--ease-out);
   }
-  .deck__key:active, .deck__key[aria-pressed="true"] { transform: translateY(2px); box-shadow: 0 1px 0 #8f8674, 0 2px 4px -1px rgb(0 0 0 / 0.5); }
+  .deck__key:active, .deck__key[aria-pressed="true"] { transform: translateY(2px); box-shadow: inset 0 2px 4px rgb(0 0 0 / 0.25), 0 1px 1px rgb(0 0 0 / 0.3); }
   .deck__key--play { width: 3.6rem; }
   .deck__key[aria-pressed="true"] { background: linear-gradient(#cfe0a6, #a9bd7c); }
   .deck__pause { display: none; }
@@ -566,7 +657,10 @@ const featured = journal[0];
   @media (max-width: 1180px) {
     .life__top { grid-template-columns: minmax(0, 1fr); }
     .fjournal { display: grid; grid-template-columns: minmax(0, 1fr); }
-    .topics__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .board__items {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      grid-template-areas: "a a a b b b" "a a a c c c" "d d e e e ." "f f f g g g" "h h h . . .";
+    }
   }
   @media (max-width: 860px) {
     .banner { grid-template-columns: minmax(0, 1fr); -webkit-mask: none; mask: none; }
@@ -578,10 +672,16 @@ const featured = journal[0];
     .jpage__grid { grid-template-columns: minmax(0, 1fr); }
     .jpage__photos { min-height: 17rem; }
   }
+  @media (max-width: 640px) {
+    .board { padding: 1.4rem 1rem; }
+    .board__strings { display: none; }
+    .board__items { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-areas: none; gap: 1.4rem 0.9rem; }
+    .board__items > li { grid-area: auto !important; }
+    .pin--note, .pin--note2 { min-height: 0; }
+    .pin__blurb { display: none; }
+    .pin--note .pin__blurb, .pin--note2 .pin__blurb { display: block; font-size: 1.25rem; }
+  }
   @media (max-width: 560px) {
-    .topics__grid { gap: 1rem 0.75rem; }
-    .topic__blurb { display: none; }
-    .topic { padding: 0.5rem 0.5rem 0.6rem; }
     .vibes { right: 0.4rem; width: 8.5rem; }
     .banner__photo { width: 56%; left: 2%; }
     .entry { grid-template-columns: 3.4rem minmax(0, 1fr) 3rem; gap: 0.75rem; }

@@ -35,6 +35,10 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta name="twitter:card" content="summary" />
+    <style is:inline>
+      @view-transition { navigation: auto; }
+      @media (prefers-reduced-motion: reduce) { @view-transition { navigation: none; } }
+    </style>
     <script is:inline>
       document.documentElement.classList.add('js');
       // Cross-document view transitions can be skipped by the browser; that should degrade to a plain navigation, quietly.

@@ -2,6 +2,7 @@
 import Icon from '../Icon.astro';
 import Socials from '../ui/Socials.astro';
 import ChapterTitle from '../ui/ChapterTitle.astro';
+import DemoNote from '../ui/DemoNote.astro';
 import { next, links, profile } from '@/data/site';
 import { url } from '@/lib/url';
 const first = next.intents[0];
@@ -13,6 +14,7 @@ const year = new Date().getFullYear();
     <div class="next__words">
       <ChapterTitle num="06" title="What's next" id="contact-title" tone="paper" sub="Exploring / open to / say hello" note="Your move." />
 
+      <div data-reveal><DemoNote /></div>
       <div class="next__block" data-reveal>
         <h3 class="next__h3">Exploring now</h3>
         <ul class="next__list" role="list">
@@ -42,10 +44,10 @@ const year = new Date().getFullYear();
           ))}
         </fieldset>
         <div class="console__screen" aria-live="polite">
-          <p class="pixel"><span class="console__p">&gt;</span> TO: {links.email}</p>
-          <p class="pixel"><span class="console__p">&gt;</span> RE: <span data-screen-subject>{first.subject}</span></p>
-          <p class="pixel console__body"><span class="console__p">&gt;</span> <span data-screen-body>{first.body.split('\n').filter(Boolean)[1] ?? first.body}</span><span class="console__cur" aria-hidden="true">_</span></p>
-          <p class="pixel console__status" data-screen-status></p>
+          <p><span class="console__p">&gt;</span> TO: {links.email}</p>
+          <p><span class="console__p">&gt;</span> RE: <span data-screen-subject>{first.subject}</span></p>
+          <p class="console__body"><span class="console__p">&gt;</span> <span data-screen-body>{first.body.split('\n').filter(Boolean)[1] ?? first.body}</span><span class="console__cur" aria-hidden="true">_</span></p>
+          <p class="console__status" data-screen-status></p>
         </div>
       </div>
       <div class="console__bottom">
@@ -161,14 +163,14 @@ const year = new Date().getFullYear();
     display: flex; align-items: center; gap: 0.6rem; min-height: 2.9rem; padding: 0 0.85rem;
     border-radius: 8px; background: linear-gradient(#faf6ec, #e6dfcf);
     font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase;
-    box-shadow: 0 4px 0 #b9af99, 0 5px 10px -3px rgb(0 0 0 / 0.35);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.7), 0 1px 1px rgb(60 50 30 / 0.2), 0 6px 12px -4px rgb(60 50 30 / 0.45);
     transition: transform var(--d-press) var(--ease-out), box-shadow var(--d-press) var(--ease-out), background var(--d-fast) ease;
   }
   .ckey__lamp { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: #c8bfae; box-shadow: inset 0 1px 1px rgb(0 0 0 / 0.3); transition: background-color var(--d-fast) ease, box-shadow var(--d-fast) ease; }
-  .ckey input:checked + .ckey__cap { transform: translateY(3px); box-shadow: 0 1px 0 #b9af99, 0 2px 4px -2px rgb(0 0 0 / 0.35); background: linear-gradient(#e9e4cf, #d9d2bc); }
+  .ckey input:checked + .ckey__cap { transform: translateY(2px); box-shadow: inset 0 2px 4px rgb(60 50 30 / 0.22), 0 1px 1px rgb(60 50 30 / 0.15); background: linear-gradient(#e4dec8, #d9d2bc); }
   .ckey input:checked + .ckey__cap .ckey__lamp { background: #8fbf5a; box-shadow: 0 0 8px 1px rgb(143 191 90 / 0.8); }
   .ckey input:focus-visible + .ckey__cap { outline: 2px solid var(--blue); outline-offset: 3px; }
-  .ckey:active .ckey__cap { transform: translateY(3px); }
+  .ckey:active .ckey__cap { transform: translateY(2px) scale(0.98); }
 
   .console__screen {
     position: relative; min-height: 12rem; padding: 1rem 1.1rem;
@@ -179,7 +181,7 @@ const year = new Date().getFullYear();
     overflow: hidden;
   }
   .console__screen::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(to bottom, rgb(0 0 0 / 0.16) 0 1px, transparent 1px 3px); }
-  .console__screen p { font-size: 0.9375rem; line-height: 1.55; text-shadow: 0 0 6px rgb(185 230 176 / 0.45); word-break: break-word; }
+  .console__screen p { font-family: var(--font-mono); font-size: 0.8125rem; line-height: 1.7; text-shadow: 0 0 6px rgb(185 230 176 / 0.45); word-break: break-word; }
   .console__p { color: #e9f7c9; }
   .console__body { margin-top: 0.4rem; }
   .console__status { margin-top: 0.4rem; color: var(--note); }
@@ -190,10 +192,10 @@ const year = new Date().getFullYear();
     display: inline-flex; align-items: center; gap: 0.6rem; min-height: 3.4rem; padding: 0 1.6rem;
     border-radius: 10px; background: linear-gradient(#6b744d, #575f3d); color: var(--paper);
     font-family: var(--font-mono); font-size: 0.875rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none;
-    box-shadow: 0 5px 0 #3b4128, 0 8px 16px -4px rgb(0 0 0 / 0.45), inset 0 1px 0 rgb(255 255 255 / 0.2);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.22), 0 1px 1px rgb(30 34 15 / 0.35), 0 10px 20px -8px rgb(30 34 15 / 0.75);
     transition: transform var(--d-press) var(--ease-out), box-shadow var(--d-press) var(--ease-out);
   }
-  .console__send:active { transform: translateY(4px); box-shadow: 0 1px 0 #3b4128, 0 2px 6px -2px rgb(0 0 0 / 0.45); }
+  .console__send:active { transform: translateY(2px) scale(0.98); box-shadow: inset 0 2px 5px rgb(0 0 0 / 0.3), 0 1px 1px rgb(30 34 15 / 0.3); }
   .console__copy {
     display: inline-flex; align-items: center; gap: 0.45rem; min-height: 2.75rem; padding: 0 0.9rem;
     border-radius: 8px; font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.04em; text-transform: uppercase; color: #4a4434;

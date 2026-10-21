@@ -9,6 +9,12 @@
 
 export type Img = { src?: string; alt: string; ratio?: string };
 
+/**
+ * While true, each chapter shows a small yellow "demo content" note so nobody mistakes
+ * placeholder copy for real facts. Set to false once you've replaced the DEMO lines.
+ */
+export const showDemoNotes = true;
+
 export const profile = {
   name: 'Param S N',
   firstName: 'Param',
@@ -202,14 +208,14 @@ export const topics = [
 ]; // topic list from your mockup — keep only the ones that are true for you
 
 export const moments = [
-  { caption: 'Somewhere in the hills', date: '12 Aug 2026', image: { alt: 'Hills', ratio: '1 / 1' } as Img }, // DEMO
-  { caption: 'Good music, better people', date: '03 Aug 2026', image: { alt: 'Concert', ratio: '1 / 1' } as Img }, // DEMO
-  { caption: 'Small steps, big dreams', date: '21 Jul 2026', image: { alt: 'Notebook', ratio: '1 / 1' } as Img }, // DEMO
+  { caption: 'Somewhere in the hills', date: 'DD Mon YYYY', image: { alt: 'Hills', ratio: '1 / 1' } as Img }, // DEMO
+  { caption: 'Good music, better people', date: 'DD Mon YYYY', image: { alt: 'Concert', ratio: '1 / 1' } as Img }, // DEMO
+  { caption: 'Small steps, big dreams', date: 'DD Mon YYYY', image: { alt: 'Notebook', ratio: '1 / 1' } as Img }, // DEMO
 ];
 
 export const journal = [
   {
-    slug: 'mountains-reset', date: '12 Aug 2026', title: 'The mountains always have a way of resetting you.', place: 'Himachal', tags: ['Travel', 'Reflections'],
+    slug: 'mountains-reset', date: 'DD Mon YYYY', title: 'The mountains always have a way of resetting you.', place: 'Place', tags: ['Travel', 'Reflections'],
     highlights: ['DEMO: highlight one', 'DEMO: highlight two', 'DEMO: highlight three'],
     body: [
       'DEMO: The first paragraph of a journal entry. Write the way you talk: where you were, who you were with, what the air felt like.',
@@ -219,19 +225,19 @@ export const journal = [
     image2: { alt: 'Second photo from the trip', ratio: '1 / 1' } as Img,
   },
   {
-    slug: 'good-music', date: '03 Aug 2026', title: 'A night of good music and great company.', place: 'Bengaluru', tags: ['Music', 'Friends'],
+    slug: 'good-music', date: 'DD Mon YYYY', title: 'A night of good music and great company.', place: 'Place', tags: ['Music', 'Friends'],
     highlights: ['DEMO', 'DEMO'],
     body: ['DEMO: journal entry body.', 'DEMO: a second paragraph.'],
     image: { alt: 'Live music', ratio: '4 / 3' } as Img,
   },
   {
-    slug: 'small-steps', date: '21 Jul 2026', title: 'Small steps, big dreams.', place: 'Home', tags: ['Life', 'Growth'],
+    slug: 'small-steps', date: 'DD Mon YYYY', title: 'Small steps, big dreams.', place: 'Place', tags: ['Life', 'Growth'],
     highlights: ['DEMO', 'DEMO'],
     body: ['DEMO: journal entry body.', 'DEMO: a second paragraph.'],
     image: { alt: 'Open notebook', ratio: '4 / 3' } as Img,
   },
   {
-    slug: 'new-recipe', date: '10 Jul 2026', title: 'A new recipe, same happiness.', place: 'Kitchen', tags: ['Food', 'Experiments'],
+    slug: 'new-recipe', date: 'DD Mon YYYY', title: 'A new recipe, same happiness.', place: 'Place', tags: ['Food', 'Experiments'],
     highlights: ['DEMO', 'DEMO'],
     body: ['DEMO: journal entry body.', 'DEMO: a second paragraph.'],
     image: { alt: 'A plate of food', ratio: '4 / 3' } as Img,

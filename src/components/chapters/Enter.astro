@@ -4,6 +4,7 @@ import Placeholder from '../Placeholder.astro';
 import PaperClip from '../ui/PaperClip.astro';
 import Folder from '../ui/Folder.astro';
 import Socials from '../ui/Socials.astro';
+import DemoNote from '../ui/DemoNote.astro';
 import { profile } from '@/data/site';
 ---
 <section id="enter" class="enter" data-chapter data-num="00" aria-labelledby="enter-title">
@@ -14,6 +15,7 @@ import { profile } from '@/data/site';
       <p class="enter__role" data-reveal>{profile.role}, based in {profile.location.split(',')[0]}.</p>
       <p class="enter__tag" data-reveal>{profile.tagline}</p>
       <p class="enter__intro" data-reveal>{profile.intro}</p>
+      <div data-reveal><DemoNote /></div>
       <div class="enter__cta" data-reveal>
         <p class="enter__start hand" aria-hidden="true">
           Start here

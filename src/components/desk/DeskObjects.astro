@@ -258,12 +258,14 @@ import { url } from '@/lib/url';
 
   /* ── phones: sheet fills the width, a few objects peek in above and below ── */
   @media (max-width: 760px), (max-aspect-ratio: 4/5) {
-    .obj--sketchbook, .obj--cassette, .obj--pencil, .obj--ring, .obj--badge { display: none; }
+    .obj--sketchbook, .obj--pencil, .obj--ring, .obj--badge { display: none; }
+    .obj--cassette { width: calc(var(--u) * 28); left: calc(var(--u) * 31); top: calc(100% + var(--u) * 5); transform: rotate(-4deg); }
     .obj--folders { width: calc(var(--u) * 38); left: calc(var(--u) * -4); top: calc(var(--u) * -27); }
     .obj--mug { width: calc(var(--u) * 28); right: calc(var(--u) * -9); top: calc(var(--u) * -27); }
-    .obj--photos { width: calc(var(--u) * 30); left: calc(var(--u) * -4); top: calc(100% + var(--u) * 7); }
+    .obj--photos { width: calc(var(--u) * 27); left: calc(var(--u) * -2); top: calc(100% + var(--u) * 6); }
     .obj--compass { width: calc(var(--u) * 27); right: calc(var(--u) * 2); top: calc(100% + var(--u) * 6); }
-    .obj--envelope { width: calc(var(--u) * 32); right: auto; left: calc(var(--u) * 32); top: calc(100% + var(--u) * 14); }
+    .obj--envelope { width: calc(var(--u) * 27); right: auto; left: calc(var(--u) * 64); top: calc(100% + var(--u) * 3); --rot: 6deg; }
+    .obj--compass { display: none; }
     .obj__label { font-size: 1.15rem; }
   }
   @media (prefers-reduced-motion: reduce) {

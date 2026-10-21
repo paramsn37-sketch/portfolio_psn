@@ -1,0 +1,24 @@
+---
+/** A visible "this is placeholder copy" note. Disappears site-wide when showDemoNotes is false. */
+import { showDemoNotes } from '@/data/site';
+interface Props { where?: string; tone?: 'paper' | 'dark'; class?: string }
+const { where = 'src/data/site.ts', tone = 'paper', class: cls } = Astro.props;
+---
+{showDemoNotes && (
+  <p class:list={['demo-note', `demo-note--${tone}`, cls]} role="note">
+    <span class="demo-note__hand">Demo content</span>
+    <span class="demo-note__where">replace in <code>{where}</code></span>
+  </p>
+)}
+<style>
+  .demo-note {
+    display: inline-flex; flex-wrap: wrap; align-items: baseline; gap: 0.15rem 0.6rem;
+    margin-top: var(--s-5); padding: 0.4rem 0.75rem 0.35rem;
+    background: var(--note); color: var(--ink);
+    box-shadow: 0 1px 1px rgb(80 60 10 / 0.12), 0 8px 14px -10px rgb(80 60 10 / 0.5);
+    transform: rotate(-1deg);
+  }
+  .demo-note__hand { font-family: var(--font-hand); font-size: 1.4rem; line-height: 1; }
+  .demo-note__where { font-size: 0.8125rem; color: var(--ink-2); }
+  .demo-note code { font-family: var(--font-mono); font-size: 0.75rem; background: rgb(255 255 255 / 0.55); padding: 0.05rem 0.3rem; border-radius: 2px; }
+</style>

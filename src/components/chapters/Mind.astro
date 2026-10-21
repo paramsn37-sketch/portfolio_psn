@@ -1,6 +1,7 @@
 ---
 import Icon from '../Icon.astro';
 import ChapterTitle from '../ui/ChapterTitle.astro';
+import DemoNote from '../ui/DemoNote.astro';
 import { toolbox, process, experiments, learning } from '@/data/site';
 const icons = [
   ...toolbox.map((t, i) => ({ id: t.id, label: t.label, kind: 'folder' as const, tone: ['olive', 'blue', 'kraft', 'olive', 'blue'][i % 5] })),
@@ -11,8 +12,11 @@ const nodes = process.map((p, i) => ({ ...p, x: 70 + i * 165, y: i % 2 ? 150 : 8
 ---
 <section id="mind" class="mind chapter" data-chapter data-num="04" aria-labelledby="mind-title">
   <div class="mind__head">
-    <ChapterTitle num="04" title="Working mind" id="mind-title" sub="Tools / process / experiments" note="Build, break, learn, repeat." />
-    <p class="mind__intro" data-reveal>No skill bars and no percentages — open a folder to see what I actually reach for, and why.</p>
+    <ChapterTitle num="04" title="Working mind" id="mind-title" sub="Tools / process / experiments" note="Paper first, then code." />
+    <div class="mind__intro" data-reveal>
+      <p>No skill bars and no percentages. Open a folder to see what I actually reach for, and why.</p>
+      <DemoNote />
+    </div>
   </div>
 
   <!-- the desktop -->
@@ -38,7 +42,7 @@ const nodes = process.map((p, i) => ({ ...p, x: 70 + i * 165, y: i % 2 ? 150 : 8
           <section class="win" id={`win-${t.id}`} data-win={t.id} hidden={t.id !== 'languages' && t.id !== 'ai'} aria-labelledby={`win-${t.id}-t`} style={`--wx:${[4, 30, 47, 18, 38][i % 5]}%;--wy:${[6, 12, 30, 36, 8][i % 5]}%`}>
             <header class="win__bar" data-win-drag>
               <span class="win__dots" aria-hidden="true"><i></i><i></i><i></i></span>
-              <h3 class="win__title pixel" id={`win-${t.id}-t`}>C:\PARAM\mind\{t.id}</h3>
+              <h3 class="win__title" id={`win-${t.id}-t`}>C:\PARAM\mind\{t.id}</h3>
               <button class="win__x" type="button" data-win-close aria-label={`Close ${t.label}`}><Icon name="x" size={14} stroke={2} /></button>
             </header>
             <div class="win__body">
@@ -57,22 +61,22 @@ const nodes = process.map((p, i) => ({ ...p, x: 70 + i * 165, y: i % 2 ? 150 : 8
         <section class="win win--note" id="win-learning" data-win="learning" hidden aria-labelledby="win-learning-t" style="--wx:58%;--wy:8%">
           <header class="win__bar" data-win-drag>
             <span class="win__dots" aria-hidden="true"><i></i><i></i><i></i></span>
-            <h3 class="win__title pixel" id="win-learning-t">learning.txt — Notepad</h3>
+            <h3 class="win__title" id="win-learning-t">learning.txt — Notepad</h3>
             <button class="win__x" type="button" data-win-close aria-label="Close learning.txt"><Icon name="x" size={14} stroke={2} /></button>
           </header>
           <div class="win__body win__body--text">
-            <p class="pixel">Currently learning:</p>
-            <ul role="list">{learning.map((l) => <li class="pixel">- {l}</li>)}</ul>
-            <p class="pixel win__cursor">_</p>
+            <p>Currently learning:</p>
+            <ul role="list">{learning.map((l) => <li>- {l}</li>)}</ul>
+            <p class="win__cursor">_</p>
           </div>
         </section>
       </div>
       <p class="desk2__hint hand" aria-hidden="true">tap a folder ↖</p>
     </div>
     <footer class="desk2__task">
-      <span class="desk2__start pixel"><Icon name="folder" size={14} /> Start</span>
+      <span class="desk2__start"><Icon name="folder" size={14} /> Start</span>
       <span class="desk2__open" data-win-tasks></span>
-      <span class="desk2__clock pixel" data-clock title="Bengaluru time">--:--</span>
+      <span class="desk2__clock" data-clock title="Bengaluru time">--:--</span>
     </footer>
   </div>
 
@@ -131,7 +135,7 @@ const nodes = process.map((p, i) => ({ ...p, x: 70 + i * 165, y: i % 2 ? 150 : 8
       layer.querySelectorAll<HTMLElement>('[data-win]:not([hidden])').forEach((w) => {
         const b = document.createElement('button');
         b.type = 'button';
-        b.className = 'desk2__taskbtn pixel';
+        b.className = 'desk2__taskbtn';
         b.textContent = w.dataset.win!;
         b.addEventListener('click', () => focus(w));
         tasks.append(b);
@@ -260,7 +264,7 @@ const nodes = process.map((p, i) => ({ ...p, x: 70 + i * 165, y: i % 2 ? 150 : 8
   .dicon:active { transform: scale(0.95); }
   .dicon[aria-expanded="true"] { background: rgb(49 93 134 / 0.12); }
   @media (hover: hover) { .dicon:hover { background: rgb(49 93 134 / 0.08); } }
-  .dicon__label { font-family: var(--font-pixel); font-size: 0.8125rem; line-height: 1.1; text-align: center; word-break: break-word; }
+  .dicon__label { font-family: var(--font-mono); font-size: 0.6875rem; line-height: 1.1; text-align: center; word-break: break-word; }
   .dicon[aria-expanded="true"] .dicon__label { background: var(--blue); color: var(--paper); padding: 0 0.25rem; }
   .dicon__folder { position: relative; width: 2.8rem; height: 2.2rem; }
   .dicon__folder::before { content: ""; position: absolute; left: 0; top: 0; width: 45%; height: 30%; border-radius: 3px 4px 0 0; background: var(--c-back, #5e6646); }
@@ -286,7 +290,7 @@ const nodes = process.map((p, i) => ({ ...p, x: 70 + i * 165, y: i % 2 ? 150 : 8
   .win:not(.is-front) .win__bar { background: #8c917a; }
   .win__dots { display: flex; gap: 0.3rem; }
   .win__dots i { width: 0.55rem; height: 0.55rem; border-radius: 50%; background: var(--paper); opacity: 0.85; }
-  .win__title { flex: 1; font-size: 0.875rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .win__title { flex: 1; font-family: var(--font-mono); font-size: 0.6875rem; font-weight: 400; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .win__x { display: grid; place-items: center; width: 1.6rem; height: 1.6rem; border-radius: 4px; background: #e2897c; color: #3a1510; box-shadow: inset 0 0 0 1px rgb(0 0 0 / .25); transition: transform var(--d-press) var(--ease-out); }
   .win__x:active { transform: scale(0.9); }
   .win__body { padding: 1rem 1.1rem 1.2rem; }
@@ -297,17 +301,17 @@ const nodes = process.map((p, i) => ({ ...p, x: 70 + i * 165, y: i % 2 ? 150 : 8
   .win__item-note { font-size: 0.75rem; color: var(--ink-3); line-height: 1.35; }
   .win--note { width: min(19rem, 80%); }
   .win__body--text { background: #fffdf6; min-height: 9rem; }
-  .win__body--text .pixel { font-size: 1rem; line-height: 1.5; }
+  .win__body--text { font-family: var(--font-mono); font-size: 0.8125rem; line-height: 1.7; }
   .win__body--text ul { margin-top: 0.4rem; }
   @media (prefers-reduced-motion: no-preference) { .win__cursor { animation: caret 1.1s steps(1) infinite; } @keyframes caret { 50% { opacity: 0; } } }
   .desk2__hint { position: absolute; left: 7.8rem; bottom: 0.7rem; font-size: 1.35rem; color: var(--ink-3); }
   @media (pointer: fine) { .desk2__hint { display: none; } }
 
   .desk2__task { display: flex; align-items: center; gap: 0.75rem; height: 2.6rem; padding: 0 0.6rem; background: var(--olive-deep); color: var(--paper); }
-  .desk2__start { display: inline-flex; align-items: center; gap: 0.4rem; height: 1.8rem; padding: 0 0.7rem; border-radius: 4px; background: rgb(255 255 255 / 0.12); font-size: 0.875rem; }
+  .desk2__start { display: inline-flex; align-items: center; gap: 0.4rem; height: 1.8rem; padding: 0 0.7rem; border-radius: 4px; background: rgb(255 255 255 / 0.12); font-family: var(--font-mono); font-size: 0.6875rem; }
   .desk2__open { display: flex; gap: 0.35rem; flex: 1; overflow: hidden; }
-  .desk2__open :global(.desk2__taskbtn) { height: 1.8rem; padding: 0 0.65rem; border-radius: 4px; background: rgb(0 0 0 / 0.18); color: var(--paper); font-size: 0.8125rem; white-space: nowrap; }
-  .desk2__clock { font-size: 0.875rem; padding-right: 0.3rem; }
+  .desk2__open :global(.desk2__taskbtn) { height: 1.8rem; padding: 0 0.65rem; border-radius: 4px; background: rgb(0 0 0 / 0.18); color: var(--paper); font-family: var(--font-mono); font-size: 0.6875rem; white-space: nowrap; }
+  .desk2__clock { font-family: var(--font-mono); font-size: 0.6875rem; padding-right: 0.3rem; }
 
   /* lower */
   .mind__lower { margin-top: clamp(3rem, 6vw, 5rem); display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 4.5rem); align-items: start; }

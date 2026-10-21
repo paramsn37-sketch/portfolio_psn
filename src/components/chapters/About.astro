@@ -3,6 +3,7 @@ import Icon from '../Icon.astro';
 import Placeholder from '../Placeholder.astro';
 import PaperClip from '../ui/PaperClip.astro';
 import ChapterTitle from '../ui/ChapterTitle.astro';
+import DemoNote from '../ui/DemoNote.astro';
 import { profile, photos } from '@/data/site';
 const tones = ['linen', 'olive', 'blue', 'kraft'];
 ---
@@ -26,12 +27,13 @@ const tones = ['linen', 'olive', 'blue', 'kraft'];
 
     <!-- words -->
     <div class="about__copy" data-stagger="80">
-      <ChapterTitle num="01" title="About me" id="about-title" note="Same person, new chapter." />
+      <ChapterTitle num="01" title="About me" id="about-title" note="Nice to meet you." />
       <p class="about__pixel pixel" data-reveal>Hi, I'm {profile.firstName}.<span class="about__caret" aria-hidden="true"></span></p>
       <p class="about__text lead" data-reveal>{profile.about}</p>
       <ul class="about__traits" role="list" data-reveal>
         {profile.traits.map((t) => <li class="chip">{t}</li>)}
       </ul>
+      <div data-reveal><DemoNote /></div>
       <div class="about__actions" data-reveal>
         <button class="btn" type="button" data-open="story-drawer" aria-haspopup="dialog"><Icon name="book-open" size={16} /> Read my story</button>
         <a class="link about__resume" href="#story">See the timeline</a>
@@ -54,7 +56,7 @@ const tones = ['linen', 'olive', 'blue', 'kraft'];
             <div class="pass__photo"><Placeholder {...photos.idPhoto} label="Photo" /></div>
             <div>
               <p class="pass__name display">{profile.name}</p>
-              <p class="pass__role pixel">{profile.role}</p>
+              <p class="pass__role">{profile.role}</p>
             </div>
           </div>
           <dl class="pass__facts">
@@ -72,7 +74,6 @@ const tones = ['linen', 'olive', 'blue', 'kraft'];
 
     <!-- many hats: stacked folder tabs -->
     <div class="hats" data-reveal>
-      <p class="hats__title">The hats I wear</p>
       <div class="hats__tabs" role="tablist" aria-label="Roles">
         {profile.hats.map((h, i) => (
           <button class={`hats__tab hats__tab--${tones[i % 4]}`} role="tab" type="button" id={`hat-tab-${i}`} aria-controls={`hat-panel-${i}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} style={`--i:${i}`}>
@@ -214,7 +215,7 @@ const tones = ['linen', 'olive', 'blue', 'kraft'];
   .pass__barcode { margin-top: var(--s-3); height: 1.6rem; background: repeating-linear-gradient(90deg, var(--ink) 0 2px, transparent 2px 4px, var(--ink) 4px 5px, transparent 5px 8px, var(--ink) 8px 11px, transparent 11px 13px); opacity: 0.75; }
 
   /* hats */
-  .hats { grid-area: hats; max-width: 36rem; }
+  .hats { grid-area: hats; max-width: 36rem; padding-top: 2.5rem; }
   .hats__title { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2); margin-bottom: var(--s-4); }
   .hats__tabs { display: flex; gap: 0.3rem; padding-left: 0.75rem; position: relative; z-index: 2; }
   .hats__tab {

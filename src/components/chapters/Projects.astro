@@ -16,7 +16,6 @@ const f = featured.data;
 ---
 <section id="projects" class="projects chapter" data-chapter data-num="03" aria-labelledby="projects-title">
   <header class="projects__head">
-    <p class="projects__aside hand" aria-hidden="true">Selected works<br />&amp; experiments</p>
     <h2 class="projects__title display" id="projects-title" data-reveal>
       <span class="projects__num">03</span>Projects
     </h2>
@@ -30,7 +29,7 @@ const f = featured.data;
   <div class="projects__controls" data-reveal>
     <div class="projects__filters" role="group" aria-label="Filter projects by category">
       <button class="chip" type="button" data-filter="all" aria-pressed="true">All <span class="projects__count">{all.length}</span></button>
-      {CATEGORIES.map((c) => (
+      {CATEGORIES.filter((c) => counts[c] > 0).map((c) => (
         <button class="chip" type="button" data-filter={c} aria-pressed="false">{c} <span class="projects__count">{counts[c]}</span></button>
       ))}
     </div>

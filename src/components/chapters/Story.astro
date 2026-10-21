@@ -2,14 +2,18 @@
 import Icon from '../Icon.astro';
 import Placeholder from '../Placeholder.astro';
 import ChapterTitle from '../ui/ChapterTitle.astro';
+import DemoNote from '../ui/DemoNote.astro';
 import { timeline, profile } from '@/data/site';
 // A gently wandering vertical line in a 40 × 1000 box; stretched to the timeline's height.
 const wave = 'M20 0 C 34 60, 6 120, 20 180 S 34 300, 20 360 S 6 480, 20 540 S 34 660, 20 720 S 6 840, 20 900 S 26 970, 20 1000';
 ---
 <section id="story" class="story chapter" data-chapter data-num="02" aria-labelledby="story-title">
   <div class="story__head">
-    <ChapterTitle num="02" title="My story" id="story-title" sub={`${profile.coords} → wherever's next`} note="Different places, same curiosity." />
-    <p class="story__intro" data-reveal>Not a résumé — the turns, the experiments and what each one taught me. Open any note to read the lesson.</p>
+    <ChapterTitle num="02" title="My story" id="story-title" sub={`${profile.coords} → wherever's next`} note="The long way round." />
+    <div class="story__intro" data-reveal>
+      <p>Not a résumé: the turns, the experiments and what each one taught me. Open any note to read the lesson.</p>
+      <DemoNote />
+    </div>
   </div>
 
   <div class="tl" data-timeline>
@@ -25,14 +29,11 @@ const wave = 'M20 0 C 34 60, 6 120, 20 180 S 34 300, 20 360 S 6 480, 20 540 S 34
           <span class="tl__pin" aria-hidden="true"></span>
           <article class="tl__card sheet" data-reveal style={`--reveal-y:28px`}>
             <span class="tape tl__tape" aria-hidden="true"></span>
+            {m.turning && <span class="tl__stamp">Turning<br />point</span>}
             <p class="tl__year display">{m.year}</p>
-            <p class="tl__kind">
-              {m.turning && <span class="tl__flag">Turning point</span>}
-              <span>{m.kind}</span>
-              {m.place && <span>· {m.place}</span>}
-            </p>
             <h3 class="tl__title">{m.title}</h3>
             <p class="tl__body">{m.body}</p>
+            <p class="tl__kind">{m.kind}{m.place && ` · ${m.place}`}</p>
             <details class="tl__lesson">
               <summary><Icon name="pin" size={15} /> <span>What it taught me</span> <Icon name="plus" size={14} class="tl__plus" /></summary>
               <p class="tl__note">{m.lesson}</p>
@@ -86,6 +87,7 @@ const wave = 'M20 0 C 34 60, 6 120, 20 180 S 34 300, 20 360 S 6 480, 20 540 S 34
   .story { padding: var(--chapter-gap) var(--gutter) 0; max-width: 84rem; margin-inline: auto; }
   .story__head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 22rem); gap: var(--s-6); align-items: end; }
   .story__intro { color: var(--ink-2); max-width: 36ch; padding-bottom: 0.6rem; }
+  .story__intro :global(.demo-note) { margin-top: var(--s-4); }
 
   .tl { position: relative; margin-top: clamp(3rem, 7vw, 6rem); --line-x: 50%; }
   .tl__line { position: absolute; top: 0; bottom: 4rem; left: var(--line-x); width: 40px; height: calc(100% - 4rem); translate: -50% 0; overflow: visible; }
@@ -125,9 +127,14 @@ const wave = 'M20 0 C 34 60, 6 120, 20 180 S 34 300, 20 360 S 6 480, 20 540 S 34
   .tl__photo figcaption { font-size: 1.2rem; }
 
   .tl__year { font-size: clamp(3rem, 2.2rem + 2.6vw, 4.75rem); color: var(--olive); }
-  .tl__kind { margin-top: var(--s-2); display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-3); }
-  .tl__flag { padding: 0.1rem 0.45rem; border-radius: 2px; background: var(--red-string); color: var(--paper); }
-  .tl__title { margin-top: var(--s-3); font-size: var(--t-h4); font-weight: 650; line-height: 1.2; }
+  .tl__kind { margin-top: var(--s-3); font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-3); }
+  .tl__stamp {
+    position: absolute; right: 1.4rem; top: 2.6rem;
+    padding: 0.3rem 0.5rem; border: 2px solid rgb(163 53 43 / 0.8); border-radius: 4px;
+    font-family: var(--font-mono); font-size: 0.6875rem; font-weight: 500; line-height: 1.15; letter-spacing: 0.1em; text-transform: uppercase; text-align: center;
+    color: rgb(163 53 43 / 0.9); transform: rotate(-9deg); mix-blend-mode: multiply;
+  }
+  .tl__title { margin-top: var(--s-2); font-size: var(--t-h4); font-weight: 650; line-height: 1.2; }
   .tl__body { margin-top: var(--s-2); color: var(--ink-2); }
 
   .tl__lesson { margin-top: var(--s-4); }

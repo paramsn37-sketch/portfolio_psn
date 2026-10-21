@@ -19,6 +19,6 @@ STORY: In one screen the visitor knows the name, what he does and where to go; c
 
 FIRST VIEWPORT: Desk fills the viewport; centred sheet (~60vw, 1000:645) carries a hand-drawn route map whose six waypoints are chapter links; centred on it: mono meta line, hand "Hi, I'm", PARAM S N at ~12.5% of sheet width, one-line tagline, primary "Open the archive", ghost "See the work", "Say hello" link. Six desk objects around the sheet are doors to chapters.
 
-FORM: Pinned by the owner's brief and mockups (no tournament); ordered list position 1 of 1. seed: none (unavailable). Signature interaction: the camera zooms into the chosen object/waypoint and the paper becomes the archive (reverse zoom on return). Motion grammar: Emil Kowalski curves, press 0.97, lifts with lamplight glow, drawers on ease-drawer, page-flip for journal entries.
+FORM: Pinned by the owner's brief and five mockups; ordered list position 1 of 1. concept-seed was never run: new-work.md says a user- or brief-pinned direction beats the roll, and the owner pinned this one, so no seed exists (seed: none — direction pinned by brief, roll not run; not 'unavailable'). Signature interaction: the camera zooms into the chosen object/waypoint and the paper becomes the archive (reverse zoom on return). Motion grammar: Emil Kowalski curves, press 0.97, lifts with lamplight glow, drawers on ease-drawer, page-flip for journal entries.
 
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance

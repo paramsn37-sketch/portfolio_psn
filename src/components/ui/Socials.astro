@@ -4,12 +4,13 @@ import Icon from '../Icon.astro';
 import { links } from '@/data/site';
 interface Props { class?: string; tone?: 'ink' | 'paper' }
 const { class: cls, tone = 'ink' } = Astro.props;
+// A link still set to '#' is hidden until you add the real URL in src/data/site.ts.
 const items = [
   { href: links.linkedin, label: 'LinkedIn', brand: 'linkedin' as const },
   { href: links.github, label: 'GitHub', brand: 'github' as const },
   { href: `mailto:${links.email}`, label: 'Email', icon: 'mail' },
   { href: links.x, label: 'X', brand: 'x' as const },
-];
+].filter((i) => i.href && i.href !== '#');
 ---
 <ul class:list={['socials', `socials--${tone}`, cls]} role="list">
   {items.map((i) => (

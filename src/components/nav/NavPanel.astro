@@ -30,10 +30,10 @@ import { url } from '@/lib/url';
       <blockquote class="hand">“{profile.quote}”</blockquote>
     </figure>
     <ul class="navpanel__social" role="list">
-      <li><a href={links.linkedin} aria-label="LinkedIn"><Brand name="linkedin" /></a></li>
+      {links.linkedin !== '#' && <li><a href={links.linkedin} aria-label="LinkedIn"><Brand name="linkedin" /></a></li>}
       <li><a href={links.github} aria-label="GitHub"><Brand name="github" /></a></li>
       <li><a href={`mailto:${links.email}`} aria-label="Email"><Icon name="mail" size={19} /></a></li>
-      <li><a href={links.instagram} aria-label="Instagram"><Brand name="instagram" /></a></li>
+      {links.instagram !== '#' && <li><a href={links.instagram} aria-label="Instagram"><Brand name="instagram" /></a></li>}
     </ul>
   </div>
 </dialog>
