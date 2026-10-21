@@ -15,6 +15,10 @@ keyFeatures:
   - { icon: shopping-cart, text: Product catalogue & cart }
   - { icon: lock, text: Secure checkout }
   - { icon: smartphone, text: Mobile responsive }
+gallery:
+  - { alt: Process sketch or architecture diagram, caption: DEMO — how the system fits together }
+  - { alt: Key screen, caption: DEMO — the screen people use most }
+  - { alt: Before and after, caption: DEMO — what changed }
 links: { live: '#', design: '#' }
 ---
 
@@ -33,8 +37,6 @@ DEMO — What you personally owned. Name the parts you designed, built, decided 
 ## Process
 
 DEMO — How the work actually went: research, sketches, first version, what you threw away. Screenshots, diagrams and sketches belong here.
-
-![DEMO — process sketch or architecture diagram](placeholder)
 
 ## Decisions
 

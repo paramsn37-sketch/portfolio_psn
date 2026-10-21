@@ -14,6 +14,10 @@ cover: { alt: Project Chronicle timeline view }
 keyFeatures:
   - { icon: history, text: DEMO feature }
   - { icon: notebook-pen, text: DEMO feature }
+gallery:
+  - { alt: Process sketch or architecture diagram, caption: DEMO — how the system fits together }
+  - { alt: Key screen, caption: DEMO — the screen people use most }
+  - { alt: Before and after, caption: DEMO — what changed }
 links: { repo: '#' }
 ---
 
@@ -32,8 +36,6 @@ DEMO — What you personally owned. Name the parts you designed, built, decided 
 ## Process
 
 DEMO — How the work actually went: research, sketches, first version, what you threw away. Screenshots, diagrams and sketches belong here.
-
-![DEMO — process sketch or architecture diagram](placeholder)
 
 ## Decisions
 

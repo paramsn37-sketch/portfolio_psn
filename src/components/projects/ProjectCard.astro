@@ -1,0 +1,111 @@
+---
+/**
+ * An archive item. Three treatments share one anatomy (cover, title, tagline, tags, year):
+ *  paper   — a pinned print
+ *  dossier — a manila folder with a stamped date (kraft-dossier reference)
+ *  window  — a retro OS window (desktop-portfolio reference)
+ */
+import Icon from '../Icon.astro';
+import Placeholder from '../Placeholder.astro';
+import { url } from '@/lib/url';
+import type { CollectionEntry } from 'astro:content';
+interface Props { project: CollectionEntry<'projects'>; index?: number }
+const { project, index = 0 } = Astro.props;
+const p = project.data;
+const slug = project.id;
+const href = url(`archive/projects/${slug}/`);
+const style = p.cardStyle;
+const fileName = `${slug.replace(/-/g, '_')}.exe`;
+---
+<article class:list={['pcard', `pcard--${style}`]} data-project data-cats={p.categories.join('|')} data-year={p.year} data-title={p.title} data-order={p.order} style={`--tilt:${[-0.8, 0.6, -0.4, 0.9][index % 4]}deg`}>
+  <a class="pcard__link" href={href} aria-label={`${p.title} — ${p.tagline}. Open case study`}></a>
+  {style === 'window' && (
+    <div class="pcard__bar" aria-hidden="true">
+      <span class="pcard__dots"><i></i><i></i><i></i></span>
+      <span class="pcard__path">C:\PROJECTS\{fileName}</span>
+    </div>
+  )}
+  {style === 'dossier' && (
+    <span class="pcard__tab" aria-hidden="true">{p.categories[0]} · {p.year}</span>
+  )}
+  <div class="pcard__media" style={`view-transition-name: cover-${slug}`}>
+    <Placeholder src={p.cover.src} alt={p.cover.alt} ratio="16 / 10" label={`${p.title} · cover`} tone={style === 'window' ? 'dark' : 'paper'} />
+  </div>
+  {style === 'dossier' && <span class="pcard__stamp" aria-hidden="true">Filed<br />{p.year}</span>}
+  <div class="pcard__body">
+    <h3 class="pcard__title" style={`view-transition-name: title-${slug}`}>{p.title}</h3>
+    <p class="pcard__tagline">{p.tagline}</p>
+    <div class="pcard__foot">
+      <ul class="pcard__tags" role="list">
+        {p.tags.map((t) => <li class="tag">{t}</li>)}
+        <li class="pcard__year">{p.year}</li>
+      </ul>
+      <span class="pcard__go" aria-hidden="true"><Icon name="arrow-up-right" size={16} /></span>
+    </div>
+  </div>
+</article>
+
+<style>
+  .pcard {
+    position: relative; display: flex; flex-direction: column;
+    background: var(--card);
+    box-shadow: var(--shadow-paper);
+    border-radius: 3px;
+    padding: 0.6rem 0.6rem 0;
+    transform: rotate(var(--tilt));
+    transition: transform var(--d-base) var(--ease-out), box-shadow var(--d-base) var(--ease-out);
+  }
+  .pcard__link { position: absolute; inset: 0; z-index: 5; border-radius: inherit; }
+  .pcard__link:focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
+  .pcard__media { overflow: hidden; border-radius: 2px; }
+  .pcard__media :global(.ph), .pcard__media :global(img) { transition: transform 600ms var(--ease-out); }
+  .pcard__body { padding: 0.9rem 0.4rem 0.9rem; display: flex; flex-direction: column; flex: 1; }
+  .pcard__title { font-size: 1.125rem; font-weight: 700; line-height: 1.2; }
+  .pcard__tagline { margin-top: 0.15rem; font-size: 0.875rem; color: var(--ink-2); }
+  .pcard__foot { margin-top: auto; padding-top: 0.85rem; display: flex; align-items: flex-end; justify-content: space-between; gap: 0.5rem; }
+  .pcard__tags { display: flex; flex-wrap: wrap; gap: 0.3rem; align-items: center; }
+  .pcard__year { font-family: var(--font-mono); font-size: 0.625rem; color: var(--ink-3); margin-left: 0.2rem; }
+  .pcard__go {
+    display: grid; place-items: center; width: 2rem; height: 2rem; flex: none; border-radius: 50%;
+    color: var(--ink-2); box-shadow: inset 0 0 0 1px var(--linen-2);
+    transition: background-color var(--d-fast) ease, color var(--d-fast) ease, transform var(--d-base) var(--ease-out);
+  }
+  .pcard:has(.pcard__link:active) { transform: rotate(var(--tilt)) scale(0.985); transition-duration: var(--d-press); }
+  @media (hover: hover) and (pointer: fine) {
+    .pcard:hover { transform: rotate(0deg) translateY(-6px); box-shadow: var(--shadow-lift); }
+    .pcard:hover .pcard__media :global(.ph), .pcard:hover .pcard__media :global(img) { transform: scale(1.045); }
+    .pcard:hover .pcard__go { background: var(--ink); color: var(--paper); box-shadow: none; transform: rotate(45deg); }
+  }
+  .pcard:has(.pcard__link:focus-visible) { transform: rotate(0deg) translateY(-6px); box-shadow: var(--shadow-lift); }
+
+  /* — window — */
+  .pcard--window { padding: 0; background: #ece7da; box-shadow: var(--shadow-paper), inset 0 0 0 1.5px var(--ink); border-radius: 6px; overflow: hidden; }
+  .pcard--window .pcard__media { border-radius: 0; border-block: 1.5px solid var(--ink); }
+  .pcard--window .pcard__body { padding: 0.9rem 1rem; }
+  .pcard__bar { display: flex; align-items: center; gap: 0.6rem; height: 1.9rem; padding: 0 0.7rem; background: var(--olive); color: var(--paper); }
+  .pcard__dots { display: flex; gap: 0.3rem; }
+  .pcard__dots i { width: 0.55rem; height: 0.55rem; border-radius: 50%; background: var(--paper); opacity: 0.85; }
+  .pcard__dots i:first-child { background: #e7a196; }
+  .pcard__path { font-family: var(--font-pixel); font-size: 0.8125rem; letter-spacing: 0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* — dossier — */
+  .pcard--dossier { background: var(--kraft); margin-top: 1.1rem; border-radius: 2px 6px 6px 6px; }
+  .pcard--dossier::before { content: ""; position: absolute; inset: 0; background: url("../../assets/textures/grain.webp"); background-size: 180px; mix-blend-mode: multiply; opacity: 0.5; border-radius: inherit; pointer-events: none; }
+  .pcard__tab {
+    position: absolute; left: 0; bottom: 100%; height: 1.15rem; padding: 0.15rem 0.8rem 0;
+    background: var(--kraft); border-radius: 6px 6px 0 0;
+    font-family: var(--font-mono); font-size: 0.5625rem; letter-spacing: 0.08em; text-transform: uppercase; color: #5b4521;
+  }
+  .pcard--dossier .pcard__media { padding: 0.35rem; background: #fbf9f3; transform: rotate(-1.4deg); box-shadow: var(--shadow-paper); }
+  .pcard--dossier .pcard__tagline, .pcard--dossier .pcard__year { color: #4f3d1f; }
+  .pcard--dossier :global(.tag) { color: #4f3d1f; box-shadow: inset 0 0 0 1px #a9844a; }
+  .pcard--dossier .pcard__go { color: #4f3d1f; box-shadow: inset 0 0 0 1px #a9844a; }
+  .pcard__stamp {
+    position: absolute; right: 0.9rem; top: 42%; z-index: 2;
+    padding: 0.3rem 0.5rem; border: 2px solid rgb(163 53 43 / 0.75); border-radius: 4px;
+    font-family: var(--font-mono); font-size: 0.6rem; font-weight: 500; line-height: 1.15; letter-spacing: 0.12em; text-transform: uppercase; text-align: center;
+    color: rgb(163 53 43 / 0.82); transform: rotate(-12deg);
+    mix-blend-mode: multiply;
+  }
+  @media (prefers-reduced-motion: reduce) { .pcard, .pcard:hover { transform: none !important; } }
+</style>

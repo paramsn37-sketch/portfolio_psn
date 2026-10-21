@@ -1,0 +1,230 @@
+---
+import { getCollection } from 'astro:content';
+import Icon from '../Icon.astro';
+import Placeholder from '../Placeholder.astro';
+import PaperClip from '../ui/PaperClip.astro';
+import ProjectCard from '../projects/ProjectCard.astro';
+import { CATEGORIES } from '@/content.config';
+import { url } from '@/lib/url';
+import { links } from '@/data/site';
+
+const all = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+const featured = all.find((p) => p.data.featured) ?? all[0];
+const rest = all.filter((p) => p !== featured);
+const counts = Object.fromEntries(CATEGORIES.map((c) => [c, all.filter((p) => p.data.categories.includes(c)).length]));
+const f = featured.data;
+---
+<section id="projects" class="projects chapter" data-chapter data-num="03" aria-labelledby="projects-title">
+  <header class="projects__head">
+    <p class="projects__aside hand" aria-hidden="true">Selected works<br />&amp; experiments</p>
+    <h2 class="projects__title display" id="projects-title" data-reveal>
+      <span class="projects__num">03</span>Projects
+    </h2>
+    <p class="projects__sub" data-reveal>Ideas / products / experiences</p>
+    <div class="projects__intro" data-reveal>
+      <p>A collection of things I've built, worked on and explored. Each project is a little chapter with its own context, challenges and learnings.</p>
+      <p class="projects__note hand hand--blue" aria-hidden="true">Different problems.<br />Same curiosity.</p>
+    </div>
+  </header>
+
+  <div class="projects__controls" data-reveal>
+    <div class="projects__filters" role="group" aria-label="Filter projects by category">
+      <button class="chip" type="button" data-filter="all" aria-pressed="true">All <span class="projects__count">{all.length}</span></button>
+      {CATEGORIES.map((c) => (
+        <button class="chip" type="button" data-filter={c} aria-pressed="false">{c} <span class="projects__count">{counts[c]}</span></button>
+      ))}
+    </div>
+    <label class="projects__sort">
+      <span>Sort</span>
+      <select data-sort>
+        <option value="featured">Featured</option>
+        <option value="recent">Most recent</option>
+        <option value="alpha">A → Z</option>
+      </select>
+      <Icon name="chevron-down" size={14} />
+    </label>
+  </div>
+  <p class="visually-hidden" aria-live="polite" data-filter-status></p>
+
+  <div class="projects__grid" data-project-grid>
+    <!-- featured -->
+    <article class="feat" data-project data-cats={f.categories.join('|')} data-year={f.year} data-title={f.title} data-order={f.order} data-featured>
+      <a class="pcard__link feat__link" href={url(`archive/projects/${featured.id}/`)} aria-label={`${f.title} — ${f.tagline}. Open case study`}></a>
+      <div class="feat__media" style={`view-transition-name: cover-${featured.id}`}>
+        <Placeholder src={f.cover.src} alt={f.cover.alt} ratio="4 / 3" label={`${f.title} · cover`} tone="dark" />
+        <span class="feat__label">Featured project</span>
+      </div>
+      <div class="feat__card">
+        <PaperClip class="feat__clip" size={22} />
+        <h3 class="feat__title display" style={`view-transition-name: title-${featured.id}`}>{f.title}</h3>
+        <p class="feat__tagline">{f.tagline}</p>
+        <ul class="feat__tags" role="list">{f.tags.map((t) => <li class="tag">{t}</li>)}<li class="tag">{f.year}</li></ul>
+        <p class="feat__summary">{f.summary}</p>
+        <span class="feat__cta">View case study <Icon name="arrow-right" size={16} /></span>
+        {f.annotation && (
+          <p class="feat__annot hand hand--blue" aria-hidden="true">
+            {f.annotation}
+            <svg viewBox="0 0 70 34" width="60" height="30"><path d="M4 22 C 22 30, 46 26, 64 8 M64 8 l-11 2 M64 8 l-1 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" /></svg>
+          </p>
+        )}
+      </div>
+      <div class="feat__more">
+        <Icon name="flask-conical" size={18} />
+        <p>Smaller experiments and half-finished ideas live in the open.</p>
+        <a class="feat__gh link" href={links.github} target="_blank" rel="noopener">github.com/paramsn37-sketch <Icon name="arrow-up-right" size={14} /></a>
+      </div>
+    </article>
+
+    {rest.map((p, i) => <ProjectCard project={p} index={i} />)}
+
+    <div class="projects__empty" data-empty hidden>
+      <p class="hand">Nothing filed under <span data-empty-cat>this</span> yet.</p>
+      <button class="link" type="button" data-filter="all">Show everything</button>
+    </div>
+  </div>
+</section>
+
+<script>
+  const grid = document.querySelector<HTMLElement>('[data-project-grid]');
+  const buttons = [...document.querySelectorAll<HTMLButtonElement>('[data-filter]')];
+  const sortSel = document.querySelector<HTMLSelectElement>('[data-sort]');
+  const empty = document.querySelector<HTMLElement>('[data-empty]');
+  const status = document.querySelector<HTMLElement>('[data-filter-status]');
+  const items = () => [...grid!.querySelectorAll<HTMLElement>('[data-project]')];
+  let current = 'all';
+
+  const vt = (fn: () => void) => {
+    const doc = document as Document & { startViewTransition?: (cb: () => void) => unknown };
+    if (doc.startViewTransition && !matchMedia('(prefers-reduced-motion: reduce)').matches) doc.startViewTransition(fn);
+    else fn();
+  };
+
+  function apply() {
+    let shown = 0;
+    for (const el of items()) {
+      const on = current === 'all' || el.dataset.cats!.split('|').includes(current);
+      el.hidden = !on;
+      if (on) shown++;
+    }
+    const mode = sortSel?.value ?? 'featured';
+    const sorted = items().sort((a, b) => {
+      if (mode === 'alpha') return a.dataset.title!.localeCompare(b.dataset.title!);
+      if (mode === 'recent') return Number(b.dataset.year) - Number(a.dataset.year) || Number(a.dataset.order) - Number(b.dataset.order);
+      return Number(a.dataset.order) - Number(b.dataset.order);
+    });
+    sorted.forEach((el) => grid!.insertBefore(el, empty));
+    grid!.classList.toggle('is-filtered', current !== 'all' || mode !== 'featured');
+    if (empty) {
+      empty.hidden = shown > 0;
+      const cat = empty.querySelector('[data-empty-cat]');
+      if (cat) cat.textContent = current;
+    }
+    buttons.forEach((b) => b.closest('.projects__filters') && b.setAttribute('aria-pressed', String(b.dataset.filter === current)));
+    if (status) status.textContent = `${shown} project${shown === 1 ? '' : 's'} shown`;
+  }
+
+  buttons.forEach((b) => b.addEventListener('click', () => { current = b.dataset.filter!; vt(apply); }));
+  sortSel?.addEventListener('change', () => vt(apply));
+  // Give each card its own view-transition name for the filter shuffle without clashing with the cover morph
+  items().forEach((el, i) => (el.style.viewTransitionName = `pitem-${i}`));
+</script>
+
+<style>
+  .projects { padding: var(--chapter-gap) var(--gutter) 0; max-width: 84rem; margin-inline: auto; }
+  .projects__head {
+    position: relative;
+    display: grid; grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+    grid-template-areas: "title intro" "sub intro";
+    column-gap: clamp(2rem, 5vw, 5rem); align-items: end;
+  }
+  .projects__aside { position: absolute; left: clamp(-1rem, -1vw, 0rem); top: -3.4rem; font-size: 1.6rem; line-height: 0.95; transform: rotate(-7deg); color: var(--ink-2); }
+  .projects__title {
+    grid-area: title; display: flex; align-items: flex-start; gap: 0.15em;
+    font-size: clamp(4.5rem, 1rem + 11vw, 13rem); line-height: 0.82;
+  }
+  .projects__num { font-family: var(--font-mono); font-weight: 500; font-size: clamp(0.75rem, 0.6rem + 0.5vw, 1rem); letter-spacing: 0.04em; line-height: 1; padding-top: 0.5em; color: var(--olive-deep); }
+  .projects__sub { grid-area: sub; margin-top: var(--s-4); font-family: var(--font-mono); font-size: 0.8125rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2); }
+  .projects__intro { grid-area: intro; position: relative; align-self: center; max-width: 36ch; color: var(--ink-2); padding-bottom: 1rem; }
+  .projects__note { position: absolute; right: -1rem; top: -4.5rem; font-size: 1.6rem; line-height: 0.95; transform: rotate(-6deg); }
+
+  .projects__controls { margin-top: clamp(2.5rem, 5vw, 4rem); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--s-4); }
+  .projects__filters { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+  .projects__filters .chip { min-height: 2.5rem; padding: 0 1rem; font-size: 0.75rem; }
+  .projects__count { opacity: 0.55; font-size: 0.625rem; }
+  .projects__sort { position: relative; display: inline-flex; align-items: center; gap: 0.6rem; font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.04em; color: var(--ink-3); text-transform: uppercase; }
+  .projects__sort select {
+    appearance: none; min-height: 2.5rem; padding: 0 2.1rem 0 0.9rem; border: 0; border-radius: var(--r-pill);
+    background: var(--paper-2); color: var(--ink); font-family: var(--font-mono); font-size: 0.75rem; text-transform: none; cursor: pointer;
+  }
+  .projects__sort :global(svg) { position: absolute; right: 0.8rem; pointer-events: none; color: var(--ink-2); }
+
+  .projects__grid {
+    margin-top: var(--s-6);
+    display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(1.25rem, 2.2vw, 2rem);
+    align-items: start;
+  }
+  .projects__grid > :global([hidden]) { display: none; }
+
+  /* featured composition */
+  .feat { position: relative; grid-column: span 2; grid-row: span 2; align-self: stretch; display: grid; grid-template-columns: 1.1fr 1fr; grid-template-rows: auto 1fr; align-items: start; isolation: isolate; }
+  .feat__more {
+    grid-column: 1 / -1; grid-row: 2; position: relative; z-index: 7; align-self: end;
+    margin-top: var(--s-6); display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.9rem;
+    padding: 1rem 1.2rem; border-radius: var(--r-3); background: var(--paper-2);
+    font-size: 0.9375rem; color: var(--ink-2);
+  }
+  .feat__more :global(svg) { color: var(--olive-deep); }
+  .feat__gh { display: inline-flex; align-items: center; gap: 0.3rem; font-family: var(--font-mono); font-size: 0.75rem; margin-left: auto; }
+  .projects__grid.is-filtered .feat__more { display: none; }
+  .projects__grid.is-filtered .feat { grid-row: span 1; }
+  .feat__link { position: absolute; inset: 0; z-index: 6; }
+  .feat__link:focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
+  .feat__media { position: relative; grid-column: 1 / span 2; grid-row: 1; width: 72%; overflow: hidden; border-radius: 3px; box-shadow: var(--shadow-lift); }
+  .feat__media :global(.ph) { transition: transform 700ms var(--ease-out); }
+  .feat__label { position: absolute; left: 0.9rem; top: 0.9rem; padding: 0.3rem 0.6rem; background: rgb(243 239 227 / 0.92); font-family: var(--font-mono); font-size: 0.625rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink); transform: rotate(-2deg); }
+  .feat__card {
+    position: relative; z-index: 2; grid-column: 2; grid-row: 1; margin-left: -10%;
+    padding: 2rem 1.75rem 1.6rem; background: var(--card); box-shadow: var(--shadow-lift);
+    transform: rotate(1.2deg);
+    transition: transform var(--d-base) var(--ease-out);
+  }
+  .feat__card :global(.feat__clip) { top: -1.6rem; right: 1.6rem; }
+  .feat__title { font-size: clamp(2.25rem, 1.6rem + 1.6vw, 3.25rem); }
+  .feat__tagline { margin-top: 0.3rem; font-size: 0.9375rem; color: var(--ink-2); }
+  .feat__tags { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: var(--s-4); }
+  .feat__summary { margin-top: var(--s-4); font-size: 0.9375rem; color: var(--ink-2); }
+  .feat__cta { margin-top: var(--s-5); display: inline-flex; align-items: center; gap: 0.5rem; min-height: 2.6rem; padding: 0 1rem; border-radius: var(--r-2); box-shadow: inset 0 0 0 1px var(--ink-3); font-family: var(--font-mono); font-size: 0.75rem; transition: background-color var(--d-fast) ease, color var(--d-fast) ease; }
+  .feat__cta :global(svg) { transition: transform var(--d-fast) var(--ease-out); }
+  .feat__annot { position: absolute; left: -54%; bottom: -2.6rem; display: flex; align-items: flex-start; gap: 0.3rem; font-size: 1.8rem; transform: rotate(-4deg); }
+  .feat:has(.feat__link:active) .feat__card { transform: rotate(1.2deg) scale(0.985); }
+  @media (hover: hover) and (pointer: fine) {
+    .feat:hover .feat__card { transform: rotate(0deg) translateY(-6px); }
+    .feat:hover .feat__media :global(.ph) { transform: scale(1.04); }
+    .feat:hover .feat__cta { background: var(--ink); color: var(--paper); box-shadow: none; }
+    .feat:hover .feat__cta :global(svg) { transform: translateX(3px); }
+  }
+  .feat:has(.feat__link:focus-visible) .feat__card { transform: rotate(0deg) translateY(-6px); }
+
+  .projects__empty { grid-column: 1 / -1; padding: 3rem 1rem; display: grid; justify-items: center; gap: 0.5rem; text-align: center; }
+  .projects__empty .hand { font-size: 2rem; color: var(--ink-2); }
+
+
+  @media (max-width: 1180px) {
+    .projects__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .feat { grid-column: 1 / -1; grid-row: auto; }
+  }
+  @media (max-width: 860px) {
+    .projects__head { grid-template-columns: 1fr; grid-template-areas: "title" "sub" "intro"; }
+    .projects__intro { margin-top: var(--s-5); }
+    .projects__note { position: static; margin-top: var(--s-3); transform: rotate(-3deg); }
+    .projects__aside { display: none; }
+  }
+  @media (max-width: 620px) {
+    .projects__grid { grid-template-columns: 1fr; }
+    .feat { grid-template-columns: 1fr; }
+    .feat__media { width: 100%; grid-column: 1; }
+    .feat__card { grid-column: 1; grid-row: 2; margin: -2.5rem 0.75rem 0; }
+    .feat__annot { display: none; }
+    .projects__filters { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin-inline: calc(var(--gutter) * -1); padding-inline: var(--gutter); width: calc(100% + 2 * var(--gutter)); }
+  }
+</style>

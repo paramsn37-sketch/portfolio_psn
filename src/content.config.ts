@@ -24,6 +24,7 @@ const projects = defineCollection({
     /** Handwritten note pinned to the case-study hero */
     annotation: z.string().optional(),
     cover: z.object({ src: z.string().optional(), alt: z.string() }),
+    gallery: z.array(z.object({ alt: z.string(), caption: z.string().optional(), src: z.string().optional() })).default([]),
     keyFeatures: z.array(z.object({ icon: z.string(), text: z.string() })).default([]),
     links: z
       .object({ live: z.string().optional(), repo: z.string().optional(), design: z.string().optional() })

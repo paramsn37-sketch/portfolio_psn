@@ -1,0 +1,278 @@
+---
+import { getCollection, render } from 'astro:content';
+import Archive from '@/layouts/Archive.astro';
+import Icon from '@/components/Icon.astro';
+import Placeholder from '@/components/Placeholder.astro';
+import PaperClip from '@/components/ui/PaperClip.astro';
+import { url } from '@/lib/url';
+
+export async function getStaticPaths() {
+  const all = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+  return all.map((entry, i) => ({
+    params: { slug: entry.id },
+    props: { entry, prev: all[(i - 1 + all.length) % all.length], next: all[(i + 1) % all.length], index: i, total: all.length },
+  }));
+}
+
+const { entry, prev, next, index, total } = Astro.props;
+const { Content, headings } = await render(entry);
+const p = entry.data;
+const slug = entry.id;
+const sections = [...headings.filter((h) => h.depth === 2), ...(p.gallery.length ? [{ slug: 'visuals', text: 'Visuals' }] : [])];
+const linkList = [
+  { key: 'live', label: 'Live demo', icon: 'external-link', href: p.links.live },
+  { key: 'repo', label: 'Source code', icon: 'code', href: p.links.repo },
+  { key: 'design', label: 'Design file', icon: 'pen-tool', href: p.links.design },
+].filter((l) => l.href !== undefined);
+const isReal = (h?: string) => !!h && h !== '#';
+---
+<Archive current="projects" title={`${p.title} — case study · Param S N`} description={p.summary} railNote="Different problems. Same curiosity.">
+  <article class="cs">
+    <nav class="cs__crumbs" aria-label="Breadcrumb">
+      <a class="cs__back" href={url('archive/#projects')}><Icon name="arrow-left" size={16} /> Back to projects</a>
+      <span class="cs__trail" aria-hidden="true">03 / Projects / {p.title}</span>
+    </nav>
+
+    {p.demo && (
+      <p class="cs__demo sticky" role="note">Demo case study — replace the text in <code>src/content/projects/{slug}.md</code></p>
+    )}
+
+    <header class="cs__head">
+      <div class="cs__id">
+        <span class="cs__icon" aria-hidden="true"><Icon name="folder-open" size={26} stroke={1.5} /></span>
+        <div>
+          <h1 class="cs__title display" style={`view-transition-name: title-${slug}`}>{p.title}</h1>
+          <p class="cs__tagline">{p.tagline}</p>
+          <ul class="cs__tags" role="list">{p.tags.map((t) => <li class="tag">{t}</li>)}<li class="tag">{p.year}</li></ul>
+        </div>
+      </div>
+      <figure class="cs__polaroid polaroid" aria-hidden="true">
+        <span class="tape cs__tape"></span>
+        <Placeholder alt={`${p.title} in the real world`} ratio="5 / 4" label="Context photo" />
+      </figure>
+      {p.annotation && (
+        <p class="cs__annot hand hand--blue" aria-hidden="true">
+          {p.annotation}
+          <svg viewBox="0 0 60 40" width="54" height="36"><path d="M4 6 C 24 6, 40 14, 50 32 M50 32 l-10 -3 M50 32 l1 -10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" /></svg>
+        </p>
+      )}
+    </header>
+
+    <div class="cs__hero" style={`view-transition-name: cover-${slug}`}>
+      <Placeholder src={p.cover.src} alt={p.cover.alt} ratio="16 / 8" label={`${p.title} · hero screenshot or video`} tone="dark" eager />
+    </div>
+
+    <nav class="cs__tabs" aria-label="Case study sections" data-cs-tabs>
+      <ul role="list">
+        {sections.map((h) => <li><a href={`#${h.slug}`} data-cs-tab={h.slug}>{h.text}</a></li>)}
+      </ul>
+      <span class="cs__ind" data-cs-ind aria-hidden="true"></span>
+    </nav>
+
+    <div class="cs__layout">
+      <div class="cs__prose">
+        <Content />
+        {p.gallery.length > 0 && (
+          <section class="cs__gallery" aria-labelledby="visuals">
+            <h2 id="visuals">Visuals</h2>
+            <div class="cs__shots">
+              {p.gallery.map((g, i) => (
+                <figure class:list={['cs__shot', i === 0 && 'cs__shot--wide']}>
+                  <Placeholder src={g.src} alt={g.alt} ratio={i === 0 ? '16 / 9' : '4 / 3'} label={g.alt} />
+                  {g.caption && <figcaption>{g.caption}</figcaption>}
+                </figure>
+              ))}
+            </div>
+          </section>
+        )}
+      </div>
+
+      <aside class="cs__aside" aria-label="At a glance">
+        <section class="cs__box sheet">
+          <h2 class="cs__box-title">At a glance</h2>
+          <p class="cs__summary">{p.summary}</p>
+          <dl class="cs__facts">
+            <div><dt>Role</dt><dd>{p.role}</dd></div>
+            <div><dt>Year</dt><dd>{p.year}</dd></div>
+            {p.duration && <div><dt>Duration</dt><dd>{p.duration}</dd></div>}
+            {p.team && <div><dt>Team</dt><dd>{p.team}</dd></div>}
+            {p.stack.length > 0 && <div><dt>Stack</dt><dd>{p.stack.join(' · ')}</dd></div>}
+          </dl>
+        </section>
+
+        {p.keyFeatures.length > 0 && (
+          <section class="cs__box">
+            <h2 class="cs__box-title">Key features</h2>
+            <ul class="cs__features" role="list">
+              {p.keyFeatures.map((k) => <li><Icon name={k.icon} size={18} /> <span>{k.text}</span></li>)}
+            </ul>
+          </section>
+        )}
+
+        {linkList.length > 0 && (
+          <section class="cs__box">
+            <h2 class="cs__box-title">Links</h2>
+            <ul class="cs__links" role="list">
+              {linkList.map((l) => (
+                <li>
+                  {isReal(l.href) ? (
+                    <a class="btn btn--ghost cs__linkbtn" href={l.href} target="_blank" rel="noopener"><Icon name={l.icon} size={16} /> {l.label} <Icon name="arrow-up-right" size={14} /></a>
+                  ) : (
+                    <span class="btn btn--ghost cs__linkbtn is-off" aria-disabled="true"><Icon name={l.icon} size={16} /> {l.label} <span class="cs__soon">soon</span></span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+      </aside>
+    </div>
+
+    <nav class="cs__pager" aria-label="More projects">
+      <a class="cs__pg cs__pg--prev" href={url(`archive/projects/${prev.id}/`)}>
+        <span class="cs__pg-dir"><Icon name="arrow-left" size={16} /> Previous project</span>
+        <span class="cs__pg-title display">{prev.data.title}</span>
+        <span class="cs__pg-tag">{prev.data.tagline}</span>
+      </a>
+      <span class="cs__pg-count" aria-hidden="true">{String(index + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}</span>
+      <a class="cs__pg cs__pg--next" href={url(`archive/projects/${next.id}/`)}>
+        <span class="cs__pg-dir">Next project <Icon name="arrow-right" size={16} /></span>
+        <span class="cs__pg-title display">{next.data.title}</span>
+        <span class="cs__pg-tag">{next.data.tagline}</span>
+      </a>
+    </nav>
+  </article>
+</Archive>
+
+<script>
+  /* Section bar: follows your reading, indicator slides under the current section */
+  const nav = document.querySelector<HTMLElement>('[data-cs-tabs]');
+  const tabs = [...document.querySelectorAll<HTMLAnchorElement>('[data-cs-tab]')];
+  const ind = document.querySelector<HTMLElement>('[data-cs-ind]');
+  const targets = tabs.map((t) => document.getElementById(t.dataset.csTab!)).filter(Boolean) as HTMLElement[];
+  const set = (id: string) => {
+    tabs.forEach((t) => (t.dataset.csTab === id ? t.setAttribute('aria-current', 'true') : t.removeAttribute('aria-current')));
+    const a = tabs.find((t) => t.dataset.csTab === id);
+    if (!a || !ind || !nav) return;
+    const nr = nav.getBoundingClientRect(), r = a.getBoundingClientRect();
+    ind.style.opacity = '1';
+    ind.style.transform = `translateX(${r.left - nr.left + nav.scrollLeft}px) scaleX(${r.width})`;
+    // keep the active tab visible on small screens
+    const ul = nav.querySelector('ul')!;
+    if (r.left < nr.left || r.right > nr.right) ul.scrollTo({ left: a.offsetLeft - 16, behavior: 'smooth' });
+  };
+  if (targets.length) {
+    const io = new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && set(e.target.id)), { rootMargin: '-30% 0px -60% 0px' });
+    targets.forEach((t) => io.observe(t));
+    set(targets[0].id);
+    addEventListener('resize', () => { const c = tabs.find((t) => t.hasAttribute('aria-current')); if (c) set(c.dataset.csTab!); });
+  }
+  nav?.addEventListener('scroll', () => { const c = tabs.find((t) => t.hasAttribute('aria-current')); if (c) set(c.dataset.csTab!); }, { passive: true });
+</script>
+
+<style>
+  .cs { max-width: 76rem; margin-inline: auto; padding: var(--s-6) var(--gutter) var(--s-10); }
+  .cs__crumbs { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-3); }
+  .cs__back { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 2.75rem; padding: 0 0.25rem; font-size: 0.9375rem; text-decoration: none; color: var(--ink-2); }
+  .cs__back :global(svg) { transition: transform var(--d-fast) var(--ease-out); }
+  @media (hover: hover) { .cs__back:hover { color: var(--ink); } .cs__back:hover :global(svg) { transform: translateX(-3px); } }
+  .cs__trail { font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); }
+  .cs__demo { margin-top: var(--s-4); display: inline-block; font-size: 1.35rem; padding: 0.5rem 0.9rem; transform: rotate(-0.6deg); }
+  .cs__demo code { font-family: var(--font-mono); font-size: 0.7rem; background: rgb(255 255 255 / 0.5); padding: 0.1rem 0.3rem; border-radius: 2px; }
+
+  .cs__head { position: relative; margin-top: var(--s-6); display: grid; grid-template-columns: minmax(0, 1fr) 15rem; gap: var(--s-6); align-items: end; }
+  .cs__id { display: grid; grid-template-columns: auto 1fr; gap: var(--s-5); align-items: start; }
+  .cs__icon { display: grid; place-items: center; width: 3.75rem; height: 3.75rem; margin-top: 0.6rem; border-radius: var(--r-3); background: var(--olive-deep); color: var(--paper); box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.15); }
+  .cs__title { font-size: clamp(3.25rem, 1.8rem + 5vw, 6.5rem); }
+  .cs__tagline { margin-top: var(--s-2); font-size: var(--t-lead); color: var(--ink-2); }
+  .cs__tags { margin-top: var(--s-4); display: flex; flex-wrap: wrap; gap: 0.35rem; }
+  .cs__polaroid { transform: rotate(3.5deg) translateY(-1.5rem); padding-bottom: 0.6rem; }
+  .cs__tape { width: 5rem; top: -0.8rem; left: 50%; translate: -50% 0; rotate: 4deg; }
+  .cs__annot { position: absolute; right: 16.5rem; top: -0.5rem; display: flex; align-items: flex-end; gap: 0.2rem; font-size: 1.7rem; transform: rotate(-4deg); }
+
+  .cs__hero { margin-top: var(--s-6); overflow: hidden; border-radius: 4px; box-shadow: var(--shadow-lift); }
+
+  .cs__tabs {
+    position: sticky; top: var(--bar-h); z-index: 20;
+    margin-top: var(--s-7);
+    background: var(--paper);
+    border-bottom: var(--hair);
+  }
+  .cs__tabs ul { display: flex; gap: var(--s-5); overflow-x: auto; scrollbar-width: none; padding-inline: 0.1rem; }
+  .cs__tabs a { display: block; padding: 1rem 0 0.9rem; white-space: nowrap; font-size: 0.9375rem; color: var(--ink-3); text-decoration: none; transition: color var(--d-fast) ease; }
+  .cs__tabs a[aria-current="true"] { color: var(--ink); font-weight: 600; }
+  @media (hover: hover) { .cs__tabs a:hover { color: var(--ink); } }
+  .cs__ind { position: absolute; left: 0; bottom: -1px; width: 1px; height: 2px; background: var(--olive-deep); transform-origin: 0 0; opacity: 0; transition: transform var(--d-base) var(--ease-out), opacity var(--d-fast) ease; }
+
+  .cs__layout { margin-top: var(--s-7); display: grid; grid-template-columns: minmax(0, 1fr) 20rem; gap: clamp(2rem, 5vw, 5rem); align-items: start; }
+
+  /* prose from Markdown */
+  .cs__prose { max-width: 42rem; }
+  .cs__prose :global(h2) {
+    scroll-margin-top: calc(var(--bar-h) + 4.5rem);
+    font-family: var(--font-display); font-weight: 900; text-transform: uppercase; letter-spacing: var(--track-display);
+    font-size: clamp(2rem, 1.6rem + 1.4vw, 2.75rem); line-height: 0.95;
+    margin-top: var(--s-8);
+  }
+  .cs__prose :global(h2:first-child) { margin-top: 0; }
+  .cs__prose :global(h3) { margin-top: var(--s-6); font-size: var(--t-h4); font-weight: 650; }
+  .cs__prose :global(p), .cs__prose :global(ul), .cs__prose :global(ol) { margin-top: var(--s-4); color: var(--ink); font-size: 1.0625rem; line-height: 1.7; }
+  .cs__prose :global(ul), .cs__prose :global(ol) { padding-left: 1.2rem; }
+  .cs__prose :global(li + li) { margin-top: 0.35rem; }
+  .cs__prose :global(a) { color: var(--blue); }
+  .cs__prose :global(blockquote) { margin-top: var(--s-5); padding: 1rem 1.2rem; background: var(--note); font-family: var(--font-hand); font-size: 1.6rem; line-height: 1.1; transform: rotate(-0.6deg); }
+  .cs__prose :global(code) { font-family: var(--font-mono); font-size: 0.85em; background: var(--paper-2); padding: 0.1em 0.35em; border-radius: 3px; }
+  .cs__prose :global(pre) { margin-top: var(--s-4); padding: 1rem; overflow-x: auto; background: #2c2b27; color: #ece6d8; border-radius: 4px; font-size: 0.85rem; }
+
+  .cs__gallery h2 { margin-top: var(--s-8); }
+  .cs__shots { margin-top: var(--s-5); display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-4); }
+  .cs__shot--wide { grid-column: 1 / -1; }
+  .cs__shot figcaption { margin-top: 0.5rem; font-family: var(--font-mono); font-size: 0.6875rem; color: var(--ink-3); }
+
+  .cs__aside { position: sticky; top: calc(var(--bar-h) + 4.5rem); display: grid; gap: var(--s-6); }
+  .cs__box { padding: 0; }
+  .cs__box.sheet { padding: var(--s-5); }
+  .cs__box-title { font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); font-weight: 400; }
+  .cs__summary { margin-top: var(--s-3); font-size: 0.9375rem; color: var(--ink); }
+  .cs__facts { margin-top: var(--s-4); display: grid; }
+  .cs__facts div { display: grid; grid-template-columns: 5.5rem 1fr; gap: var(--s-3); padding: 0.55rem 0; border-top: 1px dashed var(--linen-2); font-size: 0.875rem; }
+  .cs__facts dt { font-family: var(--font-mono); font-size: 0.6875rem; color: var(--ink-3); padding-top: 0.1rem; }
+  .cs__features { margin-top: var(--s-3); display: grid; gap: 0.7rem; }
+  .cs__features li { display: grid; grid-template-columns: 1.4rem 1fr; gap: 0.6rem; align-items: start; font-size: 0.9375rem; }
+  .cs__features :global(svg) { color: var(--olive-deep); margin-top: 0.1rem; }
+  .cs__links { margin-top: var(--s-3); display: grid; gap: var(--s-2); }
+  .cs__linkbtn { width: 100%; justify-content: flex-start; }
+  .cs__linkbtn > :global(svg:last-child) { margin-left: auto; }
+  .cs__linkbtn.is-off { color: var(--ink-3); box-shadow: inset 0 0 0 1px var(--linen-2); cursor: not-allowed; }
+  .cs__soon { margin-left: auto; font-family: var(--font-hand); font-size: 1.15rem; color: var(--blue); }
+
+  .cs__pager { margin-top: var(--s-10); padding-top: var(--s-6); border-top: var(--hair); display: grid; grid-template-columns: 1fr auto 1fr; gap: var(--s-5); align-items: center; }
+  .cs__pg { display: grid; gap: 0.3rem; padding: var(--s-4); border-radius: var(--r-3); text-decoration: none; transition: background-color var(--d-fast) ease, transform var(--d-press) var(--ease-out); }
+  .cs__pg:active { transform: scale(0.98); }
+  .cs__pg--next { text-align: right; justify-items: end; }
+  .cs__pg-dir { display: inline-flex; align-items: center; gap: 0.4rem; font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-3); }
+  .cs__pg-dir :global(svg) { transition: transform var(--d-fast) var(--ease-out); }
+  .cs__pg-title { font-size: clamp(1.75rem, 1.3rem + 1.4vw, 2.6rem); }
+  .cs__pg-tag { font-size: 0.875rem; color: var(--ink-2); }
+  .cs__pg-count { font-family: var(--font-mono); font-size: 0.6875rem; color: var(--ink-3); }
+  @media (hover: hover) {
+    .cs__pg:hover { background: var(--paper-2); }
+    .cs__pg--prev:hover .cs__pg-dir :global(svg) { transform: translateX(-3px); }
+    .cs__pg--next:hover .cs__pg-dir :global(svg) { transform: translateX(3px); }
+  }
+
+  @media (max-width: 1000px) {
+    .cs__layout { grid-template-columns: 1fr; }
+    .cs__aside { position: static; grid-row: 1; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); }
+    .cs__head { grid-template-columns: 1fr; }
+    .cs__polaroid, .cs__annot { display: none; }
+  }
+  @media (max-width: 620px) {
+    .cs__id { grid-template-columns: 1fr; gap: var(--s-3); }
+    .cs__icon { width: 3rem; height: 3rem; }
+    .cs__trail { display: none; }
+    .cs__pager { grid-template-columns: 1fr 1fr; }
+    .cs__pg-count { display: none; }
+    .cs__shots { grid-template-columns: 1fr; }
+  }
+</style>
