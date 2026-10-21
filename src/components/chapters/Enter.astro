@@ -28,7 +28,7 @@ import { profile } from '@/data/site';
     <div class="enter__collage" data-reveal="fade">
       <figure class="polaroid enter__photo">
         <span class="tape enter__tape" aria-hidden="true"></span>
-        <Placeholder alt={profile.heroPhoto.alt} ratio={profile.heroPhoto.ratio} label="Hero photo · 4:5" eager />
+        <Placeholder {...profile.heroPhoto} label="Hero photo · 4:5" eager />
         <figcaption>somewhere up there</figcaption>
       </figure>
       <div class="sticky enter__note" aria-hidden="true">

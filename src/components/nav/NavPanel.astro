@@ -2,7 +2,7 @@
 import Icon from '../Icon.astro';
 import Brand from '../Brand.astro';
 import Placeholder from '../Placeholder.astro';
-import { chapters, profile, links } from '@/data/site';
+import { chapters, profile, links, photos } from '@/data/site';
 import { url } from '@/lib/url';
 ---
 <dialog id="nav-panel" class="drawer drawer--right navpanel" aria-label="Navigation">
@@ -26,7 +26,7 @@ import { url } from '@/lib/url';
       <Icon name="arrow-left" size={16} /> Back to the desk
     </a>
     <figure class="navpanel__quote sheet">
-      <Placeholder alt="A favourite landscape" ratio="1 / 1" label="Photo" />
+      <Placeholder {...photos.menuQuote} label="Photo" />
       <blockquote class="hand">“{profile.quote}”</blockquote>
     </figure>
     <ul class="navpanel__social" role="list">

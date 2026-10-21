@@ -87,3 +87,5 @@ document.querySelectorAll<HTMLAnchorElement>('[data-to-desk]').forEach((a) =>
     try { sessionStorage.setItem('desk:return', '1'); } catch {}
   }),
 );
+
+export {};

@@ -120,3 +120,5 @@ if (needle && !reduce.matches && matchMedia('(pointer: fine)').matches) {
     if (!raf) raf = requestAnimationFrame(step);
   }, { passive: true });
 }
+
+export {};

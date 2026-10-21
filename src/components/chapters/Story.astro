@@ -39,7 +39,7 @@ const wave = 'M20 0 C 34 60, 6 120, 20 180 S 34 300, 20 360 S 6 480, 20 540 S 34
             </details>
           </article>
           <figure class="tl__photo polaroid" data-reveal="fade">
-            <Placeholder alt={m.image.alt} ratio={m.image.ratio} label={`${m.year} · photo`} />
+            <Placeholder {...m.image} label={`${m.year} · photo`} />
             <figcaption>{m.title.toLowerCase()}</figcaption>
           </figure>
         </li>

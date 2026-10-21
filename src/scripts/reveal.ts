@@ -26,3 +26,5 @@ if (!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: 
 }
 // Safety net: never leave content hidden (e.g. printing, anchors jumped past)
 addEventListener('beforeprint', () => els.forEach((el) => el.classList.add('is-in')));
+
+export {};

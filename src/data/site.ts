@@ -45,6 +45,20 @@ export const profile = {
   quote: 'Build a life you’re excited to wake up to.', // DEMO (from mockup)
 };
 
+/** Image slots that aren't tied to a timeline entry, topic or journal entry. Add `src` to fill one. */
+export const photos = {
+  idPhoto: { alt: 'ID photo of Param', ratio: '1 / 1' } as Img,           // lanyard pass (01) + desk badge
+  aboutLandscape: { alt: 'A landscape you love', ratio: '4 / 3' } as Img, // behind the portrait (01)
+  storyDrawer: { alt: 'A photo that says something about you', ratio: '16 / 10' } as Img, // "Read my story" drawer
+  lifeBanner: { alt: 'A favourite place outdoors', ratio: '1 / 1' } as Img, // Life banner polaroid (05)
+  menuQuote: { alt: 'A favourite landscape', ratio: '1 / 1' } as Img,     // mobile menu quote card
+  deskPhotos: [
+    { alt: 'Photo on the desk', ratio: '1 / 1' },
+    { alt: 'Photo on the desk', ratio: '1 / 1' },
+    { alt: 'Photo on the desk', ratio: '1 / 1' },
+  ] as Img[],
+};
+
 export const links = {
   email: 'hello@example.com', // DEMO: replace with your real address
   github: 'https://github.com/paramsn37-sketch',
@@ -177,14 +191,14 @@ export const learning = ['DEMO: topic one', 'DEMO: topic two', 'DEMO: topic thre
 export const vibes = ['Read', 'Build', 'Explore', 'Create', 'Be present']; // from mockup
 
 export const topics = [
-  { id: 'travel', label: 'Travel', icon: 'mountain', blurb: 'Mountains, cities, roads & new perspectives.', items: ['DEMO: a trip', 'DEMO: a road', 'DEMO: a place you want to go'] },
-  { id: 'music', label: 'Music', icon: 'music', blurb: 'Sounds, playlists, concerts & late nights.', items: ['DEMO: an album on repeat', 'DEMO: a gig', 'DEMO: a playlist'] },
-  { id: 'photography', label: 'Photography', icon: 'camera', blurb: 'Moments, people, places & everyday beauty.', items: ['DEMO: a favourite shot', 'DEMO: what you shoot on', 'DEMO: a series'] },
-  { id: 'books', label: 'Books', icon: 'book', blurb: 'Stories, ideas, thoughts & recommendations.', items: ['DEMO: reading now', 'DEMO: re-read every year', 'DEMO: recommend to everyone'] },
-  { id: 'food', label: 'Food', icon: 'utensils', blurb: 'Local flavours, new tastes & guilty pleasures.', items: ['DEMO: a place', 'DEMO: a dish', 'DEMO: a recipe'] },
-  { id: 'hobbies', label: 'Hobbies', icon: 'gamepad-2', blurb: 'Build, create, tinker, repeat.', items: ['DEMO', 'DEMO', 'DEMO'] },
-  { id: 'communities', label: 'Communities', icon: 'users', blurb: 'People, groups, shared passions.', items: ['DEMO: a community', 'DEMO: a role you held', 'DEMO'] },
-  { id: 'experiments', label: 'Side quests', icon: 'flask-conical', blurb: 'Side projects, learning & random ideas.', items: ['DEMO', 'DEMO', 'DEMO'] },
+  { id: 'travel', label: 'Travel', icon: 'mountain', blurb: 'Mountains, cities, roads & new perspectives.', items: ['DEMO: a trip', 'DEMO: a road', 'DEMO: a place you want to go'], cover: { alt: 'Travel photo', ratio: '4 / 3' } as Img, photos: [] as Img[] },
+  { id: 'music', label: 'Music', icon: 'music', blurb: 'Sounds, playlists, concerts & late nights.', items: ['DEMO: an album on repeat', 'DEMO: a gig', 'DEMO: a playlist'], cover: { alt: 'Music photo', ratio: '4 / 3' } as Img, photos: [] as Img[] },
+  { id: 'photography', label: 'Photography', icon: 'camera', blurb: 'Moments, people, places & everyday beauty.', items: ['DEMO: a favourite shot', 'DEMO: what you shoot on', 'DEMO: a series'], cover: { alt: 'Photography photo', ratio: '4 / 3' } as Img, photos: [] as Img[] },
+  { id: 'books', label: 'Books', icon: 'book', blurb: 'Stories, ideas, thoughts & recommendations.', items: ['DEMO: reading now', 'DEMO: re-read every year', 'DEMO: recommend to everyone'], cover: { alt: 'Books photo', ratio: '4 / 3' } as Img, photos: [] as Img[] },
+  { id: 'food', label: 'Food', icon: 'utensils', blurb: 'Local flavours, new tastes & guilty pleasures.', items: ['DEMO: a place', 'DEMO: a dish', 'DEMO: a recipe'], cover: { alt: 'Food photo', ratio: '4 / 3' } as Img, photos: [] as Img[] },
+  { id: 'hobbies', label: 'Hobbies', icon: 'gamepad-2', blurb: 'Build, create, tinker, repeat.', items: ['DEMO', 'DEMO', 'DEMO'], cover: { alt: 'Hobbies photo', ratio: '4 / 3' } as Img, photos: [] as Img[] },
+  { id: 'communities', label: 'Communities', icon: 'users', blurb: 'People, groups, shared passions.', items: ['DEMO: a community', 'DEMO: a role you held', 'DEMO'], cover: { alt: 'Communities photo', ratio: '4 / 3' } as Img, photos: [] as Img[] },
+  { id: 'experiments', label: 'Side quests', icon: 'flask-conical', blurb: 'Side projects, learning & random ideas.', items: ['DEMO', 'DEMO', 'DEMO'], cover: { alt: 'Side quests photo', ratio: '4 / 3' } as Img, photos: [] as Img[] },
 ]; // topic list from your mockup — keep only the ones that are true for you
 
 export const moments = [
@@ -202,6 +216,7 @@ export const journal = [
       'DEMO: The second paragraph is the turn: the small moment that made the trip worth writing about.',
     ],
     image: { alt: 'Mountain valley', ratio: '4 / 3' } as Img,
+    image2: { alt: 'Second photo from the trip', ratio: '1 / 1' } as Img,
   },
   {
     slug: 'good-music', date: '03 Aug 2026', title: 'A night of good music and great company.', place: 'Bengaluru', tags: ['Music', 'Friends'],

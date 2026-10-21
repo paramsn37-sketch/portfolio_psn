@@ -3,7 +3,7 @@ import Icon from '../Icon.astro';
 import Brand from '../Brand.astro';
 import Placeholder from '../Placeholder.astro';
 import PaperClip from '../ui/PaperClip.astro';
-import { vibes, topics, moments, journal, playlist, links } from '@/data/site';
+import { vibes, topics, moments, journal, playlist, links, photos } from '@/data/site';
 const featured = journal[0];
 ---
 <section id="life" class="life chapter" data-chapter data-num="05" aria-labelledby="life-title">
@@ -22,7 +22,7 @@ const featured = journal[0];
         </div>
         <figure class="polaroid banner__photo">
           <PaperClip class="banner__clip" />
-          <Placeholder alt="A favourite place outdoors" ratio="1 / 1" label="Photo · 1:1" />
+          <Placeholder {...photos.lifeBanner} label="Photo · 1:1" />
           <figcaption>Better ideas outside.</figcaption>
         </figure>
         <fieldset class="vibes sticky" data-vibes>
@@ -46,7 +46,7 @@ const featured = journal[0];
       <div class="fjournal__slides" data-fj-slides>
         {journal.map((j, i) => (
           <article class="fjournal__slide" data-fj-slide hidden={i !== 0} aria-roledescription="slide" aria-label={`${i + 1} of ${journal.length}`}>
-            <div class="fjournal__img"><Placeholder alt={j.image.alt} ratio="16 / 10" label={j.image.alt} /></div>
+            <div class="fjournal__img"><Placeholder src={j.image.src} alt={j.image.alt} ratio="16 / 10" label={j.image.alt} /></div>
             <p class="fjournal__title">{j.title}</p>
             <p class="fjournal__meta">{j.tags[0]} · {j.date}</p>
             <button class="link fjournal__more" type="button" data-open="journal" data-hash={`journal/${j.slug}`} data-entry={j.slug}>Read the entry <Icon name="arrow-right" size={14} /></button>
@@ -69,7 +69,7 @@ const featured = journal[0];
         <li class="topic" data-reveal style={`--r:${[-1.5, 1, -0.6, 1.4, 0.8, -1.2, 1.2, -0.8][i]}deg`}>
           <div class="topic__photo">
             <span class="tape topic__tape" aria-hidden="true"></span>
-            <Placeholder alt={`${t.label} photo`} ratio="4 / 3" label={t.label} />
+            <Placeholder {...t.cover} label={t.label} />
           </div>
           <h4 class="topic__title"><Icon name={t.icon} size={18} /> {t.label}</h4>
           <p class="topic__blurb">{t.blurb}</p>
@@ -90,7 +90,7 @@ const featured = journal[0];
         {moments.map((m, i) => (
           <li style={`--r:${[-4, 3, -2][i % 3]}deg`}>
             <button class="moment polaroid" type="button" data-zoom data-caption={`${m.caption} — ${m.date}`}>
-              <Placeholder alt={m.image.alt} ratio="1 / 1" label="Moment" />
+              <Placeholder {...m.image} label="Moment" />
               <span class="moment__cap">{m.caption}</span>
               <span class="moment__date">{m.date}</span>
             </button>
@@ -113,7 +113,7 @@ const featured = journal[0];
                 <span class="entry__title">{j.title}</span>
                 <span class="entry__tags">{j.tags.map((t) => <span class="tag">{t}</span>)}</span>
               </span>
-              <span class="entry__thumb"><Placeholder alt={j.image.alt} ratio="1 / 1" label="" /></span>
+              <span class="entry__thumb"><Placeholder src={j.image.src} alt={j.image.alt} ratio="1 / 1" label="" /></span>
             </button>
           </li>
         ))}
@@ -160,7 +160,7 @@ const featured = journal[0];
           <div class="tsec__grid">
             {[0, 1, 2].map((k) => (
               <figure class:list={['tsec__fig', k === 0 && 'tsec__fig--wide']}>
-                <Placeholder alt={`${t.label} photo ${k + 1}`} ratio={k === 0 ? '16 / 9' : '1 / 1'} label={`${t.label} · photo`} />
+                <Placeholder src={t.photos[k]?.src} alt={t.photos[k]?.alt ?? `${t.label} photo ${k + 1}`} ratio={k === 0 ? '16 / 9' : '1 / 1'} label={`${t.label} · photo`} />
               </figure>
             ))}
           </div>
@@ -193,8 +193,8 @@ const featured = journal[0];
               </div>
             </div>
             <div class="jpage__photos" aria-hidden="true">
-              <figure class="polaroid jpage__p1"><PaperClip class="jpage__clip" size={18} /><Placeholder alt={j.image.alt} ratio="4 / 3" label="Photo" /></figure>
-              <figure class="polaroid jpage__p2"><Placeholder alt="Second photo" ratio="1 / 1" label="Photo" /><figcaption>{j.place.toLowerCase()}</figcaption></figure>
+              <figure class="polaroid jpage__p1"><PaperClip class="jpage__clip" size={18} /><Placeholder {...j.image} label="Photo" /></figure>
+              <figure class="polaroid jpage__p2"><Placeholder src={j.image2?.src} alt={j.image2?.alt ?? "Second photo"} ratio="1 / 1" label="Photo" /><figcaption>{j.place.toLowerCase()}</figcaption></figure>
               <ul class="sticky jpage__tags" role="list">{j.tags.map((t) => <li><Icon name="square-check" size={16} stroke={1.8} /> {t}</li>)}</ul>
               <svg class="jpage__trees" viewBox="0 0 140 70"><path d="M20 66 l12 -30 l12 30 z M32 66 v4 M60 66 l16 -44 l16 44 z M76 66 v4 M104 66 l10 -24 l10 24 z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" /><path d="M0 70 h140" stroke="currentColor" stroke-width="1.2" /></svg>
             </div>

@@ -5,7 +5,7 @@
  * to a chapter; decorative ones are inert. Everything is original SVG.
  */
 import Placeholder from '../Placeholder.astro';
-import { profile } from '@/data/site';
+import { profile, photos } from '@/data/site';
 import { url } from '@/lib/url';
 ---
 <!-- ───────────── Interactive: each one is a door into a chapter ───────────── -->
@@ -38,7 +38,7 @@ import { url } from '@/lib/url';
   <div class="obj__card">
     <span class="obj__clip" aria-hidden="true"></span>
     <span class="obj__card-head">Archive pass</span>
-    <div class="obj__card-photo"><Placeholder alt="ID photo" ratio="1 / 1" label="Photo" tone="linen" /></div>
+    <div class="obj__card-photo"><Placeholder {...photos.idPhoto} label="Photo" tone="linen" /></div>
     <span class="obj__card-name">{profile.name}</span>
     <span class="obj__card-meta">Visitor · Est. {profile.est}</span>
   </div>
@@ -46,9 +46,9 @@ import { url } from '@/lib/url';
 </a>
 
 <a class="obj obj--photos" href={url('archive/#life')} data-travel="life" aria-label="Life and interests — a stack of photos">
-  <div class="obj__photo obj__photo--1"><Placeholder alt="Photo" ratio="1 / 1" label="Photo" tone="dark" /></div>
-  <div class="obj__photo obj__photo--2"><Placeholder alt="Photo" ratio="1 / 1" label="Photo" tone="dark" /></div>
-  <div class="obj__photo obj__photo--3"><Placeholder alt="Photo" ratio="1 / 1" label="Photo" tone="dark" /><span class="obj__photo-cap">good days</span></div>
+  <div class="obj__photo obj__photo--1"><Placeholder {...photos.deskPhotos[0]} label="Photo" tone="dark" /></div>
+  <div class="obj__photo obj__photo--2"><Placeholder {...photos.deskPhotos[1]} label="Photo" tone="dark" /></div>
+  <div class="obj__photo obj__photo--3"><Placeholder {...photos.deskPhotos[2]} label="Photo" tone="dark" /><span class="obj__photo-cap">good days</span></div>
   <span class="obj__label">Life</span>
 </a>
 

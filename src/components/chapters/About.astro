@@ -3,7 +3,7 @@ import Icon from '../Icon.astro';
 import Placeholder from '../Placeholder.astro';
 import PaperClip from '../ui/PaperClip.astro';
 import ChapterTitle from '../ui/ChapterTitle.astro';
-import { profile } from '@/data/site';
+import { profile, photos } from '@/data/site';
 const tones = ['linen', 'olive', 'blue', 'kraft'];
 ---
 <section id="about" class="about chapter" data-chapter data-num="01" aria-labelledby="about-title">
@@ -11,11 +11,11 @@ const tones = ['linen', 'olive', 'blue', 'kraft'];
     <!-- collage -->
     <div class="about__collage" data-reveal="fade">
       <div class="about__land sheet" aria-hidden="true">
-        <Placeholder alt="A landscape you love" ratio="4 / 3" label="Landscape" tone="linen" />
+        <Placeholder {...photos.aboutLandscape} label="Landscape" tone="linen" />
       </div>
       <figure class="polaroid about__portrait">
         <PaperClip class="about__clip" size={20} />
-        <Placeholder alt={profile.portrait.alt} ratio={profile.portrait.ratio} label="Portrait · 4:5" />
+        <Placeholder {...profile.portrait} label="Portrait · 4:5" />
         <figcaption>Just a curious human :)</figcaption>
       </figure>
       <div class="about__map grid-paper" aria-hidden="true">
@@ -51,7 +51,7 @@ const tones = ['linen', 'olive', 'blue', 'kraft'];
             <span>Archive pass</span><span>No. 01</span>
           </header>
           <div class="pass__id">
-            <div class="pass__photo"><Placeholder alt="ID photo" ratio="1 / 1" label="Photo" /></div>
+            <div class="pass__photo"><Placeholder {...photos.idPhoto} label="Photo" /></div>
             <div>
               <p class="pass__name display">{profile.name}</p>
               <p class="pass__role pixel">{profile.role}</p>
@@ -98,7 +98,7 @@ const tones = ['linen', 'olive', 'blue', 'kraft'];
         <button class="drawer__x" type="button" data-close aria-label="Close"><Icon name="x" size={20} /></button>
       </div>
       <h3 id="story-drawer-title" class="display story-drawer__title">The longer story</h3>
-      <div class="story-drawer__img"><Placeholder alt="A photo that says something about you" ratio="16 / 10" label="Photo · 16:10" /></div>
+      <div class="story-drawer__img"><Placeholder {...photos.storyDrawer} label="Photo · 16:10" /></div>
       <div class="prose story-drawer__text">
         {profile.longStory.map((p) => <p>{p}</p>)}
       </div>
