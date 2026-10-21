@@ -1,0 +1,299 @@
+@import "./tokens.css";
+
+/* ==========================================================================
+   Reset & base
+   ========================================================================== */
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-top: calc(var(--bar-h) + 1rem);
+  hanging-punctuation: first last;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+body {
+  min-height: 100dvh;
+  font-family: var(--font-body);
+  font-size: var(--t-body);
+  line-height: var(--lh-body);
+  color: var(--ink);
+  background-color: var(--paper);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-variant-numeric: tabular-nums;
+}
+img, svg, video, canvas { display: block; max-width: 100%; }
+img { height: auto; }
+input, button, textarea, select { font: inherit; color: inherit; }
+button { background: none; border: 0; padding: 0; cursor: pointer; }
+a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 0.22em; }
+h1, h2, h3, h4 { text-wrap: balance; font-weight: inherit; }
+p, li, dd { text-wrap: pretty; }
+ul[role="list"], ol[role="list"] { list-style: none; padding: 0; }
+:where([hidden]) { display: none !important; }
+
+/* Paper grain over everything (very subtle, never blocks input) */
+.paper-world::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  pointer-events: none;
+  background-image: url("../assets/textures/grain.webp");
+  background-size: 180px 180px;
+  opacity: 0.32;
+  mix-blend-mode: multiply;
+}
+
+/* ==========================================================================
+   Browser surfaces carry the design
+   ========================================================================== */
+::selection { background: var(--note); color: var(--ink); }
+:focus { outline: none; }
+:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+  border-radius: var(--r-1);
+}
+html { caret-color: var(--blue); scrollbar-color: var(--linen-2) var(--paper); scrollbar-width: thin; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--paper); }
+::-webkit-scrollbar-thumb { background: var(--linen-2); border-radius: 10px; border: 2px solid var(--paper); }
+
+/* ==========================================================================
+   Type roles
+   ========================================================================== */
+.display {
+  font-family: var(--font-display);
+  font-weight: 900;
+  line-height: var(--lh-tight);
+  letter-spacing: var(--track-display);
+  text-transform: uppercase;
+}
+.meta {
+  font-family: var(--font-mono);
+  font-size: var(--t-meta);
+  font-weight: 400;
+  letter-spacing: var(--track-mono);
+  line-height: 1.5;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.hand {
+  font-family: var(--font-hand);
+  font-size: var(--t-hand);
+  line-height: 1.02;
+  color: var(--ink-2);
+  font-weight: 400;
+}
+.hand--blue { color: var(--blue); }
+.pixel { font-family: var(--font-pixel); font-weight: 400; letter-spacing: 0; }
+.lead { font-size: var(--t-lead); line-height: 1.55; color: var(--ink); max-width: 38ch; }
+.prose { max-width: 66ch; }
+.prose > * + * { margin-top: 1em; }
+
+/* ==========================================================================
+   Layout helpers
+   ========================================================================== */
+.wrap { width: min(100% - 2 * var(--gutter), var(--maxw)); margin-inline: auto; }
+.visually-hidden {
+  position: absolute !important; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+}
+.skip-link {
+  position: fixed; left: var(--s-4); top: var(--s-3); z-index: 500;
+  transform: translateY(-160%);
+  background: var(--ink); color: var(--paper);
+  padding: var(--s-2) var(--s-4); border-radius: var(--r-2);
+  font-family: var(--font-mono); font-size: var(--t-small); text-decoration: none;
+  transition: transform var(--d-fast) var(--ease-out);
+}
+.skip-link:focus-visible { transform: translateY(0); }
+
+/* Notebook grid — used on selected surfaces, never the whole page */
+.grid-paper {
+  background-color: var(--card);
+  background-image:
+    linear-gradient(to right, rgb(49 93 134 / 0.075) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(49 93 134 / 0.075) 1px, transparent 1px);
+  background-size: 22px 22px;
+  background-position: -1px -1px;
+}
+
+/* ==========================================================================
+   Controls
+   ========================================================================== */
+.btn {
+  --btn-bg: var(--olive-deep);
+  --btn-fg: var(--paper);
+  display: inline-flex; align-items: center; gap: 0.6em;
+  min-height: 2.875rem;
+  padding: 0 1.15em;
+  border-radius: var(--r-2);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  white-space: nowrap;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.14), 0 1px 0 rgb(0 0 0 / 0.18), 0 6px 14px -8px rgb(40 46 20 / 0.7);
+  transition: transform var(--d-press) var(--ease-out), background-color var(--d-fast) ease, box-shadow var(--d-fast) ease;
+}
+.btn svg { width: 1.05em; height: 1.05em; flex: none; transition: transform var(--d-fast) var(--ease-out); }
+.btn:active { transform: scale(0.97); }
+.btn--ghost {
+  --btn-bg: transparent;
+  --btn-fg: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--ink-3);
+}
+.btn--ink { --btn-bg: var(--ink); --btn-fg: var(--paper); }
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover { --btn-bg: var(--olive-ink); }
+  .btn:hover svg[data-nudge] { transform: translateX(3px); }
+  .btn--ghost:hover { --btn-bg: var(--paper-2); box-shadow: inset 0 0 0 1px var(--ink); }
+  .btn--ink:hover { --btn-bg: #3a3934; }
+}
+
+.link {
+  color: var(--blue);
+  text-decoration: underline;
+  text-decoration-color: rgb(49 93 134 / 0.35);
+  transition: text-decoration-color var(--d-fast) ease;
+}
+@media (hover: hover) { .link:hover { text-decoration-color: currentColor; } }
+
+.chip {
+  display: inline-flex; align-items: center; gap: 0.4em;
+  min-height: 2rem; padding: 0 0.85em;
+  border-radius: var(--r-pill);
+  font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.03em;
+  color: var(--ink-2);
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--linen-2);
+  transition: background-color var(--d-fast) ease, color var(--d-fast) ease, box-shadow var(--d-fast) ease, transform var(--d-press) var(--ease-out);
+}
+button.chip:active { transform: scale(0.96); }
+.chip[aria-pressed="true"], .chip.is-on { background: var(--ink); color: var(--paper); box-shadow: none; }
+@media (hover: hover) and (pointer: fine) {
+  button.chip:not([aria-pressed="true"]):hover { background: var(--paper-2); color: var(--ink); }
+}
+.tag {
+  display: inline-block; padding: 0.2em 0.6em;
+  border-radius: var(--r-1);
+  font-family: var(--font-mono); font-size: 0.625rem; letter-spacing: 0.04em; text-transform: uppercase;
+  color: var(--ink-2); box-shadow: inset 0 0 0 1px var(--linen-2);
+}
+
+.icon { width: 1.25rem; height: 1.25rem; flex: none; }
+.icon svg { width: 100%; height: 100%; }
+
+/* ==========================================================================
+   Paper objects (shared vocabulary)
+   ========================================================================== */
+.sheet {
+  background: var(--card);
+  border-radius: var(--r-1);
+  box-shadow: var(--shadow-paper);
+}
+.polaroid {
+  background: #fbf9f3;
+  padding: 0.6rem 0.6rem 2.6rem;
+  box-shadow: var(--shadow-lift);
+  border-radius: 1px;
+  position: relative;
+}
+.polaroid figcaption {
+  position: absolute; left: 0.75rem; right: 0.75rem; bottom: 0.45rem;
+  font-family: var(--font-hand); font-size: 1.35rem; line-height: 1; color: var(--ink-2);
+}
+.tape {
+  position: absolute; z-index: 2;
+  width: 5.5rem; height: 1.6rem;
+  background: rgb(222 214 192 / 0.78);
+  box-shadow: 0 1px 2px rgb(60 45 20 / 0.12);
+  mask-image: linear-gradient(90deg, transparent 0 2px, #000 2px calc(100% - 2px), transparent calc(100% - 2px));
+  pointer-events: none;
+}
+.sticky {
+  background: var(--note);
+  box-shadow: 0 1px 1px rgb(80 60 10 / 0.1), 0 10px 18px -10px rgb(80 60 10 / 0.45);
+  padding: 1rem 1.1rem;
+  font-family: var(--font-hand);
+  font-size: 1.55rem; line-height: 1.02; color: var(--ink);
+}
+
+/* ==========================================================================
+   Reveal system — content is visible unless JS is running
+   ========================================================================== */
+html.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(var(--reveal-y, 22px));
+  transition:
+    opacity 700ms var(--ease-out) var(--reveal-delay, 0ms),
+    transform 900ms var(--ease-out) var(--reveal-delay, 0ms);
+}
+html.js [data-reveal="fade"] { --reveal-y: 0px; }
+html.js [data-reveal].is-in { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  html.js [data-reveal] { transform: none; transition: opacity 300ms ease; }
+  *, *::before, *::after { animation-duration: 1ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
+}
+
+/* Cross-document view transitions (desk ↔ archive, archive ↔ case study) */
+@view-transition { navigation: auto; }
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: 380ms; animation-timing-function: var(--ease-out); }
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+}
+
+/* ==========================================================================
+   Dialogs & drawers — native <dialog>, animated in and out
+   ========================================================================== */
+dialog { padding: 0; border: 0; color: var(--ink); max-width: none; max-height: none; }
+dialog::backdrop { background: rgb(37 37 34 / 0); transition: background-color var(--d-slow) var(--ease-out), overlay var(--d-slow) allow-discrete, display var(--d-slow) allow-discrete; }
+dialog[open]::backdrop { background: rgb(37 37 34 / 0.38); }
+@starting-style { dialog[open]::backdrop { background: rgb(37 37 34 / 0); } }
+
+.drawer {
+  position: fixed; inset: 0 0 0 auto; margin: 0;
+  height: 100dvh; width: min(34rem, 100vw);
+  background: var(--paper);
+  box-shadow: var(--shadow-float);
+  overflow: hidden auto; overscroll-behavior: contain;
+  transform: translateX(100%);
+  transition: transform var(--d-slow) var(--ease-drawer), overlay var(--d-slow) allow-discrete, display var(--d-slow) allow-discrete;
+}
+.drawer[open] { transform: none; }
+@starting-style { .drawer[open] { transform: translateX(100%); } }
+.drawer__body { padding: var(--s-5) var(--s-5) var(--s-7); }
+.drawer__x {
+  display: grid; place-items: center; width: 2.75rem; height: 2.75rem; margin-right: -0.5rem;
+  border-radius: var(--r-2); color: var(--ink-2);
+  transition: background-color var(--d-fast) ease, transform var(--d-press) var(--ease-out);
+}
+.drawer__x:active { transform: scale(0.94); }
+@media (hover: hover) { .drawer__x:hover { background: var(--paper-2); color: var(--ink); } }
+
+.modal {
+  margin: auto;
+  width: min(56rem, calc(100vw - 2 * var(--gutter)));
+  max-height: calc(100dvh - 2 * var(--gutter));
+  background: transparent;
+  overflow: visible;
+  opacity: 0; transform: translateY(14px) scale(0.98);
+  transition: opacity var(--d-base) var(--ease-out), transform var(--d-slow) var(--ease-out), overlay var(--d-slow) allow-discrete, display var(--d-slow) allow-discrete;
+}
+.modal[open] { opacity: 1; transform: none; }
+@starting-style { .modal[open] { opacity: 0; transform: translateY(14px) scale(0.98); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .drawer, .modal { transform: none !important; transition: opacity 200ms ease, overlay 200ms allow-discrete, display 200ms allow-discrete; }
+  .drawer:not([open]) { opacity: 0; }
+}
+html:has(dialog[open]) { overflow: hidden; }

@@ -1,0 +1,103 @@
+---
+import Icon from '../Icon.astro';
+import { chapters } from '@/data/site';
+import { url } from '@/lib/url';
+interface Props { current?: string; note?: string }
+const { current, note = 'Good things take time.' } = Astro.props;
+---
+<aside class="rail" aria-label="Chapter index">
+  <div class="rail__in">
+    <ol class="rail__list" role="list">
+      {chapters.map((c) => (
+        <li>
+          <a href={url(`archive/#${c.id}`)} data-rail={c.id} aria-current={current === c.id ? 'true' : undefined}>
+            <span class="rail__dot" aria-hidden="true"></span>
+            <span class="rail__num">{c.num}</span>
+            <span class="rail__label">{c.label}</span>
+          </a>
+        </li>
+      ))}
+    </ol>
+    <span class="rail__track" aria-hidden="true"><span class="rail__fill" data-rail-fill></span></span>
+
+    <div class="rail__foot">
+      <svg class="rail__compass" viewBox="0 0 48 48" width="44" height="44" aria-hidden="true">
+        <circle cx="24" cy="24" r="21" fill="none" stroke="currentColor" stroke-width="1.2" />
+        <circle cx="24" cy="24" r="16.5" fill="none" stroke="currentColor" stroke-width=".6" stroke-dasharray="1 2.4" />
+        <g data-compass-needle style="transform-origin:24px 24px">
+          <path d="M24 9l3 15h-6z" fill="var(--olive-deep)" />
+          <path d="M24 39l-3-15h6z" fill="currentColor" opacity=".55" />
+        </g>
+        <circle cx="24" cy="24" r="1.6" fill="var(--paper)" stroke="currentColor" stroke-width=".8" />
+        <text x="24" y="7.2" text-anchor="middle" font-size="4.2" font-family="var(--font-mono)" fill="currentColor">N</text>
+      </svg>
+      <p class="hand rail__note">{note}</p>
+      <a class="rail__top meta" href="#top" data-to-top>
+        <Icon name="arrow-up" size={14} /> Back to top
+      </a>
+    </div>
+  </div>
+</aside>
+
+<style>
+  .rail {
+    position: sticky; top: var(--bar-h);
+    height: calc(100dvh - var(--bar-h));
+    align-self: start;
+    padding: var(--s-7) 0 var(--s-6) var(--gutter);
+  }
+  .rail__in { position: relative; height: 100%; display: flex; flex-direction: column; }
+  .rail__list { position: relative; z-index: 1; display: grid; gap: 0.15rem; }
+  .rail__list a {
+    position: relative;
+    display: grid; grid-template-columns: 1.1rem 2rem 1fr; align-items: center;
+    min-height: 2.35rem; padding-right: var(--s-3);
+    color: var(--ink-3); text-decoration: none;
+    font-size: 0.9375rem;
+    transition: color var(--d-fast) ease;
+  }
+  .rail__num { font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.04em; }
+  .rail__dot {
+    width: 9px; height: 9px; border-radius: 50%;
+    margin-left: 1px;
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1.5px var(--ink-3);
+    transition: transform var(--d-base) var(--ease-out), background-color var(--d-fast) ease, box-shadow var(--d-fast) ease;
+  }
+  .rail__label { transition: transform var(--d-base) var(--ease-out); }
+  .rail__list a[aria-current="true"] { color: var(--ink); font-weight: 600; }
+  .rail__list a[aria-current="true"] .rail__dot {
+    background: var(--olive-deep); box-shadow: 0 0 0 4px var(--olive-wash);
+    transform: scale(1.15);
+  }
+  .rail__list a[aria-current="true"] .rail__label { transform: translateX(3px); }
+  @media (hover: hover) and (pointer: fine) {
+    .rail__list a:hover { color: var(--ink); }
+    .rail__list a:hover .rail__dot { box-shadow: inset 0 0 0 1.5px var(--ink); }
+  }
+  /* The track sits behind the dots: 5px = dot centre */
+  .rail__track {
+    position: absolute; left: 5px; top: 0.6rem; bottom: 0;
+    width: 1px; background: var(--linen-2);
+  }
+  .rail__fill {
+    position: absolute; inset: 0;
+    background: var(--olive-deep);
+    transform-origin: 50% 0; transform: scaleY(0);
+  }
+  .rail__foot {
+    position: relative; z-index: 1;
+    margin-top: auto; padding-left: 1.6rem;
+    display: grid; gap: var(--s-3); justify-items: start;
+    color: var(--ink-3);
+  }
+  .rail__compass { color: var(--ink-3); margin-left: -0.3rem; background: var(--paper); border-radius: 50%; }
+  .rail__note { font-size: 1.45rem; max-width: 9ch; transform: rotate(-4deg); color: var(--ink-2); }
+  .rail__top {
+    display: inline-flex; align-items: center; gap: 0.4rem; text-decoration: none;
+    padding: 0.35rem 0; color: var(--ink-3);
+    transition: color var(--d-fast) ease;
+  }
+  @media (hover: hover) { .rail__top:hover { color: var(--ink); } }
+  @media (max-height: 640px) { .rail__compass, .rail__note { display: none; } }
+</style>

@@ -1,0 +1,9 @@
+---
+import { siGithub, siX, siInstagram, siSpotify } from 'simple-icons';
+interface Props { name: 'github' | 'linkedin' | 'x' | 'instagram' | 'spotify'; size?: number; class?: string }
+const { name, size = 18, class: cls } = Astro.props;
+// LinkedIn's mark is no longer distributed by simple-icons; this is a plain "in" monogram.
+const linkedin = 'M3 3h18v18H3zM7.2 10.1v6.7h2.1v-6.7zm1.05-3.3a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 0 0 0-2.4zM11 10.1v6.7h2.1v-3.6c0-.95.38-1.55 1.2-1.55.75 0 1.05.55 1.05 1.5v3.65h2.1v-4.1c0-1.9-.95-2.75-2.3-2.75-.95 0-1.6.45-2 1.05v-.9z';
+const paths: Record<string, string> = { github: siGithub.path, x: siX.path, instagram: siInstagram.path, spotify: siSpotify.path, linkedin };
+---
+<svg class:list={['i', cls]} width={size} height={size} viewBox="0 0 24 24" fill="currentColor" fill-rule="evenodd" aria-hidden="true"><path d={paths[name]} /></svg>

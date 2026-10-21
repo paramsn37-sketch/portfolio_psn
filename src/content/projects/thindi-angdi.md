@@ -1,0 +1,49 @@
+---
+title: The Thindi Angdi
+tagline: Regional snack e-commerce
+summary: DEMO — A Karnataka snack brand's online shop that balances authenticity with a modern checkout.
+year: '2025'
+categories: [Web, Design]
+tags: [Web, UI/UX]
+role: DEMO
+stack: [DEMO, DEMO]
+order: 3
+annotation: Regional flavours, modern commerce
+cover: { alt: The Thindi Angdi storefront on a laptop }
+keyFeatures:
+  - { icon: store, text: Region-based shop }
+  - { icon: shopping-cart, text: Product catalogue & cart }
+  - { icon: lock, text: Secure checkout }
+  - { icon: smartphone, text: Mobile responsive }
+links: { live: '#', design: '#' }
+---
+
+## Overview
+
+DEMO — Two or three sentences of context. What is this, who is it for, and where did it come from? Write it so someone who skims only this paragraph still understands the project.
+
+## Problem
+
+DEMO — The problem or opportunity in the user's words. What was slow, broken, missing or expensive before this existed? One concrete example beats a general statement.
+
+## My role
+
+DEMO — What you personally owned. Name the parts you designed, built, decided or led, and who you worked with.
+
+## Process
+
+DEMO — How the work actually went: research, sketches, first version, what you threw away. Screenshots, diagrams and sketches belong here.
+
+![DEMO — process sketch or architecture diagram](placeholder)
+
+## Decisions
+
+DEMO — Two or three engineering or design decisions and the trade-off behind each. "We chose X over Y because Z" is the shape.
+
+## Results
+
+DEMO — What happened after it shipped. Only real outcomes: usage, feedback, what changed for the people using it. Leave this out rather than inventing numbers.
+
+## Learnings
+
+DEMO — What you would do differently, what surprised you, and what you would build next.

@@ -1,0 +1,12 @@
+---
+import Archive from '@/layouts/Archive.astro';
+import { chapters } from '@/data/site';
+---
+<Archive>
+  {chapters.map((c) => (
+    <section id={c.id} data-chapter data-num={c.num} style="min-height:100vh;padding:4rem">
+      <h2 class="display" style="font-size:var(--t-h2)">{c.title}</h2>
+      <p data-reveal>Reveal test</p>
+    </section>
+  ))}
+</Archive>

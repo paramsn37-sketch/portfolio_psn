@@ -1,0 +1,228 @@
+---
+import Base from '@/layouts/Base.astro';
+import RouteMap from '@/components/desk/RouteMap.astro';
+import DeskObjects from '@/components/desk/DeskObjects.astro';
+import Icon from '@/components/Icon.astro';
+import { profile } from '@/data/site';
+import { url } from '@/lib/url';
+import walnut from '@/assets/textures/walnut.webp';
+import walnutSm from '@/assets/textures/walnut-sm.webp';
+import grain from '@/assets/textures/grain.webp';
+---
+<Base
+  title={`${profile.name} — The Personal Archive`}
+  bodyClass="desk-world"
+  themeColor="#1a1009"
+>
+  <Fragment slot="head">
+    <link rel="prefetch" href={url('archive/')} />
+    <link rel="preload" as="image" href={walnut.src} media="(min-width: 761px)" />
+    <script is:inline>
+      try { if (sessionStorage.getItem('desk:return')) document.documentElement.classList.add('desk-returning'); } catch (e) {}
+    </script>
+  </Fragment>
+
+  <main class="desk" data-desk style={`--walnut:url(${walnut.src});--walnut-sm:url(${walnutSm.src});--grain:url(${grain.src})`}>
+    <header class="desk__top">
+      <span class="desk__mark">The Personal Archive</span>
+      <a class="desk__skip" href={url('archive/')} data-travel="enter">Skip to the archive <Icon name="arrow-right" size={14} /></a>
+    </header>
+
+    <div class="desk__scene" data-scene>
+      <div class="desk__wood" aria-hidden="true"></div>
+      <div class="desk__stage" data-stage>
+        <DeskObjects />
+
+        <article class="sheet" data-sheet aria-labelledby="desk-title">
+          <span class="tape sheet__tape sheet__tape--l" aria-hidden="true"></span>
+          <span class="tape sheet__tape sheet__tape--r" aria-hidden="true"></span>
+          <RouteMap />
+          <div class="sheet__content" data-sheet-content>
+            <p class="sheet__meta">Est. {profile.est} · {profile.location}<span class="sheet__coords"> · {profile.coords}</span></p>
+            <p class="sheet__hi">{profile.greeting}</p>
+            <h1 id="desk-title" class="display sheet__name">{profile.name}</h1>
+            <p class="sheet__line">{profile.tagline}</p>
+            <div class="sheet__actions">
+              <p class="sheet__start" aria-hidden="true">
+                start here
+                <svg viewBox="0 0 60 30" width="52" height="26"><path d="M2 6 C 18 2, 34 8, 54 20 M54 20 l-11 0 M54 20 l-4 -10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" /></svg>
+              </p>
+              <a class="btn sheet__primary" href={url('archive/')} data-travel="enter">
+                <Icon name="folder-open" size={16} /> Open the archive
+              </a>
+              <a class="btn btn--ghost" href={url('archive/#projects')} data-travel="projects">See the work</a>
+              <a class="sheet__hello" href={url('archive/#contact')} data-travel="contact">Say hello <Icon name="arrow-up-right" size={14} /></a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <div class="desk__light" aria-hidden="true"></div>
+    <p class="desk__hint" aria-hidden="true">Everything on the desk is a door</p>
+    <div class="desk__veil" data-veil aria-hidden="true"></div>
+  </main>
+
+  <script>
+    import '@/scripts/desk';
+  </script>
+</Base>
+
+<style>
+  :global(body.desk-world) { background: #120a05; color: var(--lamp-ink); overflow: hidden; }
+  .desk {
+    position: relative;
+    height: 100dvh; min-height: 560px;
+    overflow: hidden;
+    isolation: isolate;
+    --W: min(58vw, 1000px, 122dvh);
+    --u: calc(var(--W) / 100);
+  }
+
+  /* ---- chrome above the scene ---- */
+  .desk__top {
+    position: absolute; z-index: 20; inset: 0 0 auto;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: var(--s-4) var(--gutter);
+    font-family: var(--font-mono); font-size: var(--t-meta); letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .desk__mark { color: rgb(243 230 204 / 0.82); }
+  .desk__skip {
+    display: inline-flex; align-items: center; gap: 0.45rem; min-height: 2.75rem; padding: 0 0.25rem;
+    color: rgb(243 230 204 / 0.82); text-decoration: none;
+    transition: color var(--d-fast) ease;
+  }
+  .desk__skip :global(svg) { transition: transform var(--d-fast) var(--ease-out); }
+  @media (hover: hover) { .desk__skip:hover { color: var(--lamp); } .desk__skip:hover :global(svg) { transform: translateX(3px); } }
+  .desk__skip:focus-visible { outline-color: var(--lamp); }
+  .desk__hint {
+    position: absolute; z-index: 20; left: 50%; bottom: var(--s-4); translate: -50% 0;
+    font-family: var(--font-hand); font-size: 1.5rem; color: rgb(243 230 204 / 0.62); white-space: nowrap;
+  }
+
+  /* ---- the scene that the camera moves through ---- */
+  .desk__scene {
+    position: absolute; inset: 0;
+    display: grid; place-items: center;
+    transform-origin: 50% 50%;
+    will-change: transform;
+  }
+  .desk__wood {
+    position: absolute; inset: -4%;
+    background: #2a1a0e var(--walnut) center / cover no-repeat;
+  }
+  .desk__stage {
+    position: relative;
+    width: var(--W);
+    aspect-ratio: 1000 / 645;
+  }
+
+  /* ---- the central sheet ---- */
+  .sheet {
+    position: absolute; inset: 0; z-index: 2;
+    color: var(--ink);
+    background-color: var(--paper);
+    background-image: var(--grain);
+    background-size: 180px;
+    background-blend-mode: multiply;
+    border-radius: 2px;
+    transform: rotate(-0.6deg);
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / 0.4) inset,
+      calc(var(--u) * 0.6) calc(var(--u) * 1) calc(var(--u) * 1.2) rgb(0 0 0 / 0.38),
+      calc(var(--u) * 2) calc(var(--u) * 3.4) calc(var(--u) * 5) rgb(0 0 0 / 0.5);
+  }
+  .sheet__tape { width: calc(var(--u) * 10); height: calc(var(--u) * 2.8); top: calc(var(--u) * -1.2); }
+  .sheet__tape--l { left: calc(var(--u) * 6); transform: rotate(-5deg); }
+  .sheet__tape--r { right: calc(var(--u) * 7); transform: rotate(4deg); }
+
+  .sheet__content {
+    position: absolute; z-index: 3;
+    left: 24%; right: 24%; top: 21%; bottom: 13%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center;
+  }
+  .sheet__meta {
+    font-family: var(--font-mono); font-size: max(0.625rem, calc(var(--u) * 1.05)); letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .sheet__hi { margin-top: calc(var(--u) * 2.2); font-family: var(--font-hand); font-size: max(1.6rem, calc(var(--u) * 3.6)); line-height: 0.8; color: var(--blue); transform: rotate(-3deg) translateX(-18%); }
+  .sheet__name { font-size: max(4rem, calc(var(--u) * 12.5)); margin-top: calc(var(--u) * 0.2); white-space: nowrap; }
+  .sheet__line { margin-top: calc(var(--u) * 1.8); font-size: max(0.9375rem, calc(var(--u) * 1.75)); line-height: 1.45; color: var(--ink-2); max-width: 34ch; }
+  .sheet__actions {
+    position: relative;
+    margin-top: calc(var(--u) * 3.4);
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--s-3) var(--s-4);
+    width: max-content; max-width: 100%;
+  }
+  .sheet__hello {
+    display: inline-flex; align-items: center; gap: 0.3rem; min-height: 2.75rem; padding: 0 0.25rem;
+    font-family: var(--font-mono); font-size: 0.75rem; color: var(--blue);
+    text-decoration: underline; text-decoration-color: rgb(49 93 134 / 0.35); text-underline-offset: 0.35em;
+  }
+  @media (hover: hover) { .sheet__hello:hover { text-decoration-color: currentColor; } }
+  .sheet__start {
+    position: absolute; right: calc(100% + 0.4rem); top: -1.5rem;
+    display: flex; align-items: flex-start; gap: 0.2rem; white-space: nowrap;
+    font-family: var(--font-hand); font-size: max(1.4rem, calc(var(--u) * 2.6)); line-height: 1; color: var(--blue);
+    transform: rotate(-4deg);
+  }
+
+  /* ---- lamp light: a warm pool over the sheet, the desk falling into dark ---- */
+  .desk__light {
+    position: absolute; inset: 0; z-index: 10; pointer-events: none;
+    background:
+      radial-gradient(ellipse 60% 55% at 42% 40%, rgb(255 214 150 / 0.18), transparent 70%),
+      radial-gradient(ellipse 85% 80% at 48% 48%, transparent 40%, rgb(8 4 1 / 0.62) 78%, rgb(4 2 0 / 0.9) 100%);
+    mix-blend-mode: normal;
+  }
+  .desk__veil {
+    position: absolute; inset: 0; z-index: 30; pointer-events: none;
+    background: var(--paper); opacity: 0;
+  }
+  :global(html.desk-returning) .desk__veil { opacity: 1; }
+
+  /* ---- entrance (first paint) ---- */
+  :global(html.js:not(.desk-returning)) .sheet__content > * { animation: desk-rise 900ms var(--ease-out) both; }
+  :global(html.js:not(.desk-returning)) .sheet__meta { animation-delay: 150ms; }
+  :global(html.js:not(.desk-returning)) .sheet__hi { animation-delay: 230ms; }
+  :global(html.js:not(.desk-returning)) .sheet__name { animation-delay: 300ms; }
+  :global(html.js:not(.desk-returning)) .sheet__line { animation-delay: 380ms; }
+  :global(html.js:not(.desk-returning)) .sheet__actions { animation-delay: 460ms; }
+  :global(html.js:not(.desk-returning)) .sheet__start { animation: desk-rise 900ms var(--ease-out) 1400ms both; }
+  @keyframes desk-rise { from { opacity: 0; translate: 0 14px; } to { opacity: 1; translate: 0 0; } }
+  :global(html.js:not(.desk-returning)) .desk__light { animation: lamp-on 1200ms var(--ease-out) both; }
+  @keyframes lamp-on { from { opacity: 0.4; } to { opacity: 1; } }
+
+  /* ---- tablets: tighten ---- */
+  @media (max-width: 1100px) and (min-aspect-ratio: 4/5) {
+    .desk { --W: min(64vw, 122dvh); }
+    .sheet__content { left: 18%; right: 18%; }
+    .sheet__start { display: none; }
+  }
+
+  /* ---- phones: the sheet becomes a tall page; objects peek in above and below ---- */
+  @media (max-width: 760px), (max-aspect-ratio: 4/5) {
+    .desk { --W: min(calc(100vw - 2.5rem), 36rem); }
+    .desk__wood { background-image: var(--walnut-sm); }
+    .desk__stage { aspect-ratio: auto; height: min(34rem, 62dvh); margin-top: 1.5rem; }
+    .desk__stage :global(.map__stop), .desk__stage :global(.map__route), .desk__stage :global(.map__start), .desk__stage :global(.map__sketch) { display: none; }
+    .desk__top { padding-block: var(--s-3); font-size: 0.625rem; }
+    .desk__mark { max-width: 9rem; }
+    .sheet { transform: rotate(-0.8deg); }
+    .sheet__content { inset: 0; padding: 2.5rem 1.25rem 2rem; }
+    .sheet__name { font-size: clamp(3.6rem, 19vw, 5rem); }
+    .sheet__hi { font-size: 1.9rem; }
+    .sheet__meta { font-size: 0.5625rem; }
+    .sheet__coords { display: none; }
+    .sheet__actions { flex-direction: column; align-items: stretch; width: 100%; max-width: 18rem; }
+    .sheet__actions .btn { justify-content: center; }
+    .sheet__hello { justify-content: center; }
+    .desk__hint { display: none; }
+    .desk__light { background: radial-gradient(ellipse 120% 70% at 50% 45%, transparent 45%, rgb(6 3 1 / 0.7) 100%); }
+  }
+  @media (max-height: 600px) and (min-width: 761px) { .desk__hint { display: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    :global(html.js) .sheet__content > *, :global(html.js) .desk__light { animation: none !important; }
+  }
+</style>

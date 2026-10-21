@@ -1,0 +1,44 @@
+---
+import '@fontsource/big-shoulders-display/latin-800';
+import '@fontsource/big-shoulders-display/latin-900';
+import '@fontsource-variable/hanken-grotesk';
+import '@fontsource/martian-mono/latin-400';
+import '@fontsource/martian-mono/latin-500';
+import '@fontsource/dotgothic16/latin-400';
+import '@fontsource/reenie-beanie/latin-400';
+import '@/styles/global.css';
+import { profile } from '@/data/site';
+import { url } from '@/lib/url';
+
+interface Props { title?: string; description?: string; bodyClass?: string; themeColor?: string; current?: string }
+const {
+  title = `${profile.name} — The Personal Archive`,
+  description = `${profile.name}: ${profile.tagline} Projects, story, working mind and life outside work.`,
+  bodyClass,
+  themeColor = '#f3efe3',
+  current,
+} = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content={themeColor} />
+    <link rel="icon" type="image/svg+xml" href={url('favicon.svg')} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary" />
+    <script is:inline>document.documentElement.classList.add('js');</script>
+    <slot name="head" />
+  </head>
+  <body class={bodyClass} data-current={current}>
+    <slot />
+  </body>
+</html>

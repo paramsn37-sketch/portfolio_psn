@@ -1,0 +1,114 @@
+---
+import Icon from '../Icon.astro';
+import { chapters, profile } from '@/data/site';
+import { url } from '@/lib/url';
+interface Props { current?: string }
+const { current } = Astro.props;
+const links = chapters.filter((c) => c.id !== 'enter');
+const total = String(chapters.length - 1).padStart(2, '0');
+---
+<header class="bar" data-bar>
+  <div class="bar__in">
+    <a class="bar__home" href={url('')} data-to-desk aria-label="Back to the desk">
+      <svg viewBox="0 0 32 26" width="30" height="24" aria-hidden="true">
+        <path class="bar__tab" d="M2 4.5C2 3.1 3.1 2 4.5 2h7.2l2.6 3h13.2c1.4 0 2.5 1.1 2.5 2.5V9H2z" />
+        <path class="bar__front" d="M1.6 8.2c-.1-.7.4-1.2 1.1-1.2h26.6c.7 0 1.2.5 1.1 1.2l-1.5 14.6c-.1.7-.7 1.2-1.4 1.2H4.5c-.7 0-1.3-.5-1.4-1.2z" />
+      </svg>
+    </a>
+    <a class="bar__mark" href={url('archive/#enter')}>The Personal Archive</a>
+    <span class="bar__rule" aria-hidden="true"></span>
+
+    <nav class="bar__nav" aria-label="Chapters">
+      <ul role="list">
+        {links.map((c) => (
+          <li>
+            <a href={url(`archive/#${c.id}`)} data-nav={c.id} aria-current={current === c.id ? 'true' : undefined}>{c.label}</a>
+          </li>
+        ))}
+      </ul>
+      <span class="bar__ind" data-nav-ind aria-hidden="true"></span>
+    </nav>
+
+    <span class="bar__est meta">Est. {profile.est}</span>
+    <span class="bar__count meta" aria-hidden="true"><b data-count>{current ? chapters.find((c) => c.id === current)?.num : '00'}</b>&thinsp;/&thinsp;{total}</span>
+    <button class="bar__menu" type="button" data-open="nav-panel" aria-label="Open navigation" aria-haspopup="dialog">
+      <Icon name="menu" size={22} />
+    </button>
+  </div>
+</header>
+
+<style>
+  .bar {
+    position: fixed; inset: 0 0 auto; z-index: 100;
+    height: var(--bar-h);
+    background: rgb(243 239 227 / 0.94);
+    transition: transform var(--d-base) var(--ease-out), box-shadow var(--d-base) ease;
+  }
+  .bar::after {
+    content: ""; position: absolute; left: var(--gutter); right: var(--gutter); bottom: 0;
+    height: 1px; background: var(--linen-2);
+  }
+  :global(.bar.is-scrolled) { box-shadow: 0 10px 24px -22px rgb(60 45 20 / 0.6); }
+  .bar__in {
+    height: 100%;
+    display: flex; align-items: center; gap: var(--s-4);
+    padding-inline: var(--gutter);
+  }
+  .bar__home {
+    display: grid; place-items: center; width: 2.5rem; height: 2.5rem; margin-left: -0.35rem;
+    border-radius: var(--r-2);
+    transition: transform var(--d-press) var(--ease-out), background-color var(--d-fast) ease;
+  }
+  .bar__home svg { overflow: visible; }
+  .bar__tab { fill: var(--kraft-2); }
+  .bar__front { fill: var(--olive); transform-origin: 50% 100%; transition: transform var(--d-fast) var(--ease-out); }
+  .bar__home:active { transform: scale(0.94); }
+  @media (hover: hover) and (pointer: fine) {
+    .bar__home:hover { background: var(--paper-2); }
+    .bar__home:hover .bar__front { transform: perspective(60px) rotateX(-18deg); }
+  }
+  .bar__mark {
+    font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase;
+    text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 0.45em;
+    white-space: nowrap;
+  }
+  .bar__rule { flex: 1; height: 1px; background: var(--linen-2); min-width: 1rem; }
+  .bar__nav { position: relative; }
+  .bar__nav ul { display: flex; gap: clamp(0.25rem, 1.2vw, 1.25rem); }
+  .bar__nav a {
+    display: block; padding: 0.55rem 0.35rem;
+    font-size: 0.875rem; color: var(--ink-2); text-decoration: none;
+    transition: color var(--d-fast) ease;
+  }
+  .bar__nav a[aria-current="true"] { color: var(--ink); }
+  @media (hover: hover) { .bar__nav a:hover { color: var(--ink); } }
+  .bar__ind {
+    position: absolute; left: 0; bottom: 0.15rem; height: 2px; width: 1px;
+    background: var(--olive-deep); border-radius: 2px;
+    transform-origin: 0 0; opacity: 0;
+    transition: transform var(--d-base) var(--ease-out), opacity var(--d-fast) ease;
+  }
+  .bar__est { white-space: nowrap; }
+  .bar__count { white-space: nowrap; min-width: 4.5ch; text-align: right; }
+  .bar__count b { font-weight: 500; color: var(--ink); }
+  .bar__menu {
+    display: none; width: 2.75rem; height: 2.75rem; place-items: center; margin-right: -0.5rem;
+    border-radius: var(--r-2);
+    transition: transform var(--d-press) var(--ease-out);
+  }
+  .bar__menu:active { transform: scale(0.94); }
+
+  @media (max-width: 1080px) {
+    .bar__est { display: none; }
+  }
+  @media (max-width: 900px) {
+    .bar__nav, .bar__rule { display: none; }
+    .bar__in { justify-content: space-between; }
+    .bar__mark { margin-right: auto; }
+    .bar__menu { display: grid; }
+  }
+  @media (max-width: 380px) {
+    .bar__mark { font-size: 0.6875rem; letter-spacing: 0.04em; }
+    .bar__count { display: none; }
+  }
+</style>

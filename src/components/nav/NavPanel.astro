@@ -1,0 +1,59 @@
+---
+import Icon from '../Icon.astro';
+import Brand from '../Brand.astro';
+import Placeholder from '../Placeholder.astro';
+import { chapters, profile, links } from '@/data/site';
+import { url } from '@/lib/url';
+---
+<dialog id="nav-panel" class="drawer drawer--right navpanel" aria-label="Navigation">
+  <div class="drawer__body">
+    <div class="navpanel__head">
+      <span class="meta">The Personal Archive</span>
+      <button class="drawer__x" type="button" data-close aria-label="Close navigation"><Icon name="x" size={20} /></button>
+    </div>
+    <ol class="navpanel__list" role="list">
+      {chapters.map((c) => (
+        <li>
+          <a href={url(`archive/#${c.id}`)} data-close data-rail={c.id}>
+            <span class="meta">{c.num}</span>
+            <Icon name={c.icon} size={18} />
+            <span>{c.title}</span>
+          </a>
+        </li>
+      ))}
+    </ol>
+    <a class="navpanel__desk" href={url('')} data-to-desk>
+      <Icon name="arrow-left" size={16} /> Back to the desk
+    </a>
+    <figure class="navpanel__quote sheet">
+      <Placeholder alt="A favourite landscape" ratio="1 / 1" label="Photo" />
+      <blockquote class="hand">“{profile.quote}”</blockquote>
+    </figure>
+    <ul class="navpanel__social" role="list">
+      <li><a href={links.linkedin} aria-label="LinkedIn"><Brand name="linkedin" /></a></li>
+      <li><a href={links.github} aria-label="GitHub"><Brand name="github" /></a></li>
+      <li><a href={`mailto:${links.email}`} aria-label="Email"><Icon name="mail" size={19} /></a></li>
+      <li><a href={links.instagram} aria-label="Instagram"><Brand name="instagram" /></a></li>
+    </ul>
+  </div>
+</dialog>
+
+<style>
+  .navpanel { width: min(26rem, 100vw); }
+  .navpanel__head { display: flex; align-items: center; justify-content: space-between; padding-bottom: var(--s-4); border-bottom: var(--hair); }
+  .navpanel__list { margin-top: var(--s-4); display: grid; }
+  .navpanel__list a {
+    display: grid; grid-template-columns: 2.25rem 1.75rem 1fr; align-items: center;
+    min-height: 3.1rem; text-decoration: none; font-size: 1.0625rem;
+    border-radius: var(--r-2); padding-inline: var(--s-2);
+    transition: background-color var(--d-fast) ease;
+  }
+  .navpanel__list a[aria-current="true"] { background: var(--olive-wash); font-weight: 600; }
+  @media (hover: hover) { .navpanel__list a:hover { background: var(--paper-2); } }
+  .navpanel__desk { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: var(--s-4); padding: var(--s-2); font-size: 0.875rem; color: var(--blue); text-decoration: none; }
+  .navpanel__quote { margin-top: var(--s-6); display: grid; grid-template-columns: 5.5rem 1fr; gap: var(--s-4); align-items: center; padding: var(--s-3); transform: rotate(-1deg); }
+  .navpanel__quote blockquote { font-size: 1.6rem; color: var(--ink); }
+  .navpanel__social { margin-top: var(--s-6); display: flex; gap: var(--s-2); }
+  .navpanel__social a { display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: var(--r-2); color: var(--ink-2); transition: background-color var(--d-fast) ease, color var(--d-fast) ease; }
+  @media (hover: hover) { .navpanel__social a:hover { background: var(--paper-2); color: var(--ink); } }
+</style>

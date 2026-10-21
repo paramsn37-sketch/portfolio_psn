@@ -1,0 +1,272 @@
+---
+/**
+ * Objects on Param's desk, drawn top-down under a lamp in the top-left corner
+ * (so every shadow falls down and to the right). Interactive objects are links
+ * to a chapter; decorative ones are inert. Everything is original SVG.
+ */
+import Placeholder from '../Placeholder.astro';
+import { profile } from '@/data/site';
+import { url } from '@/lib/url';
+---
+<!-- ───────────── Interactive: each one is a door into a chapter ───────────── -->
+
+<a class="obj obj--folders" href={url('archive/#projects')} data-travel="projects" aria-label="Projects — the work folders">
+  <svg viewBox="0 0 260 200" aria-hidden="true">
+    <g transform="rotate(-4 130 100)">
+      <path d="M14 38h70l12 -14h132a8 8 0 0 1 8 8v150a8 8 0 0 1 -8 8H14a8 8 0 0 1 -8 -8V46a8 8 0 0 1 8 -8z" fill="#9c7b49" />
+    </g>
+    <g transform="rotate(3 130 100)">
+      <path d="M18 34h68l12 -14h128a8 8 0 0 1 8 8v148a8 8 0 0 1 -8 8H18a8 8 0 0 1 -8 -8V42a8 8 0 0 1 8 -8z" fill="#b8955f" />
+    </g>
+    <g class="obj__lift-top">
+      <path d="M16 30h66l12 -14h134a8 8 0 0 1 8 8v152a8 8 0 0 1 -8 8H16a8 8 0 0 1 -8 -8V38a8 8 0 0 1 8 -8z" fill="#c8a979" />
+      <path d="M8 52h228" stroke="#a88a58" stroke-width="2" />
+      <rect x="30" y="74" width="120" height="34" rx="2" fill="#f4eedf" />
+      <text x="40" y="98" font-family="var(--font-mono)" font-size="15" letter-spacing="2" fill="#3a3530">WORK / 03</text>
+      <path d="M30 128h176M30 146h150M30 164h164" stroke="#a88a58" stroke-width="1.4" stroke-dasharray="3 5" />
+      <rect x="196" y="20" width="26" height="12" fill="#c9332b" opacity=".85" />
+    </g>
+  </svg>
+  <span class="obj__label">Projects</span>
+</a>
+
+<a class="obj obj--badge" href={url('archive/#about')} data-travel="about" aria-label="About me — my ID card">
+  <svg class="obj__cord" viewBox="0 0 300 200" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M296 196 C 270 120, 180 150, 120 90 S 40 10, -10 -6" fill="none" stroke="#315d86" stroke-width="10" stroke-linecap="round" />
+    <path d="M296 196 C 270 120, 180 150, 120 90 S 40 10, -10 -6" fill="none" stroke="#244766" stroke-width="2" stroke-dasharray="2 9" />
+  </svg>
+  <div class="obj__card">
+    <span class="obj__clip" aria-hidden="true"></span>
+    <span class="obj__card-head">Archive pass</span>
+    <div class="obj__card-photo"><Placeholder alt="ID photo" ratio="1 / 1" label="Photo" tone="linen" /></div>
+    <span class="obj__card-name">{profile.name}</span>
+    <span class="obj__card-meta">Visitor · Est. {profile.est}</span>
+  </div>
+  <span class="obj__label">About me</span>
+</a>
+
+<a class="obj obj--photos" href={url('archive/#life')} data-travel="life" aria-label="Life and interests — a stack of photos">
+  <div class="obj__photo obj__photo--1"><Placeholder alt="Photo" ratio="1 / 1" label="Photo" tone="dark" /></div>
+  <div class="obj__photo obj__photo--2"><Placeholder alt="Photo" ratio="1 / 1" label="Photo" tone="dark" /></div>
+  <div class="obj__photo obj__photo--3"><Placeholder alt="Photo" ratio="1 / 1" label="Photo" tone="dark" /><span class="obj__photo-cap">good days</span></div>
+  <span class="obj__label">Life</span>
+</a>
+
+<a class="obj obj--sketchbook" href={url('archive/#mind')} data-travel="mind" aria-label="Working mind — my sketchbook">
+  <svg viewBox="0 0 240 320" aria-hidden="true">
+    <rect x="18" y="8" width="214" height="304" rx="8" fill="#252522" />
+    <rect x="26" y="14" width="200" height="292" rx="5" fill="#f1ece0" />
+    <g stroke="#cfc6b2" stroke-width="1">
+      {Array.from({ length: 13 }, (_, i) => <path d={`M40 ${40 + i * 21}h176`} />)}
+    </g>
+    <g fill="none" stroke="#315d86" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="58" y="62" width="56" height="34" rx="4" />
+      <rect x="146" y="62" width="56" height="34" rx="4" />
+      <path d="M114 79h30 m-8 -6 l8 6 l-8 6" />
+      <circle cx="130" cy="164" r="24" />
+      <path d="M86 96 C 86 130, 110 150, 110 150 M174 96 C 174 130, 150 150, 150 150" />
+      <path d="M118 158 l8 8 l16 -16" />
+      <path d="M64 236 c 20 -18 40 18 60 0 s 40 18 60 0" />
+    </g>
+    <text x="60" y="290" font-family="var(--font-hand)" font-size="26" fill="#315d86">how I think</text>
+    <g fill="#8f877a">
+      {Array.from({ length: 14 }, (_, i) => <rect x="8" y={22 + i * 20.5} width="22" height="7" rx="3.5" />)}
+    </g>
+  </svg>
+  <span class="obj__label">Working mind</span>
+</a>
+
+<a class="obj obj--compass" href={url('archive/#story')} data-travel="story" aria-label="My story — the compass">
+  <svg viewBox="0 0 200 200" aria-hidden="true">
+    <defs>
+      <radialGradient id="brass" cx="38%" cy="32%" r="75%">
+        <stop offset="0" stop-color="#e9c27a" />
+        <stop offset=".55" stop-color="#b98a3e" />
+        <stop offset="1" stop-color="#6e4d1c" />
+      </radialGradient>
+    </defs>
+    <circle cx="100" cy="100" r="92" fill="url(#brass)" />
+    <circle cx="100" cy="100" r="78" fill="#efe6d2" />
+    <circle cx="100" cy="100" r="78" fill="none" stroke="#6e4d1c" stroke-width="2" />
+    <g stroke="#3a3122" stroke-width="1.2">
+      {Array.from({ length: 36 }, (_, i) => {
+        const a = (i * 10 * Math.PI) / 180;
+        const r1 = i % 9 === 0 ? 62 : 68;
+        return <path d={`M${100 + Math.sin(a) * r1} ${100 - Math.cos(a) * r1} L${100 + Math.sin(a) * 74} ${100 - Math.cos(a) * 74}`} />;
+      })}
+    </g>
+    <g font-family="var(--font-mono)" font-size="13" fill="#3a3122" text-anchor="middle">
+      <text x="100" y="52">N</text><text x="152" y="105">E</text><text x="100" y="158">S</text><text x="48" y="105">W</text>
+    </g>
+    <g class="obj__needle" data-needle>
+      <path d="M100 38 L110 100 L90 100z" fill="#a3352b" />
+      <path d="M100 162 L110 100 L90 100z" fill="#3a3122" />
+    </g>
+    <circle cx="100" cy="100" r="7" fill="url(#brass)" stroke="#6e4d1c" stroke-width="1.5" />
+    <ellipse cx="72" cy="66" rx="34" ry="16" fill="#fff" opacity=".18" transform="rotate(-35 72 66)" />
+  </svg>
+  <span class="obj__label">My story</span>
+</a>
+
+<a class="obj obj--envelope" href={url('archive/#contact')} data-travel="contact" aria-label="What's next — write to me">
+  <svg viewBox="0 0 260 170" aria-hidden="true">
+    <rect x="6" y="6" width="248" height="158" rx="4" fill="#ece3cf" />
+    <path d="M6 10 L130 96 L254 10" fill="none" stroke="#cdbf9f" stroke-width="2.5" />
+    <path d="M6 160 L104 80 M254 160 L156 80" stroke="#d9cdb2" stroke-width="2" />
+    <circle cx="130" cy="96" r="20" fill="#a3352b" />
+    <circle cx="130" cy="96" r="13" fill="none" stroke="#7d241c" stroke-width="2" />
+    <text x="130" y="101" text-anchor="middle" font-family="var(--font-hand)" font-size="18" fill="#f3d9c9">P</text>
+    <text x="22" y="148" font-family="var(--font-hand)" font-size="22" fill="#4a4840">to: you</text>
+    <rect x="206" y="18" width="34" height="40" fill="none" stroke="#b9ab8c" stroke-width="1.5" stroke-dasharray="3 3" />
+  </svg>
+  <span class="obj__label">Say hello</span>
+</a>
+
+<!-- ───────────── Decorative: inert ───────────── -->
+
+<div class="obj obj--mug" aria-hidden="true">
+  <svg viewBox="0 0 220 200">
+    <circle cx="150" cy="150" r="58" fill="none" stroke="#4a2c14" stroke-width="5" opacity=".35" />
+    <path d="M150 74 C 196 74, 198 132, 160 134" fill="none" stroke="#e7dfcf" stroke-width="20" stroke-linecap="round" transform="translate(8 0)" />
+    <circle cx="96" cy="100" r="70" fill="#e9e2d2" />
+    <circle cx="96" cy="100" r="58" fill="#d9d0bd" />
+    <circle cx="96" cy="100" r="54" fill="#3b2416" />
+    <circle cx="96" cy="100" r="54" fill="none" stroke="#6b4426" stroke-width="7" opacity=".7" />
+    <ellipse cx="80" cy="84" rx="18" ry="10" fill="#fff" opacity=".12" transform="rotate(-30 80 84)" />
+  </svg>
+</div>
+
+<div class="obj obj--pencil" aria-hidden="true">
+  <svg viewBox="0 0 420 34">
+    <path d="M30 6 H360 V28 H30z" fill="#e2b33b" />
+    <path d="M30 6 H360 V12 H30z" fill="#f0c95a" />
+    <path d="M30 22 H360 V28 H30z" fill="#c4962a" />
+    <path d="M360 6 L404 17 L360 28z" fill="#e8cfa2" />
+    <path d="M392 14 L404 17 L392 20z" fill="#2d2a25" />
+    <rect x="6" y="6" width="26" height="22" rx="3" fill="#d58b8b" />
+    <rect x="26" y="5" width="12" height="24" fill="#b7b3a8" />
+  </svg>
+</div>
+
+<div class="obj obj--cassette" aria-hidden="true">
+  <svg viewBox="0 0 250 160">
+    <rect x="4" y="4" width="242" height="152" rx="10" fill="#2f2c27" />
+    <rect x="22" y="20" width="206" height="84" rx="4" fill="#e9e1cd" />
+    <rect x="22" y="20" width="206" height="18" fill="#737b58" />
+    <text x="34" y="34" font-family="var(--font-mono)" font-size="10" letter-spacing="1.5" fill="#f3efe3">MIX · SIDE A</text>
+    <text x="34" y="62" font-family="var(--font-hand)" font-size="22" fill="#315d86">late night builds</text>
+    <rect x="66" y="72" width="118" height="26" rx="13" fill="#2f2c27" />
+    <circle cx="86" cy="85" r="9" fill="#e9e1cd" /><circle cx="164" cy="85" r="9" fill="#e9e1cd" />
+    <path d="M56 156 L72 120 H178 L194 156" fill="#3b3732" />
+  </svg>
+</div>
+
+<div class="obj obj--ring" aria-hidden="true"></div>
+
+<style>
+  /* Every object is placed in sheet units (--u = 1% of the sheet's width) */
+  .obj { position: absolute; display: block; color: inherit; text-decoration: none; }
+  .obj svg { width: 100%; height: auto; overflow: visible; }
+  .obj > svg, .obj__card, .obj__photo { filter: drop-shadow(calc(var(--u) * 0.5) calc(var(--u) * 0.8) calc(var(--u) * 0.7) rgb(0 0 0 / 0.45)); }
+
+  a.obj {
+    cursor: pointer;
+    transition: transform 380ms var(--ease-out), filter 380ms var(--ease-out);
+    transform: rotate(var(--rot, 0deg));
+    outline: none;
+  }
+  a.obj > svg, a.obj .obj__card, a.obj .obj__photo { transition: filter 380ms var(--ease-out); }
+  a.obj:active { transform: rotate(var(--rot, 0deg)) scale(0.97); transition-duration: var(--d-press); }
+
+  /* Lift + warm lamp glow on hover/focus — the "glow" is lamplight, never neon */
+  @media (hover: hover) and (pointer: fine) {
+    a.obj:hover { transform: rotate(var(--rot-hover, var(--rot, 0deg))) translate(calc(var(--u) * -0.4), calc(var(--u) * -0.8)) scale(1.04); }
+    a.obj:hover > svg, a.obj:hover .obj__card, a.obj:hover .obj__photo {
+      filter: drop-shadow(calc(var(--u) * 1.4) calc(var(--u) * 2.2) calc(var(--u) * 1.6) rgb(0 0 0 / 0.5)) drop-shadow(0 0 calc(var(--u) * 2.2) rgb(255 214 140 / 0.35));
+    }
+  }
+  a.obj:focus-visible { transform: rotate(var(--rot-hover, var(--rot, 0deg))) translate(calc(var(--u) * -0.4), calc(var(--u) * -0.8)) scale(1.04); }
+  a.obj:focus-visible > svg, a.obj:focus-visible .obj__card, a.obj:focus-visible .obj__photo { filter: drop-shadow(0 0 0 2px var(--lamp)) drop-shadow(0 0 calc(var(--u) * 2) rgb(255 214 140 / 0.6)); }
+
+  /* Handwritten label that appears on hover/focus, like a sticky tab */
+  .obj__label {
+    position: absolute; left: 50%; bottom: 100%; z-index: 3;
+    translate: -50% 0;
+    padding: 0.2em 0.6em 0.1em;
+    font-family: var(--font-hand); font-size: max(1.35rem, calc(var(--u) * 2.4)); line-height: 1;
+    color: var(--ink); background: var(--note);
+    box-shadow: 0 6px 14px -6px rgb(0 0 0 / 0.6);
+    white-space: nowrap;
+    rotate: calc(var(--rot, 0deg) * -1);
+    opacity: 0; transform: translateY(6px) scale(0.96);
+    transition: opacity var(--d-fast) var(--ease-out), transform var(--d-base) var(--ease-out);
+    pointer-events: none;
+  }
+  a.obj:hover .obj__label, a.obj:focus-visible .obj__label { opacity: 1; transform: translateY(-4px) rotate(-2deg); }
+  @media (hover: none) { .obj__label { opacity: 1; transform: rotate(-2deg); } }
+
+  /* ── placements (desktop) ── */
+  .obj--folders { --rot: -9deg; --rot-hover: -7deg; width: calc(var(--u) * 27); left: calc(var(--u) * -33); top: calc(var(--u) * -6); }
+  .obj__lift-top { transition: transform 380ms var(--ease-out); transform-origin: 50% 100%; }
+  @media (hover: hover) and (pointer: fine) { .obj--folders:hover .obj__lift-top { transform: translate(-3px, -6px) rotate(-2deg); } }
+
+  .obj--badge { --rot: 7deg; --rot-hover: 3deg; width: calc(var(--u) * 15); left: calc(var(--u) * -24); top: calc(var(--u) * 26); }
+  .obj__cord { position: absolute; width: calc(var(--u) * 26); height: calc(var(--u) * 17); right: 50%; bottom: calc(100% - var(--u) * 1.6); filter: drop-shadow(2px 4px 3px rgb(0 0 0 / .4)); }
+  .obj__card {
+    position: relative; display: grid; gap: calc(var(--u) * 0.7); justify-items: start;
+    padding: calc(var(--u) * 1.4); padding-top: calc(var(--u) * 2.4);
+    background: #f6f1e6; border-radius: calc(var(--u) * 0.8);
+  }
+  .obj__clip { position: absolute; top: calc(var(--u) * 0.6); left: 50%; translate: -50% 0; width: calc(var(--u) * 4); height: calc(var(--u) * 1); border-radius: 99px; background: #d0c7b4; box-shadow: inset 0 1px 2px rgb(0 0 0 / .3); }
+  .obj__card-head { font-family: var(--font-mono); font-size: calc(var(--u) * 0.95); letter-spacing: .12em; text-transform: uppercase; color: var(--olive-deep); }
+  .obj__card-photo { width: 62%; display: block; }
+  .obj__card-name { font-family: var(--font-display); font-weight: 900; font-size: calc(var(--u) * 2.2); line-height: .9; text-transform: uppercase; color: var(--ink); }
+  .obj__card-meta { font-family: var(--font-mono); font-size: calc(var(--u) * 0.8); letter-spacing: .06em; color: var(--ink-3); text-transform: uppercase; }
+  .obj--badge :global(.ph__label), .obj--badge :global(.ph__hint), .obj--photos :global(.ph__label), .obj--photos :global(.ph__hint) { display: none; }
+  .obj--badge :global(.ph svg), .obj--photos :global(.ph svg) { width: calc(var(--u) * 2.4); height: auto; }
+
+  .obj--photos { --rot: -6deg; width: calc(var(--u) * 19); aspect-ratio: 0.86; left: calc(var(--u) * -29); top: calc(var(--u) * 58); }
+  .obj__photo {
+    position: absolute; inset: 0; display: block;
+    background: #fbf9f3; padding: 6% 6% 22%;
+    transition: transform 420ms var(--ease-out), filter 380ms var(--ease-out);
+  }
+  .obj__photo--1 { transform: rotate(-9deg) translate(-4%, 2%); }
+  .obj__photo--2 { transform: rotate(7deg) translate(5%, -3%); }
+  .obj__photo--3 { transform: rotate(-1deg); }
+  .obj__photo-cap { position: absolute; left: 8%; bottom: 4%; font-family: var(--font-hand); font-size: calc(var(--u) * 2.1); color: var(--ink-2); line-height: 1; }
+  /* fanned card stack on hover (pixel-designer reference, in a small dose) */
+  @media (hover: hover) and (pointer: fine) {
+    .obj--photos:hover .obj__photo--1 { transform: rotate(-22deg) translate(-26%, 6%); }
+    .obj--photos:hover .obj__photo--2 { transform: rotate(16deg) translate(26%, -2%); }
+    .obj--photos:hover .obj__photo--3 { transform: rotate(-2deg) translateY(-6%); }
+  }
+
+  .obj--sketchbook { --rot: 9deg; --rot-hover: 6deg; width: calc(var(--u) * 23); right: calc(var(--u) * -32); top: calc(var(--u) * 14); }
+  .obj--compass { --rot: 0deg; width: calc(var(--u) * 17); right: calc(var(--u) * -24); top: calc(var(--u) * 54); }
+  .obj__needle { transform-origin: 100px 100px; transform-box: view-box; }
+  .obj--envelope { --rot: -7deg; --rot-hover: -4deg; width: calc(var(--u) * 23); right: calc(var(--u) * 6); top: calc(var(--u) * 66.5); }
+
+  .obj--mug { width: calc(var(--u) * 19); right: calc(var(--u) * -27); top: calc(var(--u) * -16); }
+  .obj--pencil { width: calc(var(--u) * 30); left: calc(var(--u) * 20); top: calc(var(--u) * -7.2); transform: rotate(-3deg); }
+  .obj--cassette { width: calc(var(--u) * 21); left: calc(var(--u) * 8); top: calc(var(--u) * 69); transform: rotate(5deg); }
+  .obj--ring {
+    width: calc(var(--u) * 13); aspect-ratio: 1; left: calc(var(--u) * -38); top: calc(var(--u) * 42);
+    border-radius: 50%; box-shadow: inset 0 0 0 calc(var(--u) * 0.5) rgb(20 10 4 / 0.28);
+    filter: blur(0.6px);
+  }
+
+  /* ── phones: sheet fills the width, a few objects peek in above and below ── */
+  @media (max-width: 760px), (max-aspect-ratio: 4/5) {
+    .obj--sketchbook, .obj--cassette, .obj--pencil, .obj--ring, .obj--badge { display: none; }
+    .obj--folders { width: calc(var(--u) * 38); left: calc(var(--u) * -4); top: calc(var(--u) * -27); }
+    .obj--mug { width: calc(var(--u) * 28); right: calc(var(--u) * -9); top: calc(var(--u) * -27); }
+    .obj--photos { width: calc(var(--u) * 30); left: calc(var(--u) * -4); top: calc(100% + var(--u) * 7); }
+    .obj--compass { width: calc(var(--u) * 27); right: calc(var(--u) * 2); top: calc(100% + var(--u) * 6); }
+    .obj--envelope { width: calc(var(--u) * 32); right: auto; left: calc(var(--u) * 32); top: calc(100% + var(--u) * 14); }
+    .obj__label { font-size: 1.15rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    a.obj, .obj__photo, .obj__lift-top { transition-duration: 1ms !important; }
+  }
+</style>

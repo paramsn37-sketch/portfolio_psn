@@ -1,0 +1,108 @@
+---
+/**
+ * The hand-drawn journey map printed on the central sheet.
+ * Waypoints are real links to each chapter; the route draws itself once on load.
+ * Coordinates are in a 1000 × 645 sheet space (the sheet's own aspect ratio).
+ */
+import { chapters } from '@/data/site';
+import { url } from '@/lib/url';
+
+const stops = [
+  { id: 'about', x: 112, y: 352, lx: 30, ly: 2, anchor: 'start' },
+  { id: 'story', x: 178, y: 128, lx: -26, ly: -6, anchor: 'end' },
+  { id: 'projects', x: 500, y: 66, lx: 0, ly: 54, anchor: 'middle' },
+  { id: 'mind', x: 836, y: 122, lx: -18, ly: 50, anchor: 'end' },
+  { id: 'life', x: 892, y: 360, lx: -30, ly: 2, anchor: 'end' },
+  { id: 'contact', x: 822, y: 566, lx: -30, ly: 2, anchor: 'end' },
+].map((s) => ({ ...s, ch: chapters.find((c) => c.id === s.id)! }));
+
+const route =
+  'M96 582 C 70 520, 66 452, 100 392 S 132 300, 112 352 ' +
+  'C 92 300, 120 236, 150 196 S 160 140, 178 128 ' +
+  'C 236 92, 300 106, 360 84 S 452 54, 500 66 ' +
+  'C 560 80, 640 50, 712 74 S 800 112, 836 122 ' +
+  'C 884 150, 920 206, 906 262 S 876 330, 892 360 ' +
+  'C 918 420, 904 478, 872 516 S 836 550, 822 566';
+---
+<svg class="map" viewBox="0 0 1000 645" preserveAspectRatio="none" aria-hidden="false" role="group" aria-label="Map of the archive">
+  <defs>
+    <mask id="route-reveal" maskUnits="userSpaceOnUse" x="0" y="0" width="1000" height="645">
+      <path class="map__draw" d={route} pathLength="1" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" />
+    </mask>
+  </defs>
+
+  <!-- faint contour lines: the sheet reads as a map without crowding the text -->
+  <g class="map__contours" fill="none" aria-hidden="true">
+    <path d="M0 470 C 120 430, 210 500, 330 470 S 520 400, 640 452 S 860 520, 1000 476" />
+    <path d="M0 512 C 140 470, 230 548, 352 516 S 540 446, 660 496 S 880 566, 1000 522" />
+    <path d="M0 214 C 90 250, 180 190, 270 226 S 430 296, 560 250 S 820 180, 1000 232" />
+    <path d="M640 610 C 700 576, 790 612, 860 594 S 960 610, 1000 604" />
+    <path d="M0 604 C 50 622, 160 600, 240 620" />
+  </g>
+
+  <!-- the route: dashed ink, revealed by an animated solid mask -->
+  <path class="map__route" d={route} fill="none" mask="url(#route-reveal)" />
+
+  <!-- start mark -->
+  <g class="map__start" transform="translate(96 582)" aria-hidden="true">
+    <path d="M-9 -9 L9 9 M9 -9 L-9 9" />
+    <text x="20" y="20" class="map__hand">you are here</text>
+  </g>
+
+  <!-- little sketches -->
+  <g class="map__sketch" aria-hidden="true">
+    <path d="M598 620 l24 -36 l15 20 l13 -14 l28 30" />
+    <path d="M613 598 l6 -6 l6 6" />
+    <circle cx="60" cy="62" r="20" />
+    <path d="M60 36 v-6 M60 94 v-6 M34 62 h-6 M92 62 h-6" />
+    <path d="M60 50 l5 12 l-5 12 l-5 -12z" />
+  </g>
+
+  {stops.map((s, i) => (
+    <a class="map__stop" href={url(`archive/#${s.id}`)} data-travel={s.id} aria-label={`${s.ch.num} — ${s.ch.title}`} style={`--i:${i}`}>
+      <g transform={`translate(${s.x} ${s.y})`}>
+        <circle class="map__hit" r="34" />
+        <circle class="map__ring" r="15" />
+        <circle class="map__dot" r="5.5" />
+        <text class="map__num" x={s.lx} y={s.ly - 20} text-anchor={s.anchor}>{s.ch.num}</text>
+        <text class="map__label map__hand" x={s.lx} y={s.ly + 8} text-anchor={s.anchor}>{s.ch.label}</text>
+      </g>
+    </a>
+  ))}
+</svg>
+
+<style>
+  .map { position: absolute; inset: 0; width: 100%; height: 100%; overflow: hidden; }
+  .map__contours path { stroke: var(--linen-2); stroke-width: 1.4; opacity: 0.55; vector-effect: non-scaling-stroke; }
+  .map__route { stroke: var(--blue); stroke-width: 2.2; stroke-dasharray: 7 7; stroke-linecap: round; vector-effect: non-scaling-stroke; opacity: 0.9; }
+  .map__draw { stroke-dasharray: 1; stroke-dashoffset: 0; }
+  :global(html.js) .map__draw { stroke-dashoffset: 1; animation: map-draw 2.2s var(--ease-in-out) 350ms forwards; }
+  @keyframes map-draw { to { stroke-dashoffset: 0; } }
+
+  .map__start path { stroke: var(--red-string); stroke-width: 3; stroke-linecap: round; }
+  .map__hand { font-family: var(--font-hand); font-size: 27px; fill: var(--ink-2); }
+  .map__sketch { fill: none; stroke: var(--ink-3); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; opacity: 0.6; }
+
+  .map__stop { cursor: pointer; outline: none; }
+  .map__hit { fill: transparent; }
+  .map__ring { fill: var(--paper); stroke: var(--ink); stroke-width: 1.6; transition: transform var(--d-base) var(--ease-out), fill var(--d-fast) ease; }
+  .map__dot { fill: var(--ink); transition: transform var(--d-base) var(--ease-out), fill var(--d-fast) ease; }
+  .map__num { font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.06em; fill: var(--ink-3); }
+  .map__label { font-size: 31px; fill: var(--ink); transition: fill var(--d-fast) ease; }
+  .map__stop :global(g) { transform-box: fill-box; }
+  .map__ring, .map__dot { transform-box: fill-box; transform-origin: center; }
+  :global(html.js) .map__stop { opacity: 0; animation: stop-in 500ms var(--ease-out) forwards; animation-delay: calc(600ms + var(--i) * 260ms); }
+  @keyframes stop-in { from { opacity: 0; } to { opacity: 1; } }
+
+  .map__stop:focus-visible .map__ring { stroke: var(--blue); stroke-width: 3; }
+  .map__stop:focus-visible .map__label { fill: var(--blue); }
+  @media (hover: hover) and (pointer: fine) {
+    .map__stop:hover .map__ring { transform: scale(1.35); fill: var(--note); }
+    .map__stop:hover .map__dot { fill: var(--blue); }
+    .map__stop:hover .map__label { fill: var(--blue); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :global(html.js) .map__draw { animation: none; stroke-dashoffset: 0; }
+    :global(html.js) .map__stop { animation: none; opacity: 1; }
+  }
+</style>

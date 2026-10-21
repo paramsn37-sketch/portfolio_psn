@@ -1,0 +1,40 @@
+---
+import Base from './Base.astro';
+import TopBar from '@/components/nav/TopBar.astro';
+import Rail from '@/components/nav/Rail.astro';
+import NavPanel from '@/components/nav/NavPanel.astro';
+interface Props { title?: string; description?: string; current?: string; railNote?: string }
+const { title, description, current = 'enter', railNote } = Astro.props;
+---
+<Base title={title} description={description} bodyClass="paper-world" current={current}>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <span id="top" tabindex="-1"></span>
+  <TopBar current={current} />
+  <div class="frame">
+    <Rail current={current} note={railNote} />
+    <main id="main" tabindex="-1" class="frame__main">
+      <slot />
+    </main>
+  </div>
+  <slot name="after" />
+  <NavPanel />
+  <script>
+    import '@/scripts/dialogs';
+    import '@/scripts/nav';
+    import '@/scripts/reveal';
+  </script>
+</Base>
+
+<style>
+  .frame {
+    padding-top: var(--bar-h);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .frame__main { min-width: 0; outline: none; }
+  .frame > :global(.rail) { display: none; }
+  @media (min-width: 1180px) {
+    .frame { grid-template-columns: var(--rail-w) minmax(0, 1fr); }
+    .frame > :global(.rail) { display: block; }
+  }
+</style>
