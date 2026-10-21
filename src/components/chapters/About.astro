@@ -95,7 +95,6 @@ const tones = ['linen', 'olive', 'blue', 'kraft'];
   <dialog id="story-drawer" class="drawer story-drawer" aria-labelledby="story-drawer-title">
     <div class="drawer__body">
       <div class="story-drawer__head">
-        <p class="meta">01 · About · the long version</p>
         <button class="drawer__x" type="button" data-close aria-label="Close"><Icon name="x" size={20} /></button>
       </div>
       <h3 id="story-drawer-title" class="display story-drawer__title">The longer story</h3>
@@ -256,7 +255,7 @@ const tones = ['linen', 'olive', 'blue', 'kraft'];
   .hats__hint { margin-top: var(--s-4); font-size: 1.3rem; color: var(--ink-2); }
 
   /* drawer */
-  .story-drawer__head { display: flex; justify-content: space-between; align-items: center; }
+  .story-drawer__head { display: flex; justify-content: flex-end; align-items: center; }
   .story-drawer__title { margin-top: var(--s-6); font-size: clamp(2.5rem, 2rem + 2vw, 3.75rem); }
   .story-drawer__img { margin-top: var(--s-5); }
   .story-drawer__text { margin-top: var(--s-5); color: var(--ink); }

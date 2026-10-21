@@ -24,9 +24,9 @@ You start at Param's desk at night under a lamp. On it lies a hand-drawn map of 
 | 00 | Enter the Archive | Big name, intro, Explore button, polaroid collage + clip + note, Quick Access folders | Fanned card stack (pixel-designer ref) on the folders |
 | 01 | The Person | Portrait collage, pixel name, tags, Quick Facts, "Read my story" drawer | Lanyard ID card that swings (kraft-dossier ref); stacked folder tabs of roles ("life into folders" ref) |
 | 02 | My Story | Journey timeline with milestones and photos | Ink route line drawn as you scroll + coordinates/annotations (Santorini sketchbook ref); red string between turning points (corkboard ref) |
-| 03 | Things I've Built | Huge PROJECTS headline, filters, featured project, archive cards → case studies | One card styled as a manila dossier |
+| 03 | Things I've Built | Huge PROJECTS headline, filters, featured project, archive cards → case studies | One card styled as a manila dossier, one as a retro window |
 | 04 | Working Mind | Toolbox, process, experiments, learning | Retro desktop with folder icons & openable windows (C:\ desktop ref); process drawn as a sketch flow (desk-sketch ref) |
-| 05 | Life Outside Work | LIFE & INTERESTS collage, topic collection cards, recent moments, journal list | Journal entries open with a page-flip; cassette player on Music (analog-media ref) |
+| 05 | Life Outside Work | LIFE & INTERESTS collage, topics, recent moments, journal list | Topics as a pinboard with red string (corkboard ref); journal page-flip; cassette player on Music (analog-media ref) |
 | 06 | What Comes Next | Exploring now, open to, links, contact | Analog console: toggle what you're here for → composes the email (Grand Leisure ref) |
 
 ## 4. Global systems
@@ -61,9 +61,9 @@ The taste skill bans monospace labels, index numbers, hairline grids, tracked ca
 | --- | --- | --- |
 | 0 | Tools: Impeccable, Emil Kowalski skills, taste skill, Playwright (bundled Chromium) | ✅ |
 | 1 | Direction, architecture, this plan | ✅ |
-| 2 | Astro scaffold, tokens, fonts, textures, data layer, nav system | commit `phase-2` |
-| 3 | Desk + chapters 00–02 | commit `phase-3` + screenshots |
-| 4 | Chapter 03 + case-study route | commit `phase-4` |
-| 5 | Chapters 04–06 | commit `phase-5` |
-| 6 | Motion pass, a11y, Playwright QA at 1440/768/390, Impeccable detector + audit, taste inspector | commit `phase-6` |
-| 7 | Deploy workflow, CONTENT.md, push | commit `phase-7` |
+| 2 | Astro scaffold, tokens, fonts, textures, data layer, nav system | ✅ |
+| 3 | Desk + chapters 00–02 | ✅ |
+| 4 | Chapter 03 + case-study route | ✅ |
+| 5 | Chapters 04–06 | ✅ |
+| 6 | Motion pass, a11y, Playwright QA at 1440/768/390, Impeccable detector + audit, taste inspector, independent finish review (verdict: ship) | ✅ |
+| 7 | Deploy workflow, CONTENT.md, DESIGN.md, push | ✅ |

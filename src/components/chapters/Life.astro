@@ -144,7 +144,6 @@ const boardKinds = [
   <dialog id="topic-drawer" class="drawer topic-drawer" aria-label="Collection" data-topic-drawer>
     <div class="drawer__body">
       <div class="topic-drawer__head">
-        <p class="meta">05 · Life · collection</p>
         <button class="drawer__x" type="button" data-close aria-label="Close collection"><Icon name="x" size={20} /></button>
       </div>
       {topics.map((t) => (
@@ -556,7 +555,7 @@ const boardKinds = [
 
   /* topic drawer */
   .topic-drawer { width: min(40rem, 100vw); }
-  .topic-drawer__head { display: flex; justify-content: space-between; align-items: center; }
+  .topic-drawer__head { display: flex; justify-content: flex-end; align-items: center; }
   .tsec__title { margin-top: var(--s-6); display: flex; align-items: center; gap: 0.75rem; font-size: clamp(2.5rem, 2rem + 2vw, 3.75rem); }
   .tsec__blurb { margin-top: var(--s-3); color: var(--ink-2); font-size: var(--t-lead); }
   .tsec__grid { margin-top: var(--s-6); display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-3); }
