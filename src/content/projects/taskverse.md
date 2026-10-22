@@ -10,7 +10,7 @@ team: Team of six at PlaceValue
 duration: About 3 months
 stack: [Angular, TypeScript, ASP.NET Core, .NET microservices, EF Core, PostgreSQL, Judge0, Monaco, AWS CodeDeploy]
 order: 2
-cardStyle: dossier
+cardStyle: window
 annotation: 600 students and counting
 cover: { alt: Taskverse student assessment with the Monaco code editor }
 keyFeatures:

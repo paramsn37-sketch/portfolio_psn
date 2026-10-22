@@ -10,7 +10,6 @@ team: Me, with Gagan and Lavanya on automations and parts of the backend
 duration: Long planning phase, then built in about a week
 stack: [Next.js, TypeScript, Payment gateway, Database with automations]
 order: 4
-cardStyle: dossier
 annotation: Shop by region
 cover: { alt: Thindi Angadi storefront on a phone }
 keyFeatures:

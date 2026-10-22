@@ -10,7 +10,7 @@ team: Solo
 duration: Built in 2025, updated in 2026
 stack: [React, TypeScript, Vite, CSS]
 order: 7
-cardStyle: dossier
+cardStyle: window
 annotation: Brackets to scorecards
 cover: { alt: Kings Club tournament dashboard }
 keyFeatures:
