@@ -10,6 +10,7 @@ team: Solo
 duration: April 2026
 stack: [React, TypeScript, Vite, Tailwind, Supabase, PostgreSQL, Recharts, jsPDF]
 order: 6
+cardStyle: dossier
 annotation: Built for my unit
 cover: { alt: NCC SJBIT Command Center dashboard }
 keyFeatures:

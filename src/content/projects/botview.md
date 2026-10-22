@@ -9,8 +9,8 @@ role: Founder, lead developer and AI engineer
 team: Me, with Kiran on deployment
 duration: Core build in July 2026, infrastructure work into October
 stack: [FastAPI, Python, MongoDB Atlas, Supabase pgvector, Gemini 2.5 Flash, Sarvam AI, OpenAI embeddings, React, Tailwind, Zustand]
-order: 3
-cardStyle: window
+order: 1
+featured: true
 annotation: Talk to the interviewer
 cover: { alt: BotView live voice interview screen }
 keyFeatures:
