@@ -18,37 +18,37 @@ export const showDemoNotes = true;
 export const profile = {
   name: 'Param S N',
   firstName: 'Param',
-  est: '2007', // from your mockups — the year the archive "begins"
+  est: '2005',
   location: 'Bengaluru, India',
   coords: '12.97° N, 77.59° E',
   greeting: "Hi, I'm",
-  tagline: 'I build, explore, learn and collect a little bit of everything.', // DEMO
+  tagline: 'I build AI products end to end, from the first idea to a working product.',
   intro:
-    'This is my personal archive — a space to explore my projects, journeys, interests and the things that shape me.', // DEMO
-  role: 'AI/ML engineer in the making', // DEMO
+    'This is my personal archive — a space to explore my projects, journeys, interests and the things that shape me.',
+  role: 'AI/ML engineer & full-stack developer',
   portrait: { alt: 'Portrait of Param S N', ratio: '4 / 5' } as Img,
   heroPhoto: { alt: 'Param on a mountain trail', ratio: '4 / 5' } as Img,
   about:
-    "I'm a builder at heart — curious about technology, people and the world around me. I love turning ideas into real things, learning from the process and exploring what's next.", // DEMO
-  traits: ['Builder', 'Learner', 'Explorer', 'Creative'], // DEMO
+    "I'm an AI & ML undergraduate at SJBIT and a full-stack developer, interning in software and product development at PlaceValue. I work across the stack, from Angular and React front ends to .NET and FastAPI services, with hands-on work in generative AI, RAG and LLM integration. When I take something on, I see it through to a finished, working product.",
+  traits: ['Builder', 'Founder', 'Engineer', 'Cadet'],
   facts: [
     { icon: 'map-pin', label: 'Location', value: 'Bengaluru, India' },
-    { icon: 'graduation-cap', label: 'Education', value: 'BE AI & ML (SJBIT)' },
-    { icon: 'languages', label: 'Languages', value: 'English, Hindi, Kannada' },
-    { icon: 'compass', label: 'Interests', value: 'Travel, Tech, Design, Music' },
-  ], // from your mockups — confirm
+    { icon: 'graduation-cap', label: 'Education', value: 'BE AI & ML, SJBIT (2027)' },
+    { icon: 'languages', label: 'Languages', value: 'English, Kannada, Hindi, Tamil' },
+    { icon: 'compass', label: 'Interests', value: 'AI, Design, NCC, Model building' },
+  ],
   hats: [
-    { label: 'Builder', note: 'Turning ideas into working products.' }, // DEMO
-    { label: 'Engineer', note: 'AI/ML, full-stack and the cloud underneath.' }, // DEMO
-    { label: 'Founder', note: 'Starting things before they are obvious.' }, // DEMO
-    { label: 'Leader', note: 'Learning to lead people, not just code.' }, // DEMO
+    { label: 'Founder', note: 'Building BotView, an AI mock-interview platform.' },
+    { label: 'Engineer', note: 'Full-stack and AI features at PlaceValue.' },
+    { label: 'Leader', note: 'Junior Under Officer in my college NCC unit.' },
+    { label: 'Maker', note: 'Models big and small, including a 4-foot ship from reused materials.' },
   ],
   longStory: [
-    'DEMO: This drawer holds the longer version of your story: where you grew up, what first pulled you toward technology, and the moment you realised you wanted to build things for a living.',
-    'DEMO: Use a second paragraph for how you think: the way you approach a new problem, the kind of teams you do your best work in, and what you are unwilling to compromise on.',
-    'DEMO: Close with what you are chasing now. Keep it honest and specific; one concrete sentence beats three adjectives.',
+    'I grew up in Bengaluru, finished school at Vidyaniketan Public School in 2021, and joined SJB Institute of Technology in 2023 to study Artificial Intelligence and Machine Learning. Alongside my degree I joined the National Cadet Corps, where I now serve as a Junior Under Officer and earned a Grade A in the B Certificate exam with the top marks in my unit.',
+    'I learn by building. I started BotView, an AI mock-interview platform, and built a volunteer portal for my NCC unit, a computer-vision system for industrial safety and storefronts for real clients. I take ownership of a task and see it through to a finished, working product.',
+    'Today I intern in software and product development at PlaceValue, where I helped build Taskverse, an assessment platform now used by around 600 students. I am chasing the place where AI meets real products people use every day.',
   ],
-  quote: 'Build a life you’re excited to wake up to.', // DEMO (from mockup)
+  quote: 'Build a life you’re excited to wake up to.',
 };
 
 /** Image slots that aren't tied to a timeline entry, topic or journal entry. Add `src` to fill one. */
@@ -66,13 +66,13 @@ export const photos = {
 };
 
 export const links = {
-  email: 'hello@example.com', // DEMO: replace with your real address
+  email: 'paramsn37@gmail.com',
   github: 'https://github.com/paramsn37-sketch',
-  linkedin: '#', // DEMO
-  x: '#', // DEMO
-  instagram: '#', // DEMO
-  spotify: '#', // DEMO
-  resume: '#', // DEMO: link a PDF in /public when ready
+  linkedin: 'https://www.linkedin.com/in/param-s-n/',
+  x: '#', // '#' hides the link
+  instagram: '#',
+  spotify: '#',
+  resume: '#', // link a PDF in /public when ready
 };
 
 export const chapters = [
@@ -90,39 +90,46 @@ export type ChapterId = (typeof chapters)[number]['id'];
 /* ---------- 02 · My story ---------- */
 export const timeline = [
   {
-    year: '2007', title: 'Early days', kind: 'Beginnings',
-    body: 'Started my journey — curious and full of questions.', // DEMO (mockup)
+    year: '2005', title: 'Early days', kind: 'Beginnings',
+    body: 'Started my journey — curious and full of questions.',
     lesson: 'DEMO: the habit from childhood that still shows up in how you work.',
     place: 'Bengaluru',
     image: { alt: 'Childhood photo', ratio: '1 / 1' } as Img,
   },
   {
-    year: '2018', title: 'High school', kind: 'Education',
-    body: 'Discovered my interest in technology and problem solving.', // DEMO (mockup)
+    year: '2021', title: 'Finished school', kind: 'Education',
+    body: 'Completed CBSE Class 10 at Vidyaniketan Public School, Bengaluru.',
     lesson: 'DEMO: the first thing you built, and what broke.',
-    image: { alt: 'High school photo', ratio: '1 / 1' } as Img,
+    place: 'Bengaluru',
+    image: { alt: 'School photo', ratio: '1 / 1' } as Img,
   },
   {
-    year: '2023', title: 'Joined SJBIT', kind: 'Education', turning: true,
-    body: 'Started a BE in AI & ML and began building small projects.', // DEMO (mockup)
+    year: '2023', title: 'Joined SJBIT and the NCC', kind: 'Education', turning: true,
+    body: 'Started a BE in AI & ML at SJB Institute of Technology and joined the National Cadet Corps.',
     lesson: 'DEMO: why AI/ML, and what you expected versus what you found.',
     image: { alt: 'College campus', ratio: '1 / 1' } as Img,
   },
   {
-    year: '2024', title: 'Started building projects', kind: 'Experiments',
-    body: 'Moved from tutorials to shipping things other people could use.', // DEMO
+    year: '2024', title: 'Founded BotView', kind: 'Experiments',
+    body: 'Started BotView, an AI mock-interview platform, and moved from tutorials to shipping real products.',
     lesson: 'DEMO: the project that taught you the most by failing.',
-    image: { alt: 'Early project screenshot', ratio: '1 / 1' } as Img,
+    image: { alt: 'Early BotView screenshot', ratio: '1 / 1' } as Img,
   },
   {
-    year: '2025', title: 'First steps in the industry', kind: 'Work', turning: true,
-    body: 'Internships and exploration — hands-on experience with real-world problems.', // DEMO (mockup)
+    year: '2025', title: 'Computer vision', kind: 'Experiments',
+    body: 'Built Vision-Sentinel, a real-time PPE detection system, and completed NPTEL Computer Vision from IIT Kharagpur.',
+    lesson: 'DEMO: what you learned taking a model from notebook to live camera.',
+    image: { alt: 'Vision-Sentinel detection screenshot', ratio: '1 / 1' } as Img,
+  },
+  {
+    year: '2026', title: 'Interning at PlaceValue', kind: 'Work', turning: true,
+    body: 'Joined PlaceValue as a software and product development intern and shipped Taskverse to around 600 students.',
     lesson: 'DEMO: what changed when your code met real users and real teams.',
     image: { alt: 'Office or team photo', ratio: '1 / 1' } as Img,
   },
   {
-    year: '2026', title: "What's next?", kind: 'Now',
-    body: 'Building, learning and exploring new opportunities.', // DEMO (mockup)
+    year: '2027', title: "What's next?", kind: 'Now',
+    body: 'Graduating with a BE in AI & ML, and building what comes after.',
     lesson: 'DEMO: the question you are trying to answer this year.',
     image: { alt: 'Mountain view', ratio: '1 / 1' } as Img,
   },
@@ -133,46 +140,53 @@ export const toolbox = [
   {
     id: 'languages', label: 'Languages', icon: 'folder',
     items: [
-      { name: 'Python', note: 'DEMO: what you reach for it for.' },
-      { name: 'TypeScript', note: 'DEMO' },
-      { name: 'C#', note: 'DEMO' },
-      { name: 'SQL', note: 'DEMO' },
+      { name: 'Python', note: 'FastAPI backends and ML, from BotView to Vision-Sentinel.' },
+      { name: 'TypeScript', note: 'Angular and React front ends.' },
+      { name: 'JavaScript', note: 'Node.js services and plain web pages.' },
+      { name: 'SQL', note: 'PostgreSQL, Supabase and Oracle SQL.' },
+      { name: 'C', note: 'Where I learned to program.' },
     ],
   },
   {
     id: 'frameworks', label: 'Frameworks', icon: 'folder',
     items: [
-      { name: 'React', note: 'DEMO' },
-      { name: 'Angular', note: 'DEMO' },
-      { name: '.NET', note: 'DEMO' },
-      { name: 'FastAPI', note: 'DEMO' },
+      { name: 'Angular', note: 'The Taskverse front end.' },
+      { name: 'React', note: 'Dashboards, driver apps and storefronts.' },
+      { name: '.NET', note: 'Taskverse microservices.' },
+      { name: 'FastAPI', note: 'BotView and PlaceRocket backends.' },
+      { name: 'Flask', note: 'Quick Python services.' },
+      { name: 'Node.js', note: 'The DSA Masterclass payment funnel.' },
     ],
   },
   {
     id: 'ai', label: 'AI & ML', icon: 'folder',
     items: [
-      { name: 'LLM features', note: 'DEMO' },
-      { name: 'Agents & tools', note: 'DEMO' },
-      { name: 'NLP', note: 'DEMO' },
-      { name: 'PyTorch', note: 'DEMO' },
+      { name: 'Generative AI', note: 'Gemini as BotView’s interviewer.' },
+      { name: 'RAG', note: 'Semantic question search on Supabase pgvector.' },
+      { name: 'LLM integration', note: 'Scoring, prompts and failure handling.' },
+      { name: 'Computer vision', note: 'YOLOv11 PPE detection with Grad-CAM.' },
+      { name: 'Speech-to-text', note: 'Live voice interviews with Sarvam AI.' },
     ],
   },
   {
-    id: 'cloud', label: 'Cloud & Ops', icon: 'folder',
+    id: 'cloud', label: 'Cloud & Data', icon: 'folder',
     items: [
-      { name: 'AWS', note: 'DEMO' },
-      { name: 'Docker', note: 'DEMO' },
-      { name: 'CI/CD', note: 'DEMO' },
-      { name: 'Auth (JWT, SSO)', note: 'DEMO' },
+      { name: 'AWS', note: 'Elastic Beanstalk, Amplify, EC2 and CodeDeploy.' },
+      { name: 'Vercel', note: 'Fast front-end deploys.' },
+      { name: 'PostgreSQL', note: 'The default database for most of my projects.' },
+      { name: 'Supabase', note: 'Auth, row-level security and pgvector.' },
+      { name: 'MongoDB', note: 'BotView’s session store.' },
     ],
   },
   {
     id: 'tools', label: 'Daily tools', icon: 'folder',
     items: [
-      { name: 'VS Code', note: 'DEMO' },
-      { name: 'Git & GitHub', note: 'DEMO' },
-      { name: 'Figma', note: 'DEMO' },
-      { name: 'Notion', note: 'DEMO' },
+      { name: 'Git & GitHub', note: 'Every project lives here.' },
+      { name: 'Figma', note: 'Designs before code.' },
+      { name: 'Jitter', note: 'Motion and animated mockups.' },
+      { name: 'n8n', note: 'Workflow automation.' },
+      { name: 'Razorpay & Brevo', note: 'Payments and email for paid funnels.' },
+      { name: 'Power BI', note: 'Data dashboards.' },
     ],
   },
 ];
@@ -186,12 +200,12 @@ export const process = [
 ];
 
 export const experiments = [
-  { title: 'Experiment one', status: 'Running', note: 'DEMO: a one-line hypothesis you are testing.' },
-  { title: 'Experiment two', status: 'Shelved', note: 'DEMO: something you tried and parked, and why.' },
-  { title: 'Experiment three', status: 'Idea', note: 'DEMO: a question you want to answer next.' },
+  { title: 'Vision-Sentinel', status: 'Running', note: 'Real-time PPE detection with YOLOv11, polygon geofencing and Grad-CAM explanations.' },
+  { title: 'Lake detox robot', status: 'Shelved', note: 'A smart lake-cleaning robot I co-designed for the Karnataka & Goa NCC innovation competition.' },
+  { title: 'Unisys Innovation Program', status: 'Running', note: 'Reached Phase 4 of the program.' },
 ];
 
-export const learning = ['DEMO: topic one', 'DEMO: topic two', 'DEMO: topic three'];
+export const learning = ['Russian', 'Public speaking (Indian Academy of Public Speaking, Level 1)', 'AI tools for productivity (BE 10X)'];
 
 /* ---------- 05 · Life ---------- */
 export const vibes = ['Read', 'Build', 'Explore', 'Create', 'Be present']; // from mockup
@@ -202,9 +216,9 @@ export const topics = [
   { id: 'photography', label: 'Photography', icon: 'camera', blurb: 'Moments, people, places & everyday beauty.', items: ['DEMO: a favourite shot', 'DEMO: what you shoot on', 'DEMO: a series'], cover: { alt: 'Photography photo', ratio: '4 / 3' } as Img, photos: [] as Img[] },
   { id: 'books', label: 'Books', icon: 'book', blurb: 'Stories, ideas, thoughts & recommendations.', items: ['DEMO: reading now', 'DEMO: re-read every year', 'DEMO: recommend to everyone'], cover: { alt: 'Books photo', ratio: '4 / 3' } as Img, photos: [] as Img[] },
   { id: 'food', label: 'Food', icon: 'utensils', blurb: 'Local flavours, new tastes & guilty pleasures.', items: ['DEMO: a place', 'DEMO: a dish', 'DEMO: a recipe'], cover: { alt: 'Food photo', ratio: '4 / 3' } as Img, photos: [] as Img[] },
-  { id: 'hobbies', label: 'Hobbies', icon: 'gamepad-2', blurb: 'Build, create, tinker, repeat.', items: ['DEMO', 'DEMO', 'DEMO'], cover: { alt: 'Hobbies photo', ratio: '4 / 3' } as Img, photos: [] as Img[] },
-  { id: 'communities', label: 'Communities', icon: 'users', blurb: 'People, groups, shared passions.', items: ['DEMO: a community', 'DEMO: a role you held', 'DEMO'], cover: { alt: 'Communities photo', ratio: '4 / 3' } as Img, photos: [] as Img[] },
-  { id: 'experiments', label: 'Side quests', icon: 'flask-conical', blurb: 'Side projects, learning & random ideas.', items: ['DEMO', 'DEMO', 'DEMO'], cover: { alt: 'Side quests photo', ratio: '4 / 3' } as Img, photos: [] as Img[] },
+  { id: 'hobbies', label: 'Hobbies', icon: 'gamepad-2', blurb: 'Build, create, tinker, repeat.', items: ['Miniature and large-scale models', 'A 4-foot ship made entirely from reused materials', 'Art (Alabama Art Academy, USA)'], cover: { alt: 'Hobbies photo', ratio: '4 / 3' } as Img, photos: [] as Img[] },
+  { id: 'communities', label: 'Communities', icon: 'users', blurb: 'People, groups, shared passions.', items: ['National Cadet Corps, SJBIT unit', 'Junior Under Officer', 'Organised a college coding event end to end'], cover: { alt: 'Communities photo', ratio: '4 / 3' } as Img, photos: [] as Img[] },
+  { id: 'experiments', label: 'Side quests', icon: 'flask-conical', blurb: 'Side projects, learning & random ideas.', items: ['Smart lake detox robot', 'Unisys Innovation Program, Phase 4', 'Workflow automation with n8n'], cover: { alt: 'Side quests photo', ratio: '4 / 3' } as Img, photos: [] as Img[] },
 ]; // topic list from your mockup — keep only the ones that are true for you
 
 export const moments = [
@@ -254,11 +268,11 @@ export const playlist = [
 /* ---------- 06 · What comes next ---------- */
 export const next = {
   exploring: [
-    'DEMO: what you are exploring right now',
-    'DEMO: a technical area you are going deep on',
-    'DEMO: a question you would love to work on with others',
+    'Voice-based AI agents that hold up in real conversations',
+    'Computer vision for safety on live camera feeds',
+    'RAG and LLM products that real people use every day',
   ],
-  openTo: ['Full-time roles', 'Internships', 'Collaborations', 'Freelance builds'], // DEMO
+  openTo: ['Full-time roles', 'Internships', 'Collaborations', 'Freelance builds'],
   intents: [
     { id: 'hire', label: 'Hire', subject: 'An opportunity for you', body: "Hi Param,\n\nI came across your archive and I'd like to talk about a role:\n\n" },
     { id: 'build', label: 'Build', subject: "Let's build something", body: "Hi Param,\n\nI have an idea I'd like to build with you:\n\n" },
