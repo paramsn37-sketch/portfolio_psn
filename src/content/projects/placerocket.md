@@ -4,12 +4,13 @@ tagline: Dispatch, tracking, delivery proof
 summary: A logistics engine and fleet platform with live tracking, route optimisation and OTP-verified delivery, built for an established shipping company.
 year: '2026'
 categories: [Web]
+place: PlaceValue
 tags: [Full Stack, Logistics, Real-time Tracking, Route Optimisation]
 role: Sole developer, logistics engine
 team: Me on fleet and logistics; Lavanya and Kiran on inventory, picking and packing
 duration: 3 weeks of planning, 1 month of build
 stack: [Python, FastAPI, PostgreSQL + PostGIS, Redis, Redpanda, OSRM, VROOM, React, MapLibre GL, Docker, GitHub Actions]
-order: 3
+order: 4
 cardStyle: dossier
 annotation: Order ready → delivered
 cover: { alt: PlaceRocket ops dashboard with a live driver map }

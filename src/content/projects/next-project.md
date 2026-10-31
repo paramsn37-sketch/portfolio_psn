@@ -4,9 +4,10 @@ tagline: Something new is on the desk
 summary: A new project is being filed. Check back soon.
 year: '2026'
 categories: [Other]
+place: Personal
 tags: [Coming soon]
 role: TBA
-order: 8
+order: 12
 cardStyle: dossier
 annotation: Watch this space
 cover: { alt: Next project cover }

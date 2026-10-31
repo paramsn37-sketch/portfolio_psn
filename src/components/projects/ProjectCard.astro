@@ -17,7 +17,7 @@ const href = url(`archive/projects/${slug}/`);
 const style = p.cardStyle;
 const fileName = `${slug.replace(/-/g, '_')}.exe`;
 ---
-<article class:list={['pcard', `pcard--${style}`]} data-project data-cats={p.categories.join('|')} data-year={p.year} data-title={p.title} data-order={p.order} style={`--tilt:${[-0.8, 0.6, -0.4, 0.9][index % 4]}deg`}>
+<article class:list={['pcard', `pcard--${style}`]} data-project data-cats={p.place} data-year={p.year} data-title={p.title} data-order={p.order} style={`--tilt:${[-0.8, 0.6, -0.4, 0.9][index % 4]}deg`}>
   <a class="pcard__link" href={href} aria-label={`${p.title} — ${p.tagline}. Open case study`}></a>
   {style === 'window' && (
     <div class="pcard__bar" aria-hidden="true">
@@ -26,7 +26,7 @@ const fileName = `${slug.replace(/-/g, '_')}.exe`;
     </div>
   )}
   {style === 'dossier' && (
-    <span class="pcard__tab" aria-hidden="true">{p.categories[0]} · {p.year}</span>
+    <span class="pcard__tab" aria-hidden="true">{p.place} · {p.year}</span>
   )}
   <div class="pcard__media" style={`view-transition-name: cover-${slug}`}>
     <Placeholder src={p.cover.src} alt={p.cover.alt} ratio="16 / 10" label={`${p.title} · cover`} tone={style === 'window' ? 'dark' : 'paper'} />

@@ -4,12 +4,13 @@ tagline: Karnataka snacks, reimagined
 summary: A distinctive mobile-first storefront for an emerging brand selling Karnataka's regional snacks, from map-based discovery to payment.
 year: '2026'
 categories: [Web, Design]
+place: PlaceValue
 tags: [B2C, E-commerce, Responsive Design]
 role: Designer and full-stack developer
 team: Me, with Gagan and Lavanya on automations and parts of the backend
 duration: Long planning phase, then built in about a week
 stack: [Next.js, TypeScript, Payment gateway, Database with automations]
-order: 4
+order: 7
 annotation: Shop by region
 cover: { alt: Thindi Angadi storefront on a phone }
 keyFeatures:

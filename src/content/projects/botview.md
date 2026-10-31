@@ -4,6 +4,7 @@ tagline: AI mock interviews, by voice
 summary: An AI interviewer that runs voice mock interviews, scores every answer and sends a PDF report, built into Taskverse as a new assessment type.
 year: '2026'
 categories: [AI/ML, Web]
+place: Personal
 tags: [AI Agent, Voice, RAG, Integration]
 role: Founder, lead developer and AI engineer
 team: Me, with Kiran on deployment

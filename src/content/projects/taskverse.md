@@ -4,6 +4,7 @@ tagline: Proctored assessments for colleges
 summary: An in-house LMS for PlaceValue where colleges run daily proctored objective and coding assessments, with automated scoring and reports.
 year: '2026'
 categories: [Web]
+place: PlaceValue
 tags: [Full Stack, SaaS, Microservices, Coding Engine]
 role: Full-stack developer, coding engine lead
 team: Team of six at PlaceValue

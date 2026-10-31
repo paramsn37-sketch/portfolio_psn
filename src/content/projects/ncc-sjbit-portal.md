@@ -4,12 +4,13 @@ tagline: Running a cadet unit, online
 summary: A volunteer-built portal for my college NCC unit covering parades, attendance, weekly reports, quizzes, achievements and alumni.
 year: '2026'
 categories: [Web]
+place: College
 tags: [Full Stack, Volunteer, Dashboard]
 role: Sole developer, end to end
 team: Solo
 duration: April 2026
 stack: [React, TypeScript, Vite, Tailwind, Supabase, PostgreSQL, Recharts, jsPDF]
-order: 6
+order: 9
 annotation: Built for my unit
 cover: { alt: NCC SJBIT Command Center dashboard }
 keyFeatures:

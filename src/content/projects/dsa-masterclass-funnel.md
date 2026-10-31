@@ -4,12 +4,13 @@ tagline: Landing page to paid signup
 summary: A ₹99 webinar funnel for PlaceValue that takes a visitor from landing page to Razorpay payment, welcome email and WhatsApp group.
 year: '2026'
 categories: [Web, Design]
+place: PlaceValue
 tags: [Full Stack, Payments, Funnel, DevOps]
 role: Designer and full-stack developer
 team: Solo
 duration: 5 days of work
 stack: [Node.js, Express, PostgreSQL, Razorpay, Brevo, HTML/CSS/JS, AWS EC2, Nginx, PM2, Microsoft Clarity]
-order: 5
+order: 8
 cardStyle: dossier
 annotation: Visitor → paid seat
 cover: { alt: DSA Masterclass landing page }

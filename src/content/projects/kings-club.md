@@ -4,12 +4,13 @@ tagline: One club, every competition
 summary: A tournament management app for a sports club, with role-based journeys for admins, officials and members across multiple sports.
 year: '2026'
 categories: [Web, Design]
+place: Personal
 tags: [Sports, Tournament Management, Dashboard]
 role: Product designer and developer
 team: Solo
 duration: Built in 2025, updated in 2026
 stack: [React, TypeScript, Vite, CSS]
-order: 7
+order: 10
 cardStyle: window
 annotation: Brackets to scorecards
 cover: { alt: Kings Club tournament dashboard }

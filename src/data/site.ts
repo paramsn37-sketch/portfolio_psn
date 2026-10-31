@@ -29,7 +29,7 @@ export const profile = {
   portrait: { alt: 'Portrait of Param S N', ratio: '4 / 5' } as Img,
   heroPhoto: { alt: 'Param on a mountain trail', ratio: '4 / 5' } as Img,
   about:
-    "I'm an AI & ML undergraduate at SJBIT and a full-stack developer, interning in software and product development at PlaceValue. I work across the stack, from Angular and React front ends to .NET and FastAPI services, with hands-on work in generative AI, RAG and LLM integration. When I take something on, I see it through to a finished, working product.",
+    "I'm an AI & ML undergraduate at SJBIT and a full-stack developer, currently an AI engineering intern at Unisys. Before that I built products as a software and product development intern at PlaceValue. I work across the stack, from Angular and React front ends to .NET and FastAPI services, with hands-on work in generative AI, RAG and LLM integration. When I take something on, I see it through to a finished, working product.",
   traits: ['Builder', 'Founder', 'Engineer', 'Cadet'],
   facts: [
     { icon: 'map-pin', label: 'Location', value: 'Bengaluru, India' },
@@ -39,14 +39,14 @@ export const profile = {
   ],
   hats: [
     { label: 'Founder', note: 'Building BotView, an AI mock-interview platform.' },
-    { label: 'Engineer', note: 'Full-stack and AI features at PlaceValue.' },
+    { label: 'Engineer', note: 'AI and automation solutions at Unisys.' },
     { label: 'Leader', note: 'Junior Under Officer in my college NCC unit.' },
     { label: 'Maker', note: 'Models big and small, including a 4-foot ship from reused materials.' },
   ],
   longStory: [
     'I grew up in Bengaluru, finished school at Vidyaniketan Public School in 2021, and joined SJB Institute of Technology in 2023 to study Artificial Intelligence and Machine Learning. Alongside my degree I joined the National Cadet Corps, where I now serve as a Junior Under Officer and earned a Grade A in the B Certificate exam with the top marks in my unit.',
     'I learn by building. I started BotView, an AI mock-interview platform, and built a volunteer portal for my NCC unit, a computer-vision system for industrial safety and storefronts for real clients. I take ownership of a task and see it through to a finished, working product.',
-    'Today I intern in software and product development at PlaceValue, where I helped build Taskverse, an assessment platform now used by around 600 students. I am chasing the place where AI meets real products people use every day.',
+    'At PlaceValue I helped build Taskverse, an assessment platform now used by around 600 students. Today I am an AI engineering intern at Unisys, in the Corporate Infrastructure unit, where four of us interns own the AI and automation solutions for the whole unit. I am chasing the place where AI meets real products people use every day.',
   ],
   quote: 'Build a life you’re excited to wake up to.',
 };
@@ -122,8 +122,8 @@ export const timeline = [
     image: { alt: 'Vision-Sentinel detection screenshot', ratio: '1 / 1' } as Img,
   },
   {
-    year: '2026', title: 'Interning at PlaceValue', kind: 'Work', turning: true,
-    body: 'Joined PlaceValue as a software and product development intern and shipped Taskverse to around 600 students.',
+    year: '2026', title: 'PlaceValue, then Unisys', kind: 'Work', turning: true,
+    body: 'Shipped Taskverse to around 600 students at PlaceValue, then joined Unisys as an AI engineering intern after our UIP semi-final run and campus placement.',
     lesson: 'DEMO: what changed when your code met real users and real teams.',
     image: { alt: 'Office or team photo', ratio: '1 / 1' } as Img,
   },
@@ -202,7 +202,7 @@ export const process = [
 export const experiments = [
   { title: 'Vision-Sentinel', status: 'Running', note: 'Real-time PPE detection with YOLOv11, polygon geofencing and Grad-CAM explanations.' },
   { title: 'Lake detox robot', status: 'Shelved', note: 'A smart lake-cleaning robot I co-designed for the Karnataka & Goa NCC innovation competition.' },
-  { title: 'Unisys Innovation Program', status: 'Running', note: 'Reached Phase 4 of the program.' },
+  { title: 'Unisys Innovation Program', status: 'Running', note: 'Took Vision Sentinel to the semi-finals.' },
 ];
 
 export const learning = ['Russian', 'Public speaking (Indian Academy of Public Speaking, Level 1)', 'AI tools for productivity (BE 10X)'];
@@ -217,8 +217,8 @@ export const topics = [
   { id: 'books', label: 'Books', icon: 'book', blurb: 'Stories, ideas, thoughts & recommendations.', items: ['DEMO: reading now', 'DEMO: re-read every year', 'DEMO: recommend to everyone'], cover: { alt: 'Books photo', ratio: '4 / 3' } as Img, photos: [] as Img[] },
   { id: 'food', label: 'Food', icon: 'utensils', blurb: 'Local flavours, new tastes & guilty pleasures.', items: ['DEMO: a place', 'DEMO: a dish', 'DEMO: a recipe'], cover: { alt: 'Food photo', ratio: '4 / 3' } as Img, photos: [] as Img[] },
   { id: 'hobbies', label: 'Hobbies', icon: 'gamepad-2', blurb: 'Build, create, tinker, repeat.', items: ['Miniature and large-scale models', 'A 4-foot ship made entirely from reused materials', 'Art (Alabama Art Academy, USA)'], cover: { alt: 'Hobbies photo', ratio: '4 / 3' } as Img, photos: [] as Img[] },
-  { id: 'communities', label: 'Communities', icon: 'users', blurb: 'People, groups, shared passions.', items: ['National Cadet Corps, SJBIT unit', 'Junior Under Officer', 'Organised a college coding event end to end'], cover: { alt: 'Communities photo', ratio: '4 / 3' } as Img, photos: [] as Img[] },
-  { id: 'experiments', label: 'Side quests', icon: 'flask-conical', blurb: 'Side projects, learning & random ideas.', items: ['Smart lake detox robot', 'Unisys Innovation Program, Phase 4', 'Workflow automation with n8n'], cover: { alt: 'Side quests photo', ratio: '4 / 3' } as Img, photos: [] as Img[] },
+  { id: 'communities', label: 'Communities', icon: 'users', blurb: 'People, groups, shared passions.', items: ['National Cadet Corps, SJBIT unit (Junior Under Officer)', 'Organised a college coding event end to end', 'Colleagues across Unisys offices in India, the US and the UK'], cover: { alt: 'Communities photo', ratio: '4 / 3' } as Img, photos: [] as Img[] },
+  { id: 'experiments', label: 'Side quests', icon: 'flask-conical', blurb: 'Side projects, learning & random ideas.', items: ['Smart lake detox robot', 'Unisys Innovation Program semi-finals', 'Led our team at Unisys Hack Horizon 2026'], cover: { alt: 'Side quests photo', ratio: '4 / 3' } as Img, photos: [] as Img[] },
 ]; // topic list from your mockup — keep only the ones that are true for you
 
 export const moments = [
