@@ -28,3 +28,9 @@ export function brandPath(slug: string): string {
   if (!icon?.path) throw new Error(`Unknown brand icon "${slug}"`);
   return icon.path;
 }
+
+/** Official colour of a Simple Icons brand mark, as #rrggbb. */
+export function brandHex(slug: string): string {
+  const key = `si${slug.charAt(0).toUpperCase()}${slug.slice(1)}` as keyof typeof brands;
+  return `#${(brands[key] as { hex: string }).hex}`;
+}
