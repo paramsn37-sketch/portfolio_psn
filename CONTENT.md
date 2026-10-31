@@ -6,6 +6,7 @@ Every word and picture on the site comes from two places. You never need to touc
 | --- | --- |
 | Your name, intro, facts, links, timeline, skills, life, journal, playlist, "what's next" | `src/data/site.ts` |
 | One case study per project | `src/content/projects/<slug>.md` |
+| The skill book in chapter 04 (skills, and the projects each one came from) | `src/data/skills.ts` |
 | Your images | `public/images/…` (referenced as `/portfolio_psn/images/…`) or `src/assets/…` |
 
 Anything still marked **DEMO** is placeholder copy. Search the project for `DEMO` to find every line left to replace.

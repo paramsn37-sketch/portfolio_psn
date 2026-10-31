@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { dirname, join } from 'node:path';
+import * as brands from 'simple-icons';
 
 const require = createRequire(import.meta.url);
 const dir = join(dirname(require.resolve('lucide-static/package.json')), 'icons');
@@ -18,4 +19,12 @@ export function lucide(name: string): string {
   }
   cache.set(name, inner);
   return inner;
+}
+
+/** Path data of a Simple Icons brand mark (24×24, filled), by slug. */
+export function brandPath(slug: string): string {
+  const key = `si${slug.charAt(0).toUpperCase()}${slug.slice(1)}` as keyof typeof brands;
+  const icon = brands[key] as { path?: string } | undefined;
+  if (!icon?.path) throw new Error(`Unknown brand icon "${slug}"`);
+  return icon.path;
 }

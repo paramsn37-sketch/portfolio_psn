@@ -2,6 +2,7 @@
 import Icon from '../Icon.astro';
 import ChapterTitle from '../ui/ChapterTitle.astro';
 import DemoNote from '../ui/DemoNote.astro';
+import SkillBook from '../mind/SkillBook.astro';
 import { toolbox, process, experiments, learning } from '@/data/site';
 const icons = [
   ...toolbox.map((t, i) => ({ id: t.id, label: t.label, kind: 'folder' as const, tone: ['olive', 'blue', 'kraft', 'olive', 'blue'][i % 5] })),
@@ -79,6 +80,8 @@ const nodes = process.map((p, i) => ({ ...p, x: 70 + i * 165, y: i % 2 ? 150 : 8
       <span class="desk2__clock" data-clock title="Bengaluru time">--:--</span>
     </footer>
   </div>
+
+  <SkillBook />
 
   <div class="mind__lower">
     <!-- process sketch -->

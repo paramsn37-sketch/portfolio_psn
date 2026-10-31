@@ -1,0 +1,307 @@
+---
+/**
+ * The skill book: a spiral-bound journal. Tabs on the fore-edge pick a page,
+ * the left page is a grid of skill slots, the right page says where each skill
+ * was earned and which projects used it. Content lives in src/data/skills.ts.
+ */
+import { getCollection } from 'astro:content';
+import Icon from '../Icon.astro';
+import { brandPath } from '@/lib/icons';
+import { skillBook } from '@/data/skills';
+import { url } from '@/lib/url';
+
+const SLOTS = 16;
+const projects = new Map((await getCollection('projects')).map((p) => [p.id, p.data]));
+
+const pages = skillBook.map((page) => ({
+  ...page,
+  skills: page.skills.map((s) => {
+    const used = s.projects.map((id) => {
+      const p = projects.get(id);
+      if (!p) throw new Error(`Skill "${s.id}" lists unknown project "${id}"`);
+      return { id, title: p.title, place: p.place, year: p.year };
+    });
+    const places = [...new Set(used.map((u) => u.place))];
+    const years = used.map((u) => Number(u.year)).filter(Boolean);
+    return { ...s, used, places, first: years.length ? Math.min(...years) : undefined, count: used.length + (s.from?.length ?? 0), path: s.brand ? brandPath(s.brand) : undefined };
+  }),
+}));
+const total = pages.reduce((n, p) => n + p.skills.length, 0);
+---
+<div class="sbook" data-book data-reveal>
+  <div class="sbook__head">
+    <h3 class="mind__h3">Skill book</h3>
+    <p class="sbook__aside hand hand--blue" aria-hidden="true">every skill, and where I earned it</p>
+  </div>
+
+  <div class="sbook__frame">
+    <div class="sbook__tabs" role="tablist" aria-label="Skill book pages">
+      {pages.map((p, i) => (
+        <button class="sbook__tab" type="button" role="tab" id={`sb-tab-${p.id}`} aria-controls={`sb-page-${p.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} data-book-tab={i} title={p.title}>
+          <Icon name={p.icon} size={18} stroke={1.8} />
+          <span class="visually-hidden">{p.title}</span>
+        </button>
+      ))}
+    </div>
+
+    <div class="sbook__book">
+      <span class="sbook__date pixel" aria-hidden="true"><b>{total}</b><small>skills logged</small></span>
+
+      {pages.map((p, pi) => (
+        <section class="sbook__spread" id={`sb-page-${p.id}`} role="tabpanel" aria-labelledby={`sb-tab-${p.id}`} data-book-page={pi} hidden={pi !== 0}>
+          <!-- left page: the slots -->
+          <div class="sbook__page sbook__page--left">
+            <h4 class="sbook__title pixel"><span aria-hidden="true">✦</span> {p.title} <span aria-hidden="true">✦</span></h4>
+            <ul class="sbook__grid" role="list" aria-label={`${p.title} skills`}>
+              {p.skills.map((s, si) => (
+                <li>
+                  <button class="sbook__slot" type="button" aria-pressed={si === 0 ? 'true' : 'false'} data-skill={s.id} aria-label={`${s.name}, used ${s.count} time${s.count === 1 ? '' : 's'}`}>
+                    {s.path ? (
+                      <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d={s.path} /></svg>
+                    ) : (
+                      <Icon name={s.icon ?? 'sparkles'} size={26} stroke={1.7} />
+                    )}
+                    <span class="sbook__qty pixel" aria-hidden="true">{s.count}</span>
+                  </button>
+                </li>
+              ))}
+              {Array.from({ length: SLOTS - p.skills.length }, (_, k) => (
+                <li class:list={['sbook__slot', 'sbook__slot--empty', { 'is-locked': k === 2 || k === 7 }]} aria-hidden="true">
+                  {(k === 2 || k === 7) && <Icon name="lock" size={16} stroke={1.8} />}
+                </li>
+              ))}
+            </ul>
+            <p class="sbook__hint pixel">Empty slots: still learning</p>
+          </div>
+
+          <span class="sbook__spiral" aria-hidden="true"></span>
+
+          <!-- right page: the details -->
+          <div class="sbook__page sbook__page--right">
+            {p.skills.map((s, si) => (
+              <article class="sbook__detail" data-detail={s.id} hidden={si !== 0} aria-live="polite">
+                <dl class="sbook__card">
+                  <span class="sbook__tape" aria-hidden="true"></span>
+                  <div><dt>Earned at:</dt><dd>{[...s.places, ...(s.from ?? [])].join(' · ') || '—'}</dd></div>
+                  <div><dt>Projects:</dt><dd>{s.used.length || '—'}</dd></div>
+                  <div><dt>First used:</dt><dd>{s.first ?? '—'}</dd></div>
+                  {s.used.length > 0 && (
+                    <div class="sbook__used">
+                      <dt>Used in:</dt>
+                      <dd>
+                        <ul role="list">
+                          {s.used.map((u) => <li><a href={url(`archive/projects/${u.id}/`)}>{u.title}</a> <span>{u.place}</span></li>)}
+                        </ul>
+                      </dd>
+                    </div>
+                  )}
+                </dl>
+                <div class="sbook__desc">
+                  <p class="sbook__name pixel">“{s.name.toUpperCase()}”</p>
+                  <p>{s.note}</p>
+                  <p class="sbook__count pixel">Quantity: {s.count}</p>
+                </div>
+              </article>
+            ))}
+            <div class="sbook__nav">
+              <button class="sbook__arrow" type="button" data-book-step="-1" aria-label="Previous page"><Icon name="chevron-left" size={18} stroke={2} /></button>
+              <span class="pixel">{pi + 1} / {pages.length}</span>
+              <button class="sbook__arrow" type="button" data-book-step="1" aria-label="Next page"><Icon name="chevron-right" size={18} stroke={2} /></button>
+            </div>
+          </div>
+        </section>
+      ))}
+
+      <!-- the turning leaf, animated between pages -->
+      <span class="sbook__leaf" aria-hidden="true" data-book-leaf><i></i><i></i></span>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-book]').forEach((book) => {
+    const tabs = [...book.querySelectorAll<HTMLButtonElement>('[data-book-tab]')];
+    const pages = [...book.querySelectorAll<HTMLElement>('[data-book-page]')];
+    const leaf = book.querySelector<HTMLElement>('[data-book-leaf]')!;
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+    let current = 0;
+    let turning = false;
+
+    const show = (i: number) => {
+      pages.forEach((p, k) => (p.hidden = k !== i));
+      tabs.forEach((t, k) => {
+        t.setAttribute('aria-selected', String(k === i));
+        t.tabIndex = k === i ? 0 : -1;
+      });
+      current = i;
+    };
+
+    const go = (i: number, focusTab = false) => {
+      const next = (i + pages.length) % pages.length;
+      if (next === current || turning) return;
+      if (focusTab) tabs[next].focus();
+      if (reduce.matches) return show(next);
+      turning = true;
+      // forward turns lift the right page over the spine; backward turns the left page back
+      leaf.dataset.dir = next > current ? 'fwd' : 'back';
+      leaf.classList.remove('is-turning');
+      void leaf.offsetWidth;
+      leaf.classList.add('is-turning');
+      setTimeout(() => show(next), 330);
+      setTimeout(() => { leaf.classList.remove('is-turning'); turning = false; }, 700);
+    };
+
+    tabs.forEach((t, k) => t.addEventListener('click', () => go(k)));
+    book.querySelector('[role="tablist"]')!.addEventListener('keydown', (e) => {
+      const k = (e as KeyboardEvent).key;
+      if (k === 'ArrowDown' || k === 'ArrowRight') { e.preventDefault(); go(current + 1, true); }
+      if (k === 'ArrowUp' || k === 'ArrowLeft') { e.preventDefault(); go(current - 1, true); }
+    });
+    book.querySelectorAll<HTMLButtonElement>('[data-book-step]').forEach((b) => b.addEventListener('click', () => go(current + Number(b.dataset.bookStep))));
+
+    pages.forEach((page) => {
+      const slots = [...page.querySelectorAll<HTMLButtonElement>('[data-skill]')];
+      const details = [...page.querySelectorAll<HTMLElement>('[data-detail]')];
+      slots.forEach((s) => s.addEventListener('click', () => {
+        slots.forEach((o) => o.setAttribute('aria-pressed', String(o === s)));
+        details.forEach((d) => (d.hidden = d.dataset.detail !== s.dataset.skill));
+      }));
+    });
+  });
+</script>
+
+<style>
+  .sbook { margin-top: clamp(3rem, 6vw, 5rem); }
+  .sbook__head { display: flex; align-items: baseline; gap: var(--s-4); flex-wrap: wrap; }
+  .sbook__aside { font-size: var(--t-hand); transform: rotate(-2deg); }
+
+  .sbook__frame { --line: #9c7a4e; --cream: #f4e4c1; --cream-2: #ead4a4; --cell: #dcbf8b; --cell-2: #e8d3a6; --red: #c0392b;
+    position: relative; margin-top: var(--s-5); padding-right: 3rem; }
+
+  /* the open book */
+  .sbook__book {
+    position: relative; perspective: 2200px;
+    background: var(--cream);
+    border: 3px solid var(--line); border-radius: 6px;
+    box-shadow: 0 0 0 3px var(--cream-2), 0 0 0 6px var(--line), 0 18px 30px -12px rgb(40 26 10 / 0.45);
+    image-rendering: pixelated;
+  }
+  .sbook__spread { display: grid; grid-template-columns: minmax(0, 1fr) 2.75rem minmax(0, 1fr); min-height: 30rem; }
+  .sbook__spread[hidden] { display: none; }
+  .sbook__page { position: relative; padding: clamp(1.25rem, 2.5vw, 2rem); }
+  .sbook__page::before { /* inner ruled frame, like the game's page border */
+    content: ""; position: absolute; inset: 0.6rem; border: 2px solid var(--cream-2); border-radius: 3px; pointer-events: none;
+  }
+
+  .sbook__date {
+    position: absolute; z-index: 3; left: 50%; top: -1.6rem; transform: translateX(-50%);
+    display: grid; justify-items: center; padding: 0.2rem 0.9rem 0.3rem;
+    background: var(--cream); border: 3px solid var(--red); border-radius: 4px; color: var(--red);
+    box-shadow: 0 3px 0 var(--line); line-height: 1;
+  }
+  .sbook__date b { font-size: 1.9rem; font-weight: 400; }
+  .sbook__date small { font-size: 0.6rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--cream); background: var(--red); padding: 0.15rem 0.4rem; margin-top: 0.2rem; }
+
+  .sbook__title { text-align: center; font-size: clamp(1.4rem, 1rem + 1.2vw, 2rem); color: var(--line); letter-spacing: 0.06em; text-transform: uppercase; margin: 0.6rem 0 1.1rem; }
+  .sbook__title span { font-size: 0.6em; vertical-align: middle; opacity: 0.7; }
+
+  /* slots */
+  .sbook__grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.45rem; max-width: 21rem; margin-inline: auto; padding: 0.6rem; border: 2px solid var(--cream-2); border-radius: 4px; }
+  .sbook__grid > li { display: grid; }
+  .sbook__slot {
+    position: relative; width: 100%; aspect-ratio: 1; display: grid; place-items: center;
+    background: var(--cell); border: 0; border-radius: 2px; color: #4a3520;
+    box-shadow: inset 0 -3px 0 rgb(0 0 0 / 0.08);
+    cursor: pointer; transition: transform var(--d-press, 120ms) ease, background-color 120ms ease;
+  }
+  .sbook__slot--empty { background: var(--cell-2); cursor: default; box-shadow: inset 0 0 0 2px rgb(156 122 78 / 0.18); color: var(--line); }
+  .sbook__slot[aria-pressed="true"] { background: var(--cream); outline: 3px solid var(--line); outline-offset: -3px; }
+  .sbook__slot:active { transform: scale(0.94); }
+  @media (hover: hover) { button.sbook__slot:hover { background: var(--cream); } }
+  .sbook__slot:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+  .sbook__qty { position: absolute; left: 0.2rem; bottom: 0.05rem; font-size: 0.7rem; color: #4a3520; }
+  .sbook__hint { margin-top: 0.9rem; text-align: center; font-size: 0.75rem; color: var(--red); opacity: 0.8; }
+
+  /* spiral binding */
+  .sbook__spiral {
+    position: relative;
+    background: linear-gradient(90deg, rgb(156 122 78 / 0.22), transparent 30% 70%, rgb(156 122 78 / 0.22));
+  }
+  .sbook__spiral::before { /* the rings */
+    content: ""; position: absolute; inset: 0.8rem -0.5rem;
+    background: radial-gradient(ellipse 50% 0.24rem at 50% 50%, #3a2818 92%, transparent 100%) center top / 100% 1.6rem repeat-y;
+    filter: drop-shadow(0 2px 0 rgb(0 0 0 / 0.18));
+  }
+  .sbook__spiral::after { /* punched holes on both page edges */
+    content: ""; position: absolute; inset: 0.8rem -0.85rem;
+    background:
+      radial-gradient(circle at 0.3rem 50%, #6b4c30 0.18rem, transparent 0.2rem) left top / 0.6rem 1.6rem repeat-y,
+      radial-gradient(circle at 0.3rem 50%, #6b4c30 0.18rem, transparent 0.2rem) right top / 0.6rem 1.6rem repeat-y;
+    z-index: -1;
+  }
+
+  /* right page: details */
+  .sbook__page--right { display: grid; grid-template-rows: 1fr auto; gap: var(--s-4); }
+  .sbook__detail { display: grid; gap: var(--s-4); align-content: start; }
+  .sbook__detail[hidden] { display: none; }
+  .sbook__card {
+    position: relative; margin: 0.9rem auto 0; width: min(100%, 22rem); padding: 1.3rem 1.2rem 1rem;
+    background: #fbf3e0; border: 2px solid var(--line); transform: rotate(1.2deg);
+    font-family: var(--font-pixel); font-size: 0.8125rem; color: #4a3520; display: grid; gap: 0.55rem;
+    box-shadow: 3px 4px 0 rgb(156 122 78 / 0.35);
+  }
+  .sbook__card > div { display: grid; grid-template-columns: 6.5rem minmax(0, 1fr); gap: 0.5rem; }
+  .sbook__card dd { color: var(--red); }
+  .sbook__used ul { display: grid; gap: 0.3rem; }
+  .sbook__used a { color: var(--red); text-decoration: underline; text-underline-offset: 2px; }
+  .sbook__used span { color: #8a7050; font-size: 0.7rem; }
+  .sbook__tape { position: absolute; top: -0.7rem; left: 50%; width: 3rem; height: 1.2rem; transform: translateX(-50%) rotate(-3deg); background: rgb(255 255 255 / 0.6); border: 1px solid rgb(156 122 78 / 0.25); }
+
+  .sbook__desc { border: 2px solid var(--line); background: #fbf3e0; padding: 0.9rem 1rem 0.7rem; font-family: var(--font-pixel); font-size: 0.875rem; line-height: 1.5; color: #3b2a19; display: grid; gap: 0.5rem; }
+  .sbook__name { font-size: 1rem; }
+  .sbook__count { justify-self: end; font-size: 0.7rem; color: #6b5236; }
+
+  .sbook__nav { display: flex; justify-content: center; align-items: center; gap: var(--s-4); font-size: 0.75rem; color: var(--line); }
+  .sbook__arrow { display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border: 2px solid var(--line); border-radius: 4px; background: var(--cream-2); color: #4a3520; cursor: pointer; }
+  .sbook__arrow:active { transform: scale(0.94); }
+
+  /* fore-edge tabs */
+  .sbook__tabs { position: absolute; z-index: 0; right: 0; top: 2.5rem; display: grid; gap: 0.45rem; }
+  .sbook__tab {
+    display: grid; place-items: center; width: 3.1rem; height: 3rem; padding-left: 0.3rem;
+    background: var(--cream-2); border: 3px solid var(--line); border-left: 0; border-radius: 0 6px 6px 0;
+    color: #6b4c30; cursor: pointer; transition: transform 160ms var(--ease-out, ease), background-color 160ms ease;
+  }
+  .sbook__tab[aria-selected="true"] { background: var(--cream); color: var(--red); transform: translateX(0.35rem); }
+  .sbook__tab:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+  @media (hover: hover) { .sbook__tab:hover { transform: translateX(0.25rem); } }
+
+  /* the page turn */
+  .sbook__leaf { position: absolute; z-index: 2; top: 0; bottom: 0; width: calc(50% - 1.375rem); pointer-events: none; visibility: hidden; transform-style: preserve-3d; }
+  .sbook__leaf i { position: absolute; inset: 0; background: var(--cream); backface-visibility: hidden; border: 2px solid var(--cream-2); box-shadow: inset 0 0 40px rgb(156 122 78 / 0.25); }
+  .sbook__leaf i + i { transform: rotateY(180deg); }
+  .sbook__leaf[data-dir="fwd"] { left: calc(50% + 1.375rem); transform-origin: left center; }
+  .sbook__leaf[data-dir="back"] { right: calc(50% + 1.375rem); transform-origin: right center; }
+  .sbook__leaf.is-turning { visibility: visible; animation: sb-turn-fwd 700ms cubic-bezier(0.45, 0.05, 0.3, 1) both; }
+  .sbook__leaf.is-turning[data-dir="back"] { animation-name: sb-turn-back; }
+  @keyframes sb-turn-fwd { from { transform: rotateY(0); } to { transform: rotateY(-180deg); } }
+  @keyframes sb-turn-back { from { transform: rotateY(0); } to { transform: rotateY(180deg); } }
+
+  /* phones: one page above the other, tabs along the top */
+  @media (max-width: 760px) {
+    .sbook__frame { padding-right: 0; padding-top: 3.2rem; }
+    .sbook__tabs { top: 0; right: auto; left: 0.75rem; display: flex; }
+    .sbook__tab { width: 3rem; height: 3.2rem; padding: 0 0 0.3rem; border: 3px solid var(--line); border-bottom: 0; border-radius: 6px 6px 0 0; }
+    .sbook__tab[aria-selected="true"] { transform: translateY(0.3rem); }
+    @media (hover: hover) { .sbook__tab:hover { transform: translateY(0.2rem); } }
+    .sbook__spread { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1.6rem auto; }
+    .sbook__spiral { background: linear-gradient(rgb(156 122 78 / 0.22), transparent 30% 70%, rgb(156 122 78 / 0.22)); }
+    .sbook__spiral::before { inset: -0.5rem 0.8rem; background: radial-gradient(ellipse 0.24rem 50% at 50% 50%, #3a2818 92%, transparent 100%) left center / 1.6rem 100% repeat-x; }
+    .sbook__spiral::after { display: none; }
+    .sbook__date { display: none; }
+    .sbook__leaf, .sbook__leaf[data-dir] { left: 0; right: 0; width: auto; top: 0; bottom: auto; height: 100%; transform-origin: center top; }
+    @keyframes sb-turn-fwd { from { transform: rotateX(0); } to { transform: rotateX(180deg); } }
+    @keyframes sb-turn-back { from { transform: rotateX(0); } to { transform: rotateX(-180deg); } }
+  }
+  @media (prefers-reduced-motion: reduce) { .sbook__leaf { display: none; } }
+</style>
