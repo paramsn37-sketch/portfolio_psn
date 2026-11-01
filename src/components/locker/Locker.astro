@@ -1,108 +1,281 @@
 ---
 /**
- * The locker. Locked until the visitor has picked up the key (chapter 04) — then the key
- * flies over, the lock turns and the door swings open. Inside: pixel portrait poster with
- * the yellow sketchy creative bits, mini art tools, and a pull tab that drops the poster
- * into an endless black grid where the battleship lives in 3D.
+ * The locker. Locked until the visitor has picked up the key (chapter 04). With the key,
+ * it flies over, the lock turns, the locker grows to fill the page on a dark backdrop and
+ * the door swings open. Inside: pixel portrait poster with yellow hand lettering, books,
+ * pens, tablet and earbuds, stickers on the door. The tag hanging from the top of the poster
+ * pulls it down into an endless black grid where the battleship lives in 3D.
+ *
+ * Everything inside is drawn in a 480×900 design grid; `--u` is one design pixel, so the
+ * whole locker scales smoothly from its small size on the page to full screen.
  */
+import '@fontsource/caveat/latin-700.css';
+import '@fontsource/patrick-hand/latin.css';
 import { locker } from '@/data/site';
-const { portrait, doodles, note, stickers, ship } = locker;
+const { portrait, posterTag, script, about, hereTo, note, sticker, ship } = locker;
+
+/** Break text into lines of about `n` characters for SVG <text>. */
+const wrap = (t: string, n: number) =>
+  t.split(' ').reduce<string[]>((lines, w) => {
+    const last = lines[lines.length - 1];
+    if (last && (last + ' ' + w).length <= n) lines[lines.length - 1] = last + ' ' + w;
+    else lines.push(w);
+    return lines;
+  }, []);
+const gold = '#e9cd8c';
 ---
 <div class="lk" id="locker" data-locker>
   <div class="lk__copy" data-reveal>
     <p class="lk__kicker">Staff only</p>
     <h3 class="lk__title">The locker</h3>
     <p class="lk__lede" data-lk-locked-copy>This is where I keep the creative side of me. It's locked, and only the person with the key gets in.</p>
-    <div class="lk__story" data-lk-story hidden>
-      <p>{note}</p>
-      <ul class="lk__facts" role="list">{ship.facts.map((f) => <li>{f}</li>)}</ul>
-    </div>
+    <p class="lk__story" data-lk-story hidden>{note}</p>
   </div>
 
-  <div class="lk__unit" data-reveal>
-    <div class="lk__cab">
-      <span class="lk__top" aria-hidden="true"></span>
+  <div class="lk__slot" data-lk-slot data-reveal>
+    <div class="lk__unit" data-lk-unit>
+      <div class="lk__cab">
+        <!-- interior -->
+        <div class="lk__in" data-lk-in inert>
+          <svg class="lk__wall" viewBox="0 0 428 820" aria-hidden="true">
+            <defs>
+              <linearGradient id="lkWall" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#4b4e52" /><stop offset="0.55" stop-color="#3f4245" /><stop offset="1" stop-color="#35383b" />
+              </linearGradient>
+              <radialGradient id="lkVig" cx="0.45" cy="0.3" r="0.9">
+                <stop offset="0.5" stop-color="#000" stop-opacity="0" /><stop offset="1" stop-color="#000" stop-opacity="0.45" />
+              </radialGradient>
+              <linearGradient id="lkCone" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#fff6d8" stop-opacity="0.22" /><stop offset="1" stop-color="#fff6d8" stop-opacity="0" />
+              </linearGradient>
+              <linearGradient id="lkTab" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#2a2c30" /><stop offset="0.45" stop-color="#121315" /><stop offset="1" stop-color="#26282b" />
+              </linearGradient>
+              <linearGradient id="lkFloor" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#55595d" /><stop offset="1" stop-color="#6c7074" />
+              </linearGradient>
+              <filter id="lkBlur" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="14" /></filter>
+              <filter id="lkGlow" x="-50%" y="-200%" width="200%" height="500%"><feGaussianBlur stdDeviation="5" /></filter>
+              <filter id="lkSoft" x="-10%" y="-10%" width="120%" height="140%"><feDropShadow dx="1" dy="3" stdDeviation="2.5" flood-opacity="0.45" /></filter>
+            </defs>
+            <rect width="428" height="820" fill="url(#lkWall)" />
+            <rect width="428" height="820" fill="url(#lkVig)" />
+            <!-- depth: ceiling and side walls -->
+            <path d="M0 0H428L412 14H16Z" fill="#2b2e31" />
+            <path d="M0 0L16 14V752L0 820Z" fill="#45484c" />
+            <path d="M428 0L412 14V752L428 820Z" fill="#2f3235" />
+            <!-- light -->
+            <g class="lk__lamp">
+              <path class="lk__cone" d="M128 24H300L430 520H-2Z" fill="url(#lkCone)" filter="url(#lkBlur)" />
+              <rect x="124" y="13" width="180" height="12" rx="6" fill="#fff8de" filter="url(#lkGlow)" />
+              <rect x="128" y="15" width="172" height="8" rx="4" fill="#fffdf2" />
+            </g>
 
-      <!-- interior -->
-      <div class="lk__in" data-lk-in inert>
-        <span class="lk__light" aria-hidden="true"></span>
+            <!-- notes on the wall -->
+            <g class="lk__chalk">
+              <text x="40" y="552" fill={gold} font-family="Caveat, cursive" font-weight="700" font-size="26">About me..</text>
+              <text font-family="'Patrick Hand', cursive" font-size="15.5" fill="#f4f1ea">
+                {wrap(about, 25).map((l, i) => <tspan x="40" y={588 + i * 20}>{l}</tspan>)}
+              </text>
+              <text x="246" y="572" fill={gold} font-family="Caveat, cursive" font-weight="700" font-size="24">I'm here to:-</text>
+              <path d="M370 548c14 8 14 26 2 38m0 0l-1-10m1 10l-10-3" fill="none" stroke={gold} stroke-width="2.2" stroke-linecap="round" />
+              <text font-family="'Patrick Hand', cursive" font-size="15.5" fill="#f4f1ea">
+                {wrap(hereTo, 22).map((l, i) => <tspan x="238" y={606 + i * 20}>{l}</tspan>)}
+              </text>
+              <path d="M196 700c4-14 0-28-12-38m0 0l2 11m-2-11l10 4" fill="none" stroke={gold} stroke-width="2.2" stroke-linecap="round" />
+            </g>
 
-        <div class="lk__poster-slot">
-          <figure class="lk__poster" data-lk-poster>
-            <img src={portrait.src} alt={portrait.alt} width="48" height="57" loading="lazy" decoding="async" />
-            <svg class="lk__doodles" viewBox="0 0 200 240" aria-hidden="true">
-              <g fill="none" stroke="#f5c84a" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
-                <!-- crown -->
-                <path d="M74 40 l8 -16 l10 12 l8 -16 l8 16 l10 -12 l8 16 z" />
-                <!-- spark lines -->
-                <path d="M28 70 l10 6 M24 88 h12 M30 106 l9 -5" />
-                <path d="M172 70 l-10 6 M176 88 h-12 M170 106 l-9 -5" />
-                <!-- star -->
-                <path d="M160 28 l4 9 l10 1 l-7 7 l2 10 l-9 -5 l-9 5 l2 -10 l-7 -7 l10 -1 z" />
-                <!-- lightning -->
-                <path d="M30 140 l-8 16 h10 l-8 18" />
-                <!-- arrow to face -->
-                <path d="M168 150 c-10 -8 -22 -10 -30 -4 M138 146 l3 -8 M138 146 l8 2" />
-                <!-- underline scribble -->
-                <path d="M40 214 c20 -6 40 4 60 -2 s40 4 62 -3" />
-                <!-- tiny gear -->
-                <circle cx="34" cy="38" r="7" />
-                <path d="M34 26 v5 M34 45 v5 M22 38 h5 M41 38 h5 M26 30 l3 3 M39 43 l3 3 M26 46 l3 -3 M39 33 l3 -3" />
+            <!-- shelf floor -->
+            <path d="M16 752H412L428 808H0Z" fill="url(#lkFloor)" />
+            <rect x="0" y="806" width="428" height="14" fill="#7c8084" />
+            <rect x="0" y="806" width="428" height="2" fill="#9a9ea2" />
+
+            <!-- books -->
+            <g filter="url(#lkSoft)">
+              <rect x="10" y="732" width="184" height="40" rx="3" fill="#b8892c" />
+              <rect x="10" y="732" width="184" height="6" rx="2" fill="#d2a648" />
+              <rect x="16" y="740" width="170" height="24" fill="#efe6cf" />
+              <path d="M18 746H184M18 752H184M18 758H184" stroke="#d6cbb0" stroke-width="1" />
+              <rect x="10" y="764" width="184" height="8" fill="#8f6a1f" />
+              <g transform="rotate(-2 110 700)">
+                <rect x="22" y="686" width="168" height="46" rx="3" fill="#25304d" />
+                <rect x="22" y="686" width="168" height="7" rx="2" fill="#34406a" />
+                <rect x="28" y="696" width="156" height="26" fill="#ece3cb" />
+                <path d="M30 703H182M30 709H182M30 715H182" stroke="#d1c6aa" stroke-width="1" />
+                <rect x="22" y="722" width="168" height="10" fill="#1b2340" />
+                <rect x="82" y="724" width="46" height="5" rx="1" fill="#b8892c" opacity="0.8" />
               </g>
-              <g fill="#f5c84a" font-family="Reenie Beanie, cursive">
-                <text x="100" y="200" font-size="26" text-anchor="middle" transform="rotate(-3 100 200)">{doodles[0]}</text>
-                <text x="18" y="196" font-size="17" transform="rotate(-14 18 196)">{doodles[1]}</text>
-                <text x="136" y="186" font-size="15" transform="rotate(10 136 186)">{doodles[2]}</text>
+            </g>
+            <!-- tablet -->
+            <g filter="url(#lkSoft)">
+              <path d="M222 748Q222 742 228 742H402Q408 742 409 748L418 790Q419 798 411 798H232Q225 798 224 791Z" fill="url(#lkTab)" />
+              <path d="M232 750H398L405 788H238Z" fill="#0c0d0f" />
+              <path d="M300 750H360L330 788H268Z" fill="#fff" opacity="0.06" />
+            </g>
+            <!-- earbuds -->
+            <g filter="url(#lkSoft)">
+              <rect x="300" y="716" width="76" height="30" rx="15" fill="#f1f0ec" />
+              <path d="M302 728H374" stroke="#cfcdc6" stroke-width="1.2" />
+              <ellipse cx="324" cy="722" rx="16" ry="4" fill="#fff" opacity="0.8" />
+              <rect x="336" y="732" width="4" height="5" rx="1" fill="#bdbab2" />
+            </g>
+            <path d="M376 738c18-6 30 4 24 14s-30 2-20-6c8-6 26 0 22 10" fill="none" stroke="#1d1e20" stroke-width="2.4" stroke-linecap="round" />
+            <path d="M384 744c14-2 18 8 10 12" fill="none" stroke="#e8e6e0" stroke-width="2" stroke-linecap="round" />
+            <!-- pens -->
+            <g stroke-linecap="round">
+              <path d="M84 806L188 778" stroke="#2f5fb5" stroke-width="7" />
+              <path d="M84 806L100 802" stroke="#c9ccd1" stroke-width="7" />
+              <path d="M196 800L226 744" stroke="#b6302a" stroke-width="10" />
+              <path d="M222 751L228 740" stroke="#7e1d18" stroke-width="10" />
+              <path d="M230 800L318 806" stroke="#2f8a52" stroke-width="6.5" />
+              <path d="M300 805L318 806" stroke="#d6a43a" stroke-width="6.5" />
+            </g>
+          </svg>
+
+          <!-- the poster (drops down when the tag is pulled) -->
+          <div class="lk__poster" data-lk-poster>
+            <svg viewBox="0 0 316 386" overflow="visible" aria-hidden="true">
+              <defs>
+                <linearGradient id="lkPaper" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#717478" /><stop offset="1" stop-color="#5c5f63" />
+                </linearGradient>
+              </defs>
+              <rect width="316" height="386" fill="url(#lkPaper)" />
+              <rect width="316" height="386" fill="none" stroke="#000" stroke-opacity="0.25" />
+              <image href={portrait.src} x="18" y="52" width="280" height="334" preserveAspectRatio="xMidYMax meet" style="image-rendering: pixelated" />
+              <g class="lk__doodle" fill="none" stroke={gold} stroke-width="2.4" stroke-linecap="round">
+                <ellipse cx="166" cy="40" rx="50" ry="13" transform="rotate(-10 166 40)" />
+                <path d="M30 76c18-4 36-6 54-10M36 84c14-3 28-5 42-7" />
+                <path d="M30 138c22-4 44-6 66-8M38 146c16-2 32-4 48-5" />
+              </g>
+              <g fill={gold}>
+                <path d="M124 40l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z" />
+                <path d="M208 22l2.4 5.6 6 .6-4.5 4 1.3 6-5.2-3-5.2 3 1.3-6-4.5-4 6-.6z" />
+              </g>
+              <g fill={gold} font-family="Caveat, cursive" font-weight="700">
+                <text x="26" y="64" font-size="34" transform="rotate(-6 26 64)">{posterTag[0]}</text>
+                <text x="26" y="126" font-size="34" transform="rotate(-5 26 126)">{posterTag[1]}</text>
+              </g>
+              <!-- masking tape -->
+              <g fill="#cfc6b0" fill-opacity="0.62">
+                <rect x="-18" y="-8" width="46" height="16" transform="rotate(-38 5 0)" />
+                <rect x="288" y="-8" width="46" height="16" transform="rotate(38 311 0)" />
+                <rect x="-18" y="378" width="46" height="16" transform="rotate(38 5 386)" />
+                <rect x="288" y="378" width="46" height="16" transform="rotate(-38 311 386)" />
               </g>
             </svg>
-            <figcaption class="visually-hidden">Pixel portrait of Param with hand-drawn yellow doodles: {doodles.join(', ')}.</figcaption>
-          </figure>
-          <button class="lk__pull" type="button" data-lk-pull aria-label="Pull the poster down to see the battleship">
-            <span>PULL</span><span aria-hidden="true">↓</span>
-          </button>
+            <button class="lk__tag" type="button" data-lk-pull aria-label="Pull the tag to take the poster down and see the battleship">
+              <span class="lk__string" aria-hidden="true"></span>
+              <span class="lk__tagcard"><span class="lk__hole" aria-hidden="true"></span>PULL<span aria-hidden="true">↓</span></span>
+            </button>
+          </div>
+
+          <!-- big script lettering, written over the poster's bottom edge -->
+          <svg class="lk__ink" viewBox="0 0 428 820" aria-hidden="true">
+            <g fill={gold} font-family="Caveat, cursive" font-weight="700">
+              <text x="52" y="436" font-size="62" transform="rotate(-3 52 436)">{script[0]}</text>
+              <text x="150" y="488" font-size="54" transform="rotate(-3 150 488)">{script[1]}</text>
+            </g>
+          </svg>
+          <span class="visually-hidden">{posterTag.join(' ')}. {script.join(' ')}. About me: {about} I'm here to {hereTo}</span>
         </div>
 
-        <div class="lk__shelf" aria-label="Art tools on the shelf" role="img">
-          <!-- foam board -->
-          <svg viewBox="0 0 30 44" class="t t--foam" aria-hidden="true"><rect x="3" y="2" width="24" height="40" rx="1" fill="#f7f6f0" stroke="#9b978b" stroke-width="1.4"/><path d="M3 6h24" stroke="#d9d5c8"/><path d="M8 14l12 0M8 18l9 0" stroke="#c9c0ab" stroke-width="1.2"/></svg>
-          <!-- scalpel -->
-          <svg viewBox="0 0 12 44" class="t t--scalpel" aria-hidden="true"><rect x="4" y="12" width="4" height="30" rx="1.5" fill="#9aa3ad" stroke="#4a4840"/><path d="M4.5 12 L6 1 L8 12z" fill="#e8ecef" stroke="#4a4840" stroke-width="0.8"/><path d="M5 20h2M5 23h2M5 26h2" stroke="#4a4840" stroke-width="0.6"/></svg>
-          <!-- box cutter -->
-          <svg viewBox="0 0 14 44" class="t t--cutter" aria-hidden="true"><rect x="2" y="10" width="10" height="32" rx="2.5" fill="#f2c230" stroke="#4a4840"/><path d="M5 10 L7 1 L9 10z" fill="#d6dbe0" stroke="#4a4840" stroke-width="0.8"/><rect x="5" y="18" width="4" height="8" rx="1" fill="#252522"/></svg>
-          <!-- scissors -->
-          <svg viewBox="0 0 26 44" class="t t--scissors" aria-hidden="true"><path d="M11 22 L9 2 M15 22 L17 2" stroke="#b9c0c7" stroke-width="2.4" stroke-linecap="round"/><circle cx="13" cy="22" r="1.4" fill="#4a4840"/><ellipse cx="8" cy="34" rx="5" ry="7" fill="none" stroke="#a3352b" stroke-width="3"/><ellipse cx="18" cy="34" rx="5" ry="7" fill="none" stroke="#a3352b" stroke-width="3"/></svg>
-          <!-- glue -->
-          <svg viewBox="0 0 18 44" class="t t--glue" aria-hidden="true"><path d="M7 2h4l1 8H6z" fill="#f08a24" stroke="#4a4840" stroke-width="0.8"/><rect x="2" y="10" width="14" height="32" rx="3" fill="#fbfaf5" stroke="#4a4840"/><rect x="2" y="20" width="14" height="10" fill="#315d86"/><text x="9" y="27.5" font-size="5.5" fill="#fff" text-anchor="middle" font-family="monospace" font-weight="700">GLUE</text></svg>
-          <!-- electronics: breadboard + LED + battery -->
-          <svg viewBox="0 0 44 44" class="t t--elec" aria-hidden="true"><rect x="2" y="22" width="40" height="20" rx="1.5" fill="#2f6b45" stroke="#1b3d27"/><g fill="#d9a93b">{[0,1,2,3,4,5,6].map((i) => <circle cx={7 + i * 5} cy="28" r="1"/>)}{[0,1,2,3,4,5,6].map((i) => <circle cx={7 + i * 5} cy="36" r="1"/>)}</g><rect x="14" y="30" width="10" height="5" fill="#252522"/><path d="M30 22 v-8 M34 22 v-8" stroke="#9aa3ad" stroke-width="1.2"/><path d="M28 14 a4 4 0 0 1 8 0 v-4 a4 4 0 0 0 -8 0z" class="t__led" fill="#ff5a4a"/><rect x="4" y="8" width="8" height="14" rx="1.5" fill="#252522"/><rect x="4" y="8" width="8" height="4" fill="#d9a93b"/></svg>
-        </div>
-        <span class="lk__shelfboard" aria-hidden="true"></span>
-      </div>
+        <!-- frame details -->
+        <span class="lk__latch" aria-hidden="true"></span>
+        <span class="lk__hinge lk__hinge--a" aria-hidden="true"></span>
+        <span class="lk__hinge lk__hinge--b" aria-hidden="true"></span>
 
-      <!-- door -->
-      <div class="lk__door" data-lk-door>
-        <button class="lk__front" type="button" data-lk-lock aria-label="Locked locker. Open it with the key." aria-describedby="lk-hint">
-          <span class="lk__plate" aria-hidden="true">P · S · N</span>
-          <span class="lk__vents" aria-hidden="true">{Array.from({ length: 6 }, () => <i></i>)}</span>
-          <span class="lk__handle" aria-hidden="true">
-            <span class="lk__lock" data-lk-padlock>
-              <span class="lk__shackle"></span>
-              <span class="lk__lbody"><span class="lk__keyhole"></span></span>
+        <!-- door -->
+        <div class="lk__door" data-lk-door>
+          <button class="lk__front" type="button" data-lk-lock aria-label="Locked locker. Open it with the key." aria-describedby="lk-hint">
+            <span class="lk__plate" aria-hidden="true">P · S · N</span>
+            <span class="lk__vents" aria-hidden="true">{Array.from({ length: 5 }, () => <i></i>)}</span>
+            <span class="lk__handle" aria-hidden="true">
+              <span class="lk__lock" data-lk-padlock>
+                <span class="lk__shackle"></span>
+                <span class="lk__lbody"><span class="lk__keyhole"></span></span>
+              </span>
             </span>
-          </span>
-          <span class="lk__vents lk__vents--low" aria-hidden="true">{Array.from({ length: 6 }, () => <i></i>)}</span>
-          <span class="lk__num" aria-hidden="true">05</span>
-        </button>
-        <div class="lk__back" aria-hidden="true">
-          {stickers.map((s, i) => <span class={`lk__sticker lk__sticker--${i}`}>{s}</span>)}
-          <span class="lk__mirror"></span>
+            <span class="lk__vents lk__vents--low" aria-hidden="true">{Array.from({ length: 5 }, () => <i></i>)}</span>
+            <span class="lk__num" aria-hidden="true">05</span>
+          </button>
+          <div class="lk__back" aria-hidden="true">
+            <svg viewBox="0 0 440 832">
+              <defs>
+                <linearGradient id="lkDoor" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0" stop-color="#666a6e" /><stop offset="0.5" stop-color="#7a7e82" /><stop offset="1" stop-color="#6e7276" />
+                </linearGradient>
+                <linearGradient id="lkLouvre" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stop-color="#9a9ea2" /><stop offset="0.5" stop-color="#868a8e" /><stop offset="1" stop-color="#5e6266" />
+                </linearGradient>
+                <filter id="lkStick" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="2" dy="4" stdDeviation="3" flood-opacity="0.45" /></filter>
+              </defs>
+              <rect width="440" height="832" rx="6" fill="url(#lkDoor)" />
+              <rect x="14" y="14" width="412" height="804" rx="4" fill="none" stroke="#585c60" stroke-width="5" />
+              <rect x="19" y="19" width="402" height="794" rx="3" fill="none" stroke="#8e9296" stroke-width="1.5" />
+              <!-- hook + latch -->
+              <path d="M398 232v22a10 10 0 0 1-20 0" fill="none" stroke="#c7cbcf" stroke-width="5" stroke-linecap="round" />
+              <g transform="translate(386 400)">
+                <rect x="-10" y="0" width="30" height="74" rx="4" fill="#2b2d30" />
+                <rect x="-4" y="22" width="18" height="30" rx="9" fill="#55595d" />
+                <rect x="2" y="30" width="6" height="14" rx="2" fill="#1a1b1d" />
+              </g>
+              <!-- logo sticker -->
+              <g filter="url(#lkStick)" transform="rotate(-3 270 175)">
+                <rect x="150" y="118" width="240" height="118" rx="18" fill="#fbfaf7" />
+                <text x="270" y="200" text-anchor="middle" font-family="'Big Shoulders Display', sans-serif" font-weight="900" font-size="86" fill="#141414" stroke="#fbfaf7" stroke-width="3" paint-order="stroke" letter-spacing="2">{sticker.big}</text>
+                <text x="270" y="222" text-anchor="middle" font-family="'Martian Mono', monospace" font-size="9.5" fill="#141414" letter-spacing="1.2">{sticker.small.toUpperCase()}</text>
+                <path d="M168 132c10-8 26-6 30 6s-10 18-18 12" fill="none" stroke="#141414" stroke-width="5" stroke-linecap="round" />
+              </g>
+              <!-- Ps / Ai tiles -->
+              <g filter="url(#lkStick)">
+                <g transform="rotate(-2 186 314)">
+                  <rect x="140" y="268" width="92" height="92" rx="14" fill="#f4f2ee" />
+                  <rect x="147" y="275" width="78" height="78" rx="10" fill="#001e36" />
+                  <text x="186" y="327" text-anchor="middle" font-family="'Hanken Grotesk Variable', sans-serif" font-weight="700" font-size="34" fill="#31a8ff">Ps</text>
+                </g>
+                <g transform="rotate(3 304 318)">
+                  <rect x="258" y="272" width="92" height="92" rx="14" fill="#f4f2ee" />
+                  <rect x="265" y="279" width="78" height="78" rx="10" fill="#330000" />
+                  <text x="304" y="331" text-anchor="middle" font-family="'Hanken Grotesk Variable', sans-serif" font-weight="700" font-size="34" fill="#ff9a00">Ai</text>
+                </g>
+              </g>
+              <!-- Figma-style sticker -->
+              <g filter="url(#lkStick)" transform="rotate(-6 190 440)">
+                <rect x="150" y="384" width="80" height="112" rx="22" fill="#f4f2ee" />
+                <path d="M172 400h18v20h-18a10 10 0 0 1 0-20z" fill="#f24e1e" />
+                <path d="M190 400h18a10 10 0 0 1 0 20h-18z" fill="#ff7262" />
+                <path d="M172 420h18v20h-18a10 10 0 0 1 0-20z" fill="#a259ff" />
+                <circle cx="208" cy="430" r="10" fill="#1abcfe" />
+                <path d="M172 440h18v10a10 10 0 1 1-18-10z" fill="#0acf83" />
+              </g>
+              <!-- palette sticker -->
+              <g filter="url(#lkStick)" transform="rotate(5 300 500)">
+                <rect x="252" y="462" width="104" height="74" rx="6" fill="#f4f2ee" />
+                {['#c0392b', '#e9b949', '#3f8f4f', '#7a4fb0', '#d9482b', '#2f6cc0'].map((c, i) => (
+                  <rect x={262 + (i % 3) * 30} y={472 + Math.floor(i / 3) * 28} width="24" height="22" rx="2" fill={c} />
+                ))}
+              </g>
+              <!-- louvres -->
+              {[0, 1, 2, 3, 4].map((i) => (
+                <g>
+                  <rect x="176" y={592 + i * 46} width="172" height="26" rx="13" fill="#4e5256" />
+                  <rect x="176" y={590 + i * 46} width="172" height="24" rx="12" fill="url(#lkLouvre)" />
+                </g>
+              ))}
+            </svg>
+          </div>
         </div>
       </div>
+      <span class="lk__feet" aria-hidden="true"></span>
+      <p class="lk__hint" id="lk-hint" data-lk-hint role="status" aria-live="polite"></p>
     </div>
-    <span class="lk__feet" aria-hidden="true"></span>
-
-    <p class="lk__hint" id="lk-hint" data-lk-hint role="status" aria-live="polite"></p>
   </div>
+</div>
+
+<!-- full-page backdrop while the locker is open -->
+<div class="lk-stage" data-lk-stage hidden>
+  <button class="lk-stage__close" type="button" data-lk-close>Close locker <span aria-hidden="true">✕</span></button>
 </div>
 
 <!-- the void -->
@@ -127,6 +300,8 @@ const { portrait, doodles, note, stickers, ship } = locker;
 
   const root = document.querySelector<HTMLElement>('[data-locker]');
   if (root) {
+    const unit = root.querySelector<HTMLElement>('[data-lk-unit]')!;
+    const slot = root.querySelector<HTMLElement>('[data-lk-slot]')!;
     const lockBtn = root.querySelector<HTMLButtonElement>('[data-lk-lock]')!;
     const door = root.querySelector<HTMLElement>('[data-lk-door]')!;
     const padlock = root.querySelector<HTMLElement>('[data-lk-padlock]')!;
@@ -136,9 +311,14 @@ const { portrait, doodles, note, stickers, ship } = locker;
     const lockedCopy = root.querySelector<HTMLElement>('[data-lk-locked-copy]')!;
     const poster = root.querySelector<HTMLElement>('[data-lk-poster]')!;
     const pull = root.querySelector<HTMLButtonElement>('[data-lk-pull]')!;
+    const stage = document.querySelector<HTMLElement>('[data-lk-stage]')!;
+    const closeBtn = stage.querySelector<HTMLButtonElement>('[data-lk-close]')!;
     const voidEl = document.querySelector<HTMLElement>('[data-void]')!;
+    document.body.append(stage, voidEl);
     const reduce = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const wait = (ms: number) => new Promise((r) => setTimeout(r, reduce() ? 0 : ms));
 
+    /* ---------- locked ---------- */
     const misses = [
       "Psst. You haven't found the key yet. Did you miss it? ;)",
       'Still locked. I keep spare keys where I keep my tools…',
@@ -153,20 +333,83 @@ const { portrait, doodles, note, stickers, ship } = locker;
       hintTimer = window.setTimeout(() => hint.classList.remove('is-on'), 3800);
     };
 
+    /* ---------- grow to fill the page ---------- */
+    // the open door sticks out to the right of the cabinet by about this much of its width
+    const DOOR = 0.62;
+    const RATIO = 912 / 480;
+    const fit = () => {
+      const pad = innerWidth < 640 ? 12 : 28;
+      const top = innerWidth < 640 ? 64 : 72;
+      const aw = innerWidth - pad * 2;
+      const ah = innerHeight - top - pad;
+      const narrow = innerWidth < innerHeight;
+      // on tall phones let the door run off the right edge so the inside stays readable
+      const w = Math.min(narrow ? aw * 0.84 : aw / (1 + DOOR), ah / RATIO);
+      const total = narrow ? w : w * (1 + DOOR);
+      return { left: Math.max(pad, (innerWidth - total) / 2), top: top + (ah - w * RATIO) / 2, width: w };
+    };
+    const place = (r: { left: number; top: number; width: number }) => {
+      unit.style.left = `${r.left}px`;
+      unit.style.top = `${r.top}px`;
+      unit.style.width = `${r.width}px`;
+    };
+
+    let big = false;
     let busy = false;
-    const open = () => {
-      root.classList.add('is-open');
+    const expand = async () => {
+      const r = unit.getBoundingClientRect();
+      slot.style.height = `${slot.offsetHeight}px`;
+      unit.classList.add('is-big');
+      unit.style.transition = 'none';
+      place(r);
+      document.body.append(unit);
+      stage.hidden = false;
+      document.documentElement.classList.add('void-lock');
+      void unit.offsetWidth;
+      stage.classList.add('is-on');
+      unit.style.transition = '';
+      place(fit());
+      big = true;
+      await wait(800);
+    };
+
+    const openDoor = () => {
+      unit.classList.add('is-open');
       inside.inert = false;
       story.hidden = false;
       lockedCopy.textContent = 'You found the key. Welcome in. Mind the glue.';
-      lockBtn.setAttribute('aria-label', 'Locker is open');
-      lockBtn.tabIndex = -1;
+      lockBtn.setAttribute('aria-label', 'Close the locker door');
       hint.classList.remove('is-on');
-      setTimeout(() => pull.focus({ preventScroll: true }), reduce() ? 0 : 900);
+      setTimeout(() => pull.focus({ preventScroll: true }), reduce() ? 0 : 1000);
     };
 
+    const collapse = async () => {
+      if (!big || busy) return;
+      busy = true;
+      unit.classList.remove('is-open');
+      inside.inert = true;
+      lockBtn.setAttribute('aria-label', 'Open the locker');
+      await wait(700);
+      stage.classList.remove('is-on');
+      const s = slot.getBoundingClientRect();
+      place({ left: s.left + (s.width - slot.offsetWidth) / 2, top: s.top, width: slot.offsetWidth });
+      await wait(750);
+      unit.classList.remove('is-big');
+      unit.removeAttribute('style');
+      slot.append(unit);
+      slot.style.height = '';
+      stage.hidden = true;
+      document.documentElement.classList.remove('void-lock');
+      big = false;
+      busy = false;
+      lockBtn.focus({ preventScroll: true });
+    };
+
+    addEventListener('resize', () => { if (big) { unit.style.transition = 'none'; place(fit()); void unit.offsetWidth; unit.style.transition = ''; } });
+
     lockBtn.addEventListener('click', async () => {
-      if (busy || root.classList.contains('is-open')) return;
+      if (busy) return;
+      if (big) return; // door is open; the close button handles leaving
       if (!has('key')) {
         padlock.classList.remove('is-shake'); void padlock.offsetWidth; padlock.classList.add('is-shake');
         door.classList.remove('is-rattle'); void door.offsetWidth; door.classList.add('is-rattle');
@@ -174,39 +417,43 @@ const { portrait, doodles, note, stickers, ship } = locker;
         return;
       }
       busy = true;
-      const sackBtn = document.querySelector<HTMLElement>('[data-sack-btn]');
-      const keyArt = document.querySelector<SVGElement>('[data-sack-key] svg') ?? document.querySelector<SVGElement>('[data-key-art]');
-      if (sackBtn && keyArt) {
-        const s = sackBtn.getBoundingClientRect();
-        const from = new DOMRect(s.left - 10, s.top + s.height / 2 - 12, 64, 24);
-        const kh = padlock.getBoundingClientRect();
-        const to = new DOMRect(kh.left + kh.width / 2 - 20, kh.top + kh.height * 0.62 - 7, 40, 15);
-        await fly(keyArt, from, to, 900);
+      if (!unit.classList.contains('was-unlocked')) {
+        const sackBtn = document.querySelector<HTMLElement>('[data-sack-btn]');
+        const keyArt = document.querySelector<SVGElement>('[data-sack-key] svg') ?? document.querySelector<SVGElement>('[data-key-art]');
+        if (sackBtn && keyArt) {
+          const s = sackBtn.getBoundingClientRect();
+          const from = new DOMRect(s.left - 10, s.top + s.height / 2 - 12, 64, 24);
+          const kh = padlock.getBoundingClientRect();
+          const to = new DOMRect(kh.left + kh.width / 2 - 20, kh.top + kh.height * 0.62 - 7, 40, 15);
+          await fly(keyArt, from, to, 900);
+        }
+        padlock.classList.add('is-unlocking');
+        unit.classList.add('was-unlocked');
+        await wait(650);
       }
-      padlock.classList.add('is-unlocking');
-      await new Promise((r) => setTimeout(r, reduce() ? 0 : 650));
-      open();
+      await expand();
+      openDoor();
       busy = false;
     });
+    closeBtn.addEventListener('click', collapse);
 
-    /* ---------- the void ---------- */
+    /* ---------- pull the tag → the void ---------- */
     let ship: { dispose(): void } | null = null;
-    let lastFocus: HTMLElement | null = null;
     const exitBtn = voidEl.querySelector<HTMLButtonElement>('[data-void-exit]')!;
 
     const openVoid = async () => {
-      lastFocus = document.activeElement as HTMLElement;
-      root.classList.add('is-pulled');
-      await new Promise((r) => setTimeout(r, reduce() ? 0 : 550));
+      if (!voidEl.hidden) return;
+      unit.classList.add('is-pulled');
+      poster.style.transform = '';
+      await wait(550);
       const r = poster.getBoundingClientRect();
-      voidEl.style.setProperty('--x', `${r.left}px`);
-      voidEl.style.setProperty('--y', `${r.top}px`);
-      voidEl.style.setProperty('--r', `${innerWidth - r.right}px`);
-      voidEl.style.setProperty('--b', `${innerHeight - r.bottom}px`);
+      voidEl.style.setProperty('--x', `${Math.max(0, r.left)}px`);
+      voidEl.style.setProperty('--y', `${Math.max(0, r.top)}px`);
+      voidEl.style.setProperty('--r', `${Math.max(0, innerWidth - r.right)}px`);
+      voidEl.style.setProperty('--b', `${Math.max(0, innerHeight - r.bottom)}px`);
       voidEl.hidden = false;
       void voidEl.offsetWidth;
       voidEl.classList.add('is-open');
-      document.documentElement.classList.add('void-lock');
       exitBtn.focus({ preventScroll: true });
       try {
         const { mountShip } = await import('@/scripts/ship');
@@ -221,138 +468,161 @@ const { portrait, doodles, note, stickers, ship } = locker;
     const closeVoid = () => {
       if (voidEl.hidden) return;
       voidEl.classList.remove('is-open');
-      document.documentElement.classList.remove('void-lock');
       const done = () => {
         voidEl.hidden = true;
         ship?.dispose(); ship = null;
         voidEl.querySelector('[data-void-loading]')?.removeAttribute('hidden');
-        root.classList.remove('is-pulled');
-        (lastFocus ?? pull).focus({ preventScroll: true });
+        unit.classList.remove('is-pulled');
+        pull.focus({ preventScroll: true });
       };
       reduce() ? done() : setTimeout(done, 450);
     };
 
-    pull.addEventListener('click', openVoid);
+    // the tag can be clicked, or dragged down like a real pull-down poster
+    let dragY: number | null = null;
+    let moved = false;
+    pull.addEventListener('pointerdown', (e) => {
+      dragY = e.clientY; moved = false;
+      pull.setPointerCapture(e.pointerId);
+      poster.style.transition = 'none';
+    });
+    pull.addEventListener('pointermove', (e) => {
+      if (dragY === null) return;
+      const dy = Math.max(0, e.clientY - dragY);
+      if (dy > 4) moved = true;
+      poster.style.transform = `translateY(${Math.min(dy, 160)}px)`;
+    });
+    const release = (e: PointerEvent) => {
+      if (dragY === null) return;
+      const dy = e.clientY - dragY;
+      dragY = null;
+      poster.style.transition = '';
+      if (moved && dy < 40) { poster.style.transform = ''; return; }
+      if (moved) openVoid();
+    };
+    pull.addEventListener('pointerup', release);
+    pull.addEventListener('pointercancel', () => { dragY = null; poster.style.transition = ''; poster.style.transform = ''; });
+    pull.addEventListener('click', () => { if (!moved) openVoid(); moved = false; });
     exitBtn.addEventListener('click', closeVoid);
+
     document.addEventListener('keydown', (e) => {
-      if (voidEl.hidden) return;
-      if (e.key === 'Escape') closeVoid();
-      if (e.key === 'Tab') { e.preventDefault(); exitBtn.focus(); }
+      if (!voidEl.hidden) {
+        if (e.key === 'Escape') closeVoid();
+        if (e.key === 'Tab') { e.preventDefault(); exitBtn.focus(); }
+        return;
+      }
+      if (big) {
+        if (e.key === 'Escape') collapse();
+        if (e.key === 'Tab') {
+          e.preventDefault();
+          (document.activeElement === pull ? closeBtn : pull).focus();
+        }
+      }
     });
   }
 </script>
 
 <style>
   .lk {
-    --steel: #9ca3a8; --steel-2: #858d93; --steel-3: #6c7378; --steel-hi: #c4cacd; --steel-ink: #3d4347;
     display: grid; grid-template-columns: minmax(0, 30rem) minmax(0, 19rem); justify-content: center; gap: clamp(1.5rem, 7vw, 7rem);
     align-items: center; margin-block: clamp(3rem, 7vw, 5.5rem); overflow-x: clip;
   }
   .lk__kicker { font-family: var(--font-mono); font-size: var(--t-meta); letter-spacing: 0.14em; text-transform: uppercase; color: var(--red-string); margin: 0 0 0.4rem; }
   .lk__title { font-family: var(--font-display); font-size: var(--t-h3); line-height: var(--lh-tight); text-transform: uppercase; margin: 0 0 0.8rem; }
   .lk__lede { color: var(--ink-2); max-width: 40ch; margin: 0; }
-  .lk__story { margin-top: 1rem; max-width: 46ch; animation: lk-in 0.6s ease both 0.5s; }
-  .lk__story p { margin: 0 0 0.8rem; }
-  .lk__facts { display: flex; flex-wrap: wrap; gap: 0.4rem; padding: 0; margin: 0; }
-  .lk__facts li { font-family: var(--font-mono); font-size: var(--t-meta); padding: 0.25rem 0.55rem; border: 1px solid var(--ink-3); border-radius: 999px; background: var(--card); }
-  @keyframes lk-in { from { opacity: 0; transform: translateY(8px); } }
+  .lk__story { margin: 1rem 0 0; max-width: 46ch; }
 
-  /* ---------- cabinet ---------- */
-  .lk__unit { position: relative; width: 100%; max-width: 19rem; justify-self: center; perspective: 1400px; }
+  /* ---------- cabinet (480 × 900 design grid) ---------- */
+  .lk__slot { width: 100%; max-width: 19rem; justify-self: center; }
+  .lk__unit { position: relative; width: 100%; container-type: inline-size; }
+  .lk__unit.is-big {
+    position: fixed; z-index: 1060; max-width: none; margin: 0;
+    transition: left 0.8s cubic-bezier(0.65, 0, 0.25, 1), top 0.8s cubic-bezier(0.65, 0, 0.25, 1), width 0.8s cubic-bezier(0.65, 0, 0.25, 1);
+  }
+  .lk__cab, .lk__feet { --u: calc(100cqw / 480); }
   .lk__cab {
-    position: relative; aspect-ratio: 3 / 5; max-height: 32rem; border-radius: 6px 6px 3px 3px;
-    background: linear-gradient(90deg, var(--steel-2), var(--steel) 12%, var(--steel) 88%, var(--steel-3));
-    padding: 1.1rem 0.75rem 0.75rem; box-shadow: 0 18px 30px -18px rgb(0 0 0 / 0.55), inset 0 0 0 1px var(--steel-3);
-    transform-style: preserve-3d;
+    position: relative; aspect-ratio: 480 / 900; border-radius: calc(8 * var(--u)) calc(8 * var(--u)) calc(3 * var(--u)) calc(3 * var(--u));
+    background: linear-gradient(90deg, #6a6e72, #808488 8%, #7b7f83 50%, #73777b 92%, #5f6367);
+    box-shadow: 0 calc(30 * var(--u)) calc(50 * var(--u)) calc(-20 * var(--u)) rgb(0 0 0 / 0.6), inset 0 0 0 calc(1.5 * var(--u)) #55595d, inset 0 calc(2 * var(--u)) 0 #9ca0a4;
+    perspective: calc(2600 * var(--u)); transform-style: preserve-3d;
   }
-  .lk__top { position: absolute; inset: 0.3rem 0.6rem auto; height: 0.45rem; border-radius: 2px; background: repeating-linear-gradient(90deg, var(--steel-3) 0 6px, transparent 6px 10px); opacity: 0.6; }
-  .lk__feet { display: block; height: 0.5rem; margin: 0 0.8rem; background: linear-gradient(90deg, var(--steel-ink) 0 1.4rem, transparent 1.4rem calc(100% - 1.4rem), var(--steel-ink) 0); border-radius: 0 0 3px 3px; }
+  .lk__feet { display: block; height: calc(12 * var(--u)); margin: 0 calc(22 * var(--u)); background: linear-gradient(90deg, #2b2d30 0 calc(40 * var(--u)), transparent calc(40 * var(--u)) calc(100% - calc(40 * var(--u))), #2b2d30 0); border-radius: 0 0 calc(3 * var(--u)) calc(3 * var(--u)); }
 
-  /* interior */
   .lk__in {
-    position: absolute; inset: 1.1rem 0.75rem 0.75rem; border-radius: 2px; overflow: hidden;
-    background: linear-gradient(180deg, #5d6468, #4b5155 60%, #3e4447); box-shadow: inset 0 0 0 2px var(--steel-ink), inset 0 10px 18px rgb(0 0 0 / 0.45);
-    display: grid; grid-template-rows: auto 1fr auto auto; padding: 0.9rem 0.7rem 0.5rem; gap: 0.4rem;
+    position: absolute; left: calc(26 * var(--u)); top: calc(34 * var(--u)); right: calc(26 * var(--u)); bottom: calc(46 * var(--u)); overflow: hidden; border-radius: calc(2 * var(--u));
+    box-shadow: inset 0 0 0 calc(2 * var(--u)) #2a2c2f;
   }
-  .lk__light { height: 5px; border-radius: 3px; margin: -0.4rem 0.4rem 0.2rem; background: #fff7d6; box-shadow: 0 0 10px 3px rgb(255 240 190 / 0.8), 0 18px 40px 14px rgb(255 240 190 / 0.18); opacity: 0.25; transition: opacity 0.4s 0.6s; }
-  .lk.is-open .lk__light { opacity: 1; animation: lk-flicker 0.6s steps(2) 0.6s; }
-  @keyframes lk-flicker { 0% { opacity: 0.2; } 30% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+  .lk__wall, .lk__ink { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .lk__ink { pointer-events: none; z-index: 2; }
+  .lk__lamp { opacity: 0.25; transition: opacity 0.4s; }
+  .lk__unit.is-open .lk__lamp { opacity: 1; animation: lk-flicker 0.7s steps(2) 0.7s backwards; }
+  @keyframes lk-flicker { 0% { opacity: 0.25; } 30% { opacity: 1; } 50% { opacity: 0.35; } 100% { opacity: 1; } }
 
-  .lk__poster-slot { position: relative; min-height: 0; overflow: hidden; border-radius: 2px; background: #050505;
-    background-image: linear-gradient(rgb(255 255 255 / 0.12) 1px, transparent 1px), linear-gradient(90deg, rgb(255 255 255 / 0.12) 1px, transparent 1px); background-size: 14px 14px; }
   .lk__poster {
-    position: absolute; inset: 0 0 1.4rem; margin: 0; display: grid; place-items: center; background: #1f2433;
-    border: 3px solid #f3efe3; box-shadow: 0 3px 8px rgb(0 0 0 / 0.5); transition: transform 0.55s cubic-bezier(0.6, 0, 0.8, 0.4);
+    position: absolute; left: calc(28 / 428 * 100%); top: calc(30 / 820 * 100%); width: calc(316 / 428 * 100%); height: calc(386 / 820 * 100%);
+    z-index: 1; transition: transform 0.55s cubic-bezier(0.6, 0, 0.8, 0.4); filter: drop-shadow(0 calc(3 * var(--u)) calc(5 * var(--u)) rgb(0 0 0 / 0.4));
   }
-  .lk__poster img { width: 58%; height: auto; image-rendering: pixelated; margin-top: 8%; }
-  .lk__doodles { position: absolute; inset: 0; width: 100%; height: 100%; }
-  .lk__doodles g:first-child { stroke-dasharray: 340; stroke-dashoffset: 340; }
-  .lk.is-open .lk__doodles g:first-child { animation: lk-draw 1.6s ease forwards 0.9s; }
-  @keyframes lk-draw { to { stroke-dashoffset: 0; } }
-  .lk__pull {
-    all: unset; cursor: pointer; position: absolute; left: 50%; bottom: 0; translate: -50% 0; z-index: 2;
-    display: inline-flex; gap: 0.25rem; align-items: center; padding: 0.15rem 0.6rem 0.25rem; border-radius: 0 0 6px 6px;
-    background: #f5c84a; color: #252522; font: 700 0.62rem/1 var(--font-mono); letter-spacing: 0.12em; box-shadow: 0 2px 0 #9c7a12;
-    transition: padding 0.2s;
-  }
-  .lk__pull:hover { padding-bottom: 0.55rem; }
-  .lk__pull:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
-  .lk.is-pulled .lk__poster { transform: translateY(110%); }
-  .lk.is-pulled .lk__pull { opacity: 0; }
+  .lk__poster > svg { display: block; width: 100%; height: 100%; }
+  .lk__unit.is-pulled .lk__poster { transform: translateY(120%) !important; }
+  .lk__doodle { stroke-dasharray: 420; stroke-dashoffset: 0; }
+  .lk__unit.is-open .lk__doodle { animation: lk-draw 1.4s ease 1s backwards; }
+  @keyframes lk-draw { from { stroke-dashoffset: 420; } }
 
-  .lk__shelf { position: relative; display: flex; align-items: flex-end; justify-content: center; gap: 0.35rem; height: 3.3rem; padding: 0 0.2rem; }
-  .lk__shelf .t { height: 2.7rem; width: auto; flex: none; filter: drop-shadow(1px 1px 0 rgb(0 0 0 / 0.35)); }
-  .lk__shelf .t--foam { transform: rotate(-6deg); height: 3.1rem; }
-  .lk__shelf .t--scissors { transform: rotate(8deg); }
-  .lk__shelf .t--elec { height: 2.5rem; }
-  .t__led { animation: lk-led 1.4s steps(2) infinite; }
-  @keyframes lk-led { 50% { fill: #5a1a14; } }
-  .lk__shelfboard { display: block; height: 0.45rem; margin: 0 -0.7rem; background: linear-gradient(var(--steel-hi), var(--steel-2)); box-shadow: 0 3px 4px rgb(0 0 0 / 0.4); }
+  /* the pull tag hangs from the top of the poster */
+  .lk__tag { all: unset; position: absolute; right: 3%; top: calc(-26 * var(--u)); display: grid; justify-items: center; cursor: grab; touch-action: none; transform-origin: 50% 0; animation: lk-swing 3.2s ease-in-out infinite; z-index: 3; }
+  .lk__tag:active { cursor: grabbing; }
+  .lk__tag:focus-visible .lk__tagcard { outline: calc(3 * var(--u)) solid #fff; outline-offset: calc(3 * var(--u)); }
+  .lk__string { width: calc(2 * var(--u)); height: calc(40 * var(--u)); background: #e9e2cf; }
+  .lk__tagcard {
+    position: relative; display: grid; justify-items: center; gap: calc(1 * var(--u)); padding: calc(16 * var(--u)) calc(9 * var(--u)) calc(8 * var(--u)); margin-top: calc(-2 * var(--u));
+    background: #c8a979; color: #2b2112; font: 700 calc(11 * var(--u))/1 var(--font-mono); letter-spacing: 0.12em;
+    clip-path: polygon(50% 0, 100% calc(12 * var(--u)), 100% 100%, 0 100%, 0 calc(12 * var(--u))); box-shadow: 0 calc(2 * var(--u)) 0 #8b6d3e;
+  }
+  .lk__hole { position: absolute; top: calc(6 * var(--u)); left: 50%; translate: -50% 0; width: calc(6 * var(--u)); height: calc(6 * var(--u)); border-radius: 50%; background: #5c6064; }
+  .lk__tag:hover .lk__tagcard { background: #e9cd8c; }
+  @keyframes lk-swing { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
+
+  /* frame details */
+  .lk__latch { position: absolute; left: calc(6 * var(--u)); top: calc(150 * var(--u)); width: calc(16 * var(--u)); height: calc(30 * var(--u)); border-radius: calc(3 * var(--u)); background: #2b2d30; box-shadow: inset 0 0 0 calc(2 * var(--u)) #444; }
+  .lk__hinge { position: absolute; right: calc(8 * var(--u)); width: calc(10 * var(--u)); height: calc(44 * var(--u)); border-radius: calc(3 * var(--u)); background: linear-gradient(90deg, #4a4e52, #8a8e92, #4a4e52); }
+  .lk__hinge--a { top: calc(180 * var(--u)); }
+  .lk__hinge--b { bottom: calc(190 * var(--u)); }
 
   /* door */
   .lk__door {
-    position: absolute; inset: 0; transform-origin: right center; transform-style: preserve-3d;
-    transition: transform 0.95s cubic-bezier(0.3, 0.1, 0.25, 1); z-index: 3;
+    position: absolute; left: calc(20 * var(--u)); top: calc(28 * var(--u)); right: calc(20 * var(--u)); bottom: calc(40 * var(--u)); transform-origin: right center; transform-style: preserve-3d;
+    transition: transform 1s cubic-bezier(0.3, 0.1, 0.25, 1); z-index: 4;
   }
-  .lk.is-open .lk__door { transform: rotateY(-112deg); }
-  .lk__front, .lk__back { position: absolute; inset: 0; border-radius: 6px 6px 3px 3px; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+  .lk__unit.is-open .lk__door { transform: rotateY(-128deg); }
+  .lk__front, .lk__back { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: calc(6 * var(--u)); }
   .lk__front {
-    all: unset; position: absolute; inset: 0; border-radius: 6px 6px 3px 3px; backface-visibility: hidden; -webkit-backface-visibility: hidden;
-    cursor: pointer; box-sizing: border-box; display: grid; grid-template-rows: auto auto 1fr auto auto; justify-items: center; padding: 1.4rem 1rem 1.1rem; gap: 0.9rem;
-    background: linear-gradient(100deg, var(--steel-hi) 0%, var(--steel) 22%, var(--steel) 70%, var(--steel-2) 100%);
-    box-shadow: inset 0 0 0 1.5px var(--steel-3), inset 3px 0 0 rgb(255 255 255 / 0.35), inset -6px 0 10px -6px rgb(0 0 0 / 0.35);
+    all: unset; position: absolute; inset: 0; border-radius: calc(6 * var(--u)); backface-visibility: hidden; -webkit-backface-visibility: hidden; box-sizing: border-box; cursor: pointer;
+    display: grid; grid-template-rows: auto auto 1fr auto auto; justify-items: center; padding: calc(40 * var(--u)) calc(30 * var(--u)) calc(28 * var(--u)); gap: calc(26 * var(--u));
+    background: linear-gradient(100deg, #9a9ea2 0%, #85898d 20%, #7f8387 70%, #6f7377 100%);
+    box-shadow: inset 0 0 0 calc(2 * var(--u)) #5b5f63, inset calc(4 * var(--u)) 0 0 rgb(255 255 255 / 0.25), inset calc(-8 * var(--u)) 0 calc(12 * var(--u)) calc(-8 * var(--u)) rgb(0 0 0 / 0.35);
   }
-  .lk__front:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
-  .lk__plate { font: 600 0.72rem/1 var(--font-mono); letter-spacing: 0.15em; padding: 0.35rem 0.7rem; background: var(--card); color: var(--ink); border: 1px solid var(--steel-3); box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.2); }
-  .lk__vents { display: grid; gap: 5px; width: 62%; }
-  .lk__vents i { display: block; height: 5px; border-radius: 3px; background: var(--steel-ink); box-shadow: 0 1px 0 var(--steel-hi); }
-  .lk__handle { align-self: center; justify-self: start; margin-left: 0.2rem; width: 1.6rem; height: 5.5rem; border-radius: 4px; background: linear-gradient(90deg, var(--steel-3), var(--steel-2)); box-shadow: inset 0 0 0 1px var(--steel-ink); display: grid; place-items: center; position: relative; }
-  .lk__lock { position: absolute; left: 50%; top: 52%; translate: -50% 0; width: 2rem; display: grid; justify-items: center; transform-origin: 50% 20%; }
-  .lk__shackle { width: 1.25rem; height: 1.2rem; border: 4px solid #b9c0c7; border-bottom: 0; border-radius: 0.7rem 0.7rem 0 0; margin-bottom: -2px; transition: transform 0.35s ease; transform-origin: right bottom; }
-  .lk__lbody { width: 2rem; height: 1.7rem; border-radius: 4px; background: linear-gradient(160deg, #e8b84a, #b88a1e); box-shadow: inset 0 0 0 1.5px #7a5a12, 0 2px 3px rgb(0 0 0 / 0.35); display: grid; place-items: center; }
-  .lk__keyhole { width: 6px; height: 10px; background: #3b2a06; border-radius: 3px 3px 1px 1px; clip-path: polygon(0 0, 100% 0, 100% 45%, 75% 45%, 85% 100%, 15% 100%, 25% 45%, 0 45%); transition: transform 0.4s; }
+  .lk__front:focus-visible { outline: calc(5 * var(--u)) solid var(--blue); outline-offset: calc(5 * var(--u)); }
+  .lk__plate { font: 600 calc(19 * var(--u))/1 var(--font-mono); letter-spacing: 0.15em; padding: calc(9 * var(--u)) calc(18 * var(--u)); background: var(--card); color: var(--ink); border: calc(1.5 * var(--u)) solid #5b5f63; box-shadow: inset 0 calc(1 * var(--u)) calc(3 * var(--u)) rgb(0 0 0 / 0.2); }
+  .lk__vents { display: grid; gap: calc(16 * var(--u)); width: 48%; justify-self: end; margin-right: calc(10 * var(--u)); }
+  .lk__vents i { display: block; height: calc(22 * var(--u)); border-radius: calc(11 * var(--u)); background: linear-gradient(#9a9ea2, #6e7276); box-shadow: 0 calc(3 * var(--u)) 0 #4e5256; }
+  .lk__handle { align-self: center; justify-self: start; width: calc(40 * var(--u)); height: calc(150 * var(--u)); border-radius: calc(6 * var(--u)); background: linear-gradient(90deg, #5e6266, #74787c); box-shadow: inset 0 0 0 calc(1.5 * var(--u)) #3d4044; position: relative; }
+  .lk__lock { position: absolute; left: 50%; top: 52%; translate: -50% 0; width: calc(52 * var(--u)); display: grid; justify-items: center; transform-origin: 50% 20%; }
+  .lk__shackle { width: calc(32 * var(--u)); height: calc(30 * var(--u)); border: calc(9 * var(--u)) solid #b9c0c7; border-bottom: 0; border-radius: calc(18 * var(--u)) calc(18 * var(--u)) 0 0; margin-bottom: calc(-3 * var(--u)); transition: transform 0.35s ease; transform-origin: right bottom; }
+  .lk__lbody { width: calc(52 * var(--u)); height: calc(44 * var(--u)); border-radius: calc(8 * var(--u)); background: linear-gradient(160deg, #e8b84a, #b88a1e); box-shadow: inset 0 0 0 calc(3 * var(--u)) #7a5a12, 0 calc(4 * var(--u)) calc(6 * var(--u)) rgb(0 0 0 / 0.35); display: grid; place-items: center; }
+  .lk__keyhole { width: calc(12 * var(--u)); height: calc(20 * var(--u)); background: #3b2a06; border-radius: calc(6 * var(--u)) calc(6 * var(--u)) calc(2 * var(--u)) calc(2 * var(--u)); clip-path: polygon(0 0, 100% 0, 100% 45%, 75% 45%, 85% 100%, 15% 100%, 25% 45%, 0 45%); transition: transform 0.4s; }
   .lk__lock.is-unlocking .lk__keyhole { transform: rotate(90deg); }
-  .lk__lock.is-unlocking .lk__shackle { transform: translateY(-6px) rotate(-25deg); transition-delay: 0.3s; }
+  .lk__lock.is-unlocking .lk__shackle { transform: translateY(calc(-12 * var(--u))) rotate(-25deg); transition-delay: 0.3s; }
   .lk__lock.is-shake { animation: lk-shake 0.5s ease; }
   .lk__door.is-rattle { animation: lk-rattle 0.35s ease; }
   @keyframes lk-shake { 0%, 100% { transform: rotate(0); } 20% { transform: rotate(-16deg); } 40% { transform: rotate(13deg); } 60% { transform: rotate(-9deg); } 80% { transform: rotate(5deg); } }
-  @keyframes lk-rattle { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-2px); } 75% { transform: translateX(2px); } }
-  .lk__num { font: 700 1.6rem/1 var(--font-display); color: var(--steel-ink); opacity: 0.55; justify-self: end; }
-
-  .lk__back {
-    transform: rotateY(180deg); background: linear-gradient(90deg, var(--steel-2), var(--steel-3)); box-shadow: inset 0 0 0 1.5px var(--steel-ink);
-    display: grid; align-content: start; justify-items: center; gap: 0.7rem; padding: 1.4rem 0.8rem; overflow: hidden;
-  }
-  .lk__sticker { font: 700 0.62rem/1 var(--font-mono); padding: 0.35rem 0.5rem; border-radius: 4px; letter-spacing: 0.06em; text-transform: uppercase; box-shadow: 1px 1px 0 rgb(0 0 0 / 0.3); }
-  .lk__sticker--0 { background: #f5c84a; transform: rotate(-8deg); }
-  .lk__sticker--1 { background: var(--card); border-radius: 50%; padding: 0.8rem 0.5rem; transform: rotate(6deg); }
-  .lk__sticker--2 { background: var(--red-string); color: #fff; transform: rotate(-3deg); }
-  .lk__sticker--3 { background: var(--blue); color: #fff; transform: rotate(9deg); }
-  .lk__mirror { width: 70%; height: 4.5rem; border-radius: 4px; border: 2px solid var(--steel-ink); background: linear-gradient(135deg, #cfe0e8, #9fb6c2 50%, #d9e6ec 55%, #a7bcc7); }
+  @keyframes lk-rattle { 0%, 100% { translate: 0; } 25% { translate: -2px; } 75% { translate: 2px; } }
+  .lk__num { font: 700 calc(40 * var(--u))/1 var(--font-display); color: #4b4f53; opacity: 0.6; justify-self: end; }
+  .lk__back { transform: rotateY(180deg); overflow: hidden; }
+  .lk__back svg { display: block; width: 100%; height: 100%; }
 
   /* hint bubble */
   .lk__hint {
-    position: absolute; left: 50%; top: 42%; width: max-content; max-width: min(15rem, 80vw); margin: 0; z-index: 5;
+    position: absolute; left: 50%; top: 42%; width: max-content; max-width: min(15rem, 80vw); margin: 0; z-index: 6;
     padding: 0.6rem 0.8rem; background: var(--note); color: var(--ink); border: 1.5px solid var(--ink); border-radius: 10px; box-shadow: 3px 3px 0 var(--ink);
     font-family: var(--font-hand); font-size: 1.4rem; line-height: 1; translate: -50% 0; opacity: 0; scale: 0.8; pointer-events: none;
     transition: opacity 0.2s, scale 0.25s cubic-bezier(0.3, 1.6, 0.5, 1);
@@ -360,15 +630,28 @@ const { portrait, doodles, note, stickers, ship } = locker;
   .lk__hint::after { content: ''; position: absolute; left: 22%; bottom: -9px; width: 14px; height: 14px; background: var(--note); border: 1.5px solid var(--ink); border-top: 0; border-left: 0; transform: rotate(45deg); }
   .lk__hint.is-on { opacity: 1; scale: 1; }
 
+  /* full-page backdrop */
+  .lk-stage {
+    position: fixed; inset: 0; z-index: 1050; opacity: 0; transition: opacity 0.6s ease;
+    background: radial-gradient(ellipse at 50% 40%, #2a2c2f 0%, #161718 60%, #0d0d0e 100%);
+  }
+  .lk-stage[hidden] { display: none; }
+  .lk-stage.is-on { opacity: 1; }
+  .lk-stage__close {
+    all: unset; cursor: pointer; position: absolute; top: max(1rem, env(safe-area-inset-top)); right: max(1rem, env(safe-area-inset-right)); z-index: 2;
+    display: inline-flex; gap: 0.5rem; align-items: center; padding: 0.55rem 0.95rem; border: 1.5px solid #e9e4d6; border-radius: 999px; color: #e9e4d6;
+    font: 600 0.8rem/1 var(--font-mono); letter-spacing: 0.06em; background: rgb(0 0 0 / 0.35);
+  }
+  .lk-stage__close:hover { background: #e9e4d6; color: #111; }
+  .lk-stage__close:focus-visible { outline: 2px solid var(--note); outline-offset: 3px; }
+
   @media (max-width: 860px) {
     .lk { grid-template-columns: minmax(0, 1fr); }
-    .lk__unit { max-width: 12.5rem; }
+    .lk__slot { max-width: 12.5rem; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .lk__door, .lk__poster { transition: none; }
-    .lk__lock.is-shake, .lk__door.is-rattle, .t__led, .lk.is-open .lk__light { animation: none; }
-    .lk__doodles g:first-child { stroke-dasharray: none; }
-    .lk.is-open .lk__doodles g:first-child { animation: none; }
+    .lk__door, .lk__poster, .lk__unit.is-big, .lk-stage { transition: none; }
+    .lk__lock.is-shake, .lk__door.is-rattle, .lk__tag, .lk__unit.is-open .lk__lamp, .lk__unit.is-open .lk__doodle { animation: none; }
   }
 
   /* ---------- the void ---------- */
@@ -393,7 +676,7 @@ const { portrait, doodles, note, stickers, ship } = locker;
   .void__facts li::before { content: '› '; color: #f5c84a; }
   .void__tag { margin: 0.7rem 0 0; font-family: var(--font-hand); font-size: 1.3rem; line-height: 1.05; color: #f5c84a; }
   .void__exit {
-    pointer-events: auto; all: unset; pointer-events: auto; cursor: pointer; display: inline-flex; gap: 0.5rem; align-items: center;
+    all: unset; pointer-events: auto; cursor: pointer; display: inline-flex; gap: 0.5rem; align-items: center;
     padding: 0.55rem 0.9rem; border: 1.5px solid #f3efe3; border-radius: 999px; font: 600 0.8rem/1 var(--font-mono); letter-spacing: 0.06em; background: rgb(0 0 0 / 0.5);
   }
   .void__exit:hover { background: #f3efe3; color: #000; }

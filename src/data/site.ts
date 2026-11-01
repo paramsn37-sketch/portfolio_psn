@@ -283,9 +283,14 @@ export const next = {
 /* ---------- 05 · The locker (unlocked with the key hidden in chapter 04) ---------- */
 export const locker = {
   portrait: { src: '/portfolio_psn/images/pixel-portrait.png', alt: 'Pixel-art portrait of Param' } as Img,
-  doodles: ['Maker', 'Tinkerer', 'Model builder'],
-  note: 'During COVID I took apart old toys and gadgets, kept every reusable part, and built a 4-foot battleship with working lights from them. Pull the poster down to see it.',
-  stickers: ['100% reused', '4 ft scale', 'COVID build', 'DIY or die'],
+  /** Yellow hand lettering on the poster and the wall. */
+  posterTag: ['Maker', 'Param'],
+  script: ['Creative', 'Builder'],
+  about: 'Param builds AI products by day and battleships out of scrap by night.',
+  hereTo: 'turn wild ideas into real things you can hold and click.',
+  note: 'During COVID I took apart old toys and gadgets, kept every reusable part, and built a 4-foot battleship with working lights from them. Pull the tag on the poster to see it.',
+  /** The sticker that plays the role of a brand logo on the inside of the door. */
+  sticker: { big: 'PSN', small: 'The deal is in the detail' },
   /**
    * The 3D battleship. Leave `model` undefined to show the built-in stand-in ship;
    * set it to a .glb in /public (e.g. '/portfolio_psn/models/battleship.glb') to show the real one.
