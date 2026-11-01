@@ -53,7 +53,13 @@ if (on) {
     .tp-slot { position: relative; outline: 2px dashed rgb(231 205 151 / 0.0); outline-offset: -2px; transition: outline-color .2s; }
     html.tp-on .tp-slot:hover, .tp-slot.tp-over { outline-color: #e7a33e !important; }
     .tp-slot.tp-over::after { content: 'Drop to try'; position: absolute; inset: 0; display: grid; place-items: center; background: rgb(231 163 62 / .35); color: #1a120a; font: 600 12px/1 ui-monospace, monospace; letter-spacing: .08em; text-transform: uppercase; z-index: 5; pointer-events: none; }
-    .ph.tp-filled { background-size: cover !important; background-position: center !important; }
+    .ph.tp-filled { background-repeat: no-repeat !important; }
+    .tp-wrap { overflow: hidden; }
+    .tp-slot.tp-adjust { outline: 2px solid #e7a33e !important; cursor: grab; touch-action: none; }
+    .tp-slot.tp-adjust:active { cursor: grabbing; }
+    .tp-slot.tp-adjust > .tp-tools { display: flex; }
+    .tp-tip { position: absolute; left: 50%; bottom: 8px; translate: -50% 0; z-index: 6; padding: 5px 9px; border-radius: 999px; background: #1a120a; color: #f3e6cc; font: 500 11px/1.2 ui-monospace, monospace; white-space: nowrap; pointer-events: none; }
+    .tp-tools button.is-on { background: #e7a33e; color: #1a120a; }
     .ph.tp-filled > :not(.tp-tools), .ph.tp-filled::before { visibility: hidden; }
     .tp-tools { position: absolute; top: 6px; right: 6px; z-index: 6; display: none; gap: 4px; }
     html.tp-on .tp-slot:hover > .tp-tools, html.tp-on .tp-tools:focus-within { display: flex; }
@@ -76,15 +82,39 @@ if (on) {
     return `${base}|${n}`;
   };
 
-  const apply = (el: HTMLElement, src: string | null) => {
+  /** Framing of a photo inside its slot: focus point (%) and zoom. */
+  type Frame = { x: number; y: number; z: number };
+  const state = new WeakMap<HTMLElement, { src: string | null; iw: number; ih: number; f: Frame }>();
+  const dims = (src: string) => new Promise<[number, number]>((res) => { const i = new Image(); i.onload = () => res([i.naturalWidth, i.naturalHeight]); i.onerror = () => res([1, 1]); i.src = src; });
+
+  const render = (el: HTMLElement) => {
+    const st = state.get(el);
+    if (!st) return;
+    const { x, y, z } = st.f;
+    if (el instanceof HTMLImageElement) {
+      Object.assign(el.style, { objectFit: 'cover', objectPosition: `${x}% ${y}%`, transformOrigin: `${x}% ${y}%`, scale: String(z) });
+    } else if (st.src) {
+      const W = el.clientWidth || 1, H = el.clientHeight || 1;
+      const cover = Math.max(W / st.iw, H / st.ih);
+      el.style.backgroundSize = `${((st.iw * cover * z) / W) * 100}% auto`;
+      el.style.backgroundPosition = `${x}% ${y}%`;
+    }
+  };
+
+  const apply = async (el: HTMLElement, src: string | null, f?: Frame) => {
     if (el instanceof HTMLImageElement) {
       if (!el.dataset.tpOrig) el.dataset.tpOrig = el.src;
       el.src = src ?? el.dataset.tpOrig;
     } else {
       el.style.backgroundImage = src ? `url("${src}")` : '';
       el.classList.toggle('tp-filled', !!src);
+      if (!src) { el.style.backgroundSize = ''; el.style.backgroundPosition = ''; }
     }
+    const [iw, ih] = await dims(src ?? (el as HTMLImageElement).src ?? '');
+    state.set(el, { src, iw, ih, f: f ?? { x: 50, y: 50, z: 1 } });
+    render(el);
   };
+  addEventListener('resize', () => slots.forEach(render));
 
   const pick = (): Promise<File | undefined> => new Promise((res) => {
     const i = document.createElement('input');
@@ -107,10 +137,67 @@ if (on) {
     host.classList.add('tp-slot');
     const tools = document.createElement('span');
     tools.className = 'tp-tools';
-    tools.innerHTML = '<button type="button" title="Choose a photo" aria-label="Choose a photo">+</button><button type="button" title="Remove" aria-label="Remove the photo">×</button>';
+    tools.innerHTML = '<button type="button" title="Move / zoom the photo" aria-label="Move or zoom the photo">✥</button><button type="button" title="Choose a photo" aria-label="Choose a photo">+</button><button type="button" title="Remove" aria-label="Remove the photo">×</button>';
     host.append(tools);
-    const set = async (src: string | null) => { apply(el, src); src ? save(key, src) : drop(key); };
-    const [add, rm] = tools.querySelectorAll('button');
+    const fkey = `${key}|frame`;
+    const saveFrame = () => { const st = state.get(el); if (st) save(fkey, JSON.stringify(st.f)); };
+    const set = async (src: string | null) => { await apply(el, src); src ? save(key, src) : drop(key); drop(fkey); };
+    const [adj, add, rm] = tools.querySelectorAll('button');
+
+    /* move and zoom the photo inside its frame */
+    let adjusting = false;
+    const tip = document.createElement('span');
+    tip.className = 'tp-tip';
+    tip.textContent = 'drag to move · scroll to zoom · double-click to reset';
+    const stopAdjust = () => { adjusting = false; host.classList.remove('tp-adjust'); adj.classList.remove('is-on'); tip.remove(); saveFrame(); };
+    adj.addEventListener('click', (e) => {
+      e.preventDefault(); e.stopPropagation();
+      if (adjusting) return stopAdjust();
+      adjusting = true; host.classList.add('tp-adjust'); adj.classList.add('is-on'); host.append(tip);
+    });
+    document.addEventListener('pointerdown', (e) => { if (adjusting && !host.contains(e.target as Node)) stopAdjust(); });
+    const pts = new Map<number, { x: number; y: number }>();
+    let pinch = 0;
+    const clampF = (f: Frame) => { f.x = Math.min(100, Math.max(0, f.x)); f.y = Math.min(100, Math.max(0, f.y)); f.z = Math.min(5, Math.max(1, f.z)); };
+    host.addEventListener('pointerdown', (e) => {
+      if (!adjusting || tools.contains(e.target as Node)) return;
+      e.preventDefault(); e.stopPropagation();
+      host.setPointerCapture(e.pointerId);
+      pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (pts.size === 2) { const [a, b] = [...pts.values()]; pinch = Math.hypot(a.x - b.x, a.y - b.y); }
+    }, true);
+    host.addEventListener('pointermove', (e) => {
+      const p0 = pts.get(e.pointerId);
+      const st = state.get(el);
+      if (!adjusting || !p0 || !st) return;
+      e.preventDefault();
+      if (pts.size === 2) {
+        pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+        const [a, b] = [...pts.values()]; const d = Math.hypot(a.x - b.x, a.y - b.y);
+        if (pinch) st.f.z *= d / pinch; pinch = d;
+      } else {
+        const W = el.clientWidth || 1, H = el.clientHeight || 1;
+        const cover = Math.max(W / st.iw, H / st.ih);
+        const rw = st.iw * cover * st.f.z, rh = st.ih * cover * st.f.z;
+        if (rw > W + 1) st.f.x -= ((e.clientX - p0.x) / (rw - W)) * 100;
+        if (rh > H + 1) st.f.y -= ((e.clientY - p0.y) / (rh - H)) * 100;
+        pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      }
+      clampF(st.f); render(el);
+    });
+    const lift = (e: PointerEvent) => { pts.delete(e.pointerId); pinch = 0; };
+    host.addEventListener('pointerup', lift);
+    host.addEventListener('pointercancel', lift);
+    host.addEventListener('wheel', (e) => {
+      const st = state.get(el);
+      if (!adjusting || !st) return;
+      e.preventDefault();
+      st.f.z *= 1 - e.deltaY * 0.0015; clampF(st.f); render(el);
+    }, { passive: false });
+    host.addEventListener('dblclick', (e) => { const st = state.get(el); if (!adjusting || !st) return; e.preventDefault(); st.f = { x: 50, y: 50, z: 1 }; render(el); });
+    // while adjusting, a click must not follow a link the slot sits in
+    host.addEventListener('click', (e) => { if (adjusting && !tools.contains(e.target as Node)) { e.preventDefault(); e.stopPropagation(); } }, true);
+
     add.addEventListener('click', async (e) => { e.preventDefault(); e.stopPropagation(); const f = await pick(); if (f) set(await shrink(f)); });
     rm.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); set(null); });
     host.addEventListener('dragover', (e) => { e.preventDefault(); e.stopPropagation(); host.classList.add('tp-over'); });
@@ -124,7 +211,12 @@ if (on) {
       const u = e.dataTransfer?.getData('text/uri-list') || e.dataTransfer?.getData('text/plain');
       if (u && /^https?:/.test(u)) set(u.trim());
     });
-    load(key).then((src) => { if (src) apply(el, src); });
+    Promise.all([load(key), load(fkey)]).then(([src, f]) => {
+      let frame: Frame | undefined;
+      try { frame = f ? JSON.parse(f) : undefined; } catch { /* ignore */ }
+      if (src) apply(el, src, frame);
+      else if (el instanceof HTMLImageElement) apply(el, null, frame);
+    });
   });
 
   // stop a stray drop from navigating away to the image
@@ -141,7 +233,7 @@ if (on) {
     if (!armed) { clear.textContent = 'Sure? Click again'; armed = window.setTimeout(() => { armed = 0; clear.textContent = 'Clear all'; }, 3000); return; }
     clearTimeout(armed); armed = 0; clear.textContent = 'Clear all';
     await wipe();
-    slots.forEach((el) => apply(el, null));
+    slots.forEach((el) => { apply(el, null); if (el instanceof HTMLImageElement) Object.assign(el.style, { objectPosition: '', transformOrigin: '', scale: '' }); });
   });
   pill.querySelector('[data-tp-off]')!.addEventListener('click', () => { ls.set(KEY, null); location.search = ''; });
   document.body.append(pill);
