@@ -3,7 +3,7 @@
  * The skill book: a spiral-bound journal. Tabs on the fore-edge pick a page,
  * the left page is a grid of skill slots, the right page says where each skill
  * was earned and which projects used it. Skills can be dragged to the bin, which
- * refuses them — the second time, the skill talks back. Content: src/data/skills.ts.
+ * refuses them, and the skill talks back right away. Content: src/data/skills.ts.
  */
 import { getCollection } from 'astro:content';
 import Icon from '../Icon.astro';
@@ -257,11 +257,8 @@ const sprigRects = sprig.flatMap((row, y) => [...row].map((c, x) => (c === '#' ?
       tries.set(id, n);
       replay(bin, 'is-nope', 650);
       replay(slot, 'is-nope', 500);
-      if (n === 1) {
-        status.textContent = `The bin refused ${slot.dataset.name}.`;
-        return;
-      }
-      const text = n === 2 ? slot.dataset.quip! : MORE[more++ % MORE.length];
+      status.textContent = `The bin refused ${slot.dataset.name}.`;
+      const text = n === 1 ? slot.dataset.quip! : MORE[more++ % MORE.length];
       pop.querySelector('[data-pop-icon]')!.replaceChildren(slot.querySelector('.sbook__icon svg')!.cloneNode(true));
       (pop.querySelector('[data-pop-icon]') as HTMLElement).style.setProperty('--tint', slot.style.getPropertyValue('--tint'));
       pop.querySelector('[data-pop-name]')!.textContent = `${slot.dataset.name}: `;
