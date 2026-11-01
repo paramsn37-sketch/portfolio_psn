@@ -41,14 +41,15 @@ function setCurrent(id: string) {
   }
 }
 
-if (sections.length) {
-  const io = new IntersectionObserver(
-    (entries) => {
-      for (const e of entries) if (e.isIntersecting) setCurrent((e.target as HTMLElement).id);
-    },
-    { rootMargin: '-42% 0px -55% 0px' },
-  );
-  sections.forEach((s) => io.observe(s));
+/** The current chapter is the last one whose top has passed the upper third of the screen. */
+function spy() {
+  if (!sections.length) return;
+  const line = innerHeight * 0.33;
+  let id = sections[0].id;
+  for (const s of sections) if (s.getBoundingClientRect().top <= line) id = s.id;
+  // at the very bottom, the last chapter wins even if it is short
+  if (innerHeight + scrollY >= document.documentElement.scrollHeight - 4) id = sections[sections.length - 1].id;
+  setCurrent(id);
 }
 
 let ticking = false;
@@ -63,10 +64,11 @@ function onScroll() {
     if (fill) fill.style.transform = `scaleY(${p})`;
     if (needle && !reduce.matches) needle.style.transform = `rotate(${p * 300 - 20}deg)`;
     bar?.classList.toggle('is-scrolled', scrollY > 8);
+    spy();
   });
 }
 addEventListener('scroll', onScroll, { passive: true });
-addEventListener('resize', moveIndicator);
+addEventListener('resize', () => { spy(); moveIndicator(); });
 document.fonts?.ready.then(moveIndicator);
 onScroll();
 userScrolled = false;

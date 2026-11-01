@@ -3,6 +3,8 @@ import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
 export const CATEGORIES = ['Web', 'Mobile', 'AI/ML', 'Design', 'Other'] as const;
+/** Where the work was done — drives the filter chips on the projects chapter */
+export const PLACES = ['Unisys', 'PlaceValue', 'College', 'Personal'] as const;
 
 const projects = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/projects' }),
@@ -12,6 +14,7 @@ const projects = defineCollection({
     summary: z.string(),
     year: z.string(),
     categories: z.array(z.enum(CATEGORIES)).min(1),
+    place: z.enum(PLACES),
     tags: z.array(z.string()).default([]),
     role: z.string(),
     team: z.string().optional(),

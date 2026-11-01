@@ -4,14 +4,14 @@ import Icon from '../Icon.astro';
 import Placeholder from '../Placeholder.astro';
 import PaperClip from '../ui/PaperClip.astro';
 import ProjectCard from '../projects/ProjectCard.astro';
-import { CATEGORIES } from '@/content.config';
+import { PLACES } from '@/content.config';
 import { url } from '@/lib/url';
 import { links } from '@/data/site';
 
 const all = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
 const featured = all.find((p) => p.data.featured) ?? all[0];
 const rest = all.filter((p) => p !== featured);
-const counts = Object.fromEntries(CATEGORIES.map((c) => [c, all.filter((p) => p.data.categories.includes(c)).length]));
+const counts = Object.fromEntries(PLACES.map((c) => [c, all.filter((p) => p.data.place === c).length]));
 const f = featured.data;
 ---
 <section id="projects" class="projects chapter" data-chapter data-num="03" aria-labelledby="projects-title">
@@ -27,9 +27,9 @@ const f = featured.data;
   </header>
 
   <div class="projects__controls" data-reveal>
-    <div class="projects__filters" role="group" aria-label="Filter projects by category">
+    <div class="projects__filters" role="group" aria-label="Filter projects by where they were built">
       <button class="chip" type="button" data-filter="all" aria-pressed="true">All <span class="projects__count">{all.length}</span></button>
-      {CATEGORIES.filter((c) => counts[c] > 0).map((c) => (
+      {PLACES.filter((c) => counts[c] > 0).map((c) => (
         <button class="chip" type="button" data-filter={c} aria-pressed="false">{c} <span class="projects__count">{counts[c]}</span></button>
       ))}
     </div>
@@ -47,7 +47,7 @@ const f = featured.data;
 
   <div class="projects__grid" data-project-grid>
     <!-- featured -->
-    <article class="feat" data-project data-cats={f.categories.join('|')} data-year={f.year} data-title={f.title} data-order={f.order} data-featured>
+    <article class="feat" data-project data-cats={f.place} data-year={f.year} data-title={f.title} data-order={f.order} data-featured>
       <a class="pcard__link feat__link" href={url(`archive/projects/${featured.id}/`)} aria-label={`${f.title} — ${f.tagline}. Open case study`}></a>
       <div class="feat__media" style={`view-transition-name: cover-${featured.id}`}>
         <Placeholder src={f.cover.src} alt={f.cover.alt} ratio="4 / 3" label={`${f.title} · cover`} tone="dark" />

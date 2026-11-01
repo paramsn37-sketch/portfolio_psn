@@ -1,0 +1,616 @@
+---
+/**
+ * The skill book: a spiral-bound journal. Tabs on the fore-edge pick a page,
+ * the left page is a grid of skill slots, the right page says where each skill
+ * was earned and which projects used it. Skills can be dragged to the bin, which
+ * refuses them, and the skill talks back right away. Content: src/data/skills.ts.
+ */
+import { getCollection } from 'astro:content';
+import Icon from '../Icon.astro';
+import { brandHex, brandPath } from '@/lib/icons';
+import { skillBook } from '@/data/skills';
+import { url } from '@/lib/url';
+
+const SLOTS = 16;
+const projects = new Map((await getCollection('projects')).map((p) => [p.id, p.data]));
+
+const pages = skillBook.map((page) => ({
+  ...page,
+  skills: page.skills.map((s) => {
+    const used = s.projects.map((id) => {
+      const p = projects.get(id);
+      if (!p) throw new Error(`Skill "${s.id}" lists unknown project "${id}"`);
+      return { id, title: p.title, place: p.place, year: p.year };
+    });
+    const places = [...new Set(used.map((u) => u.place))];
+    const years = used.map((u) => Number(u.year)).filter(Boolean);
+    return {
+      ...s,
+      used,
+      places,
+      first: years.length ? Math.min(...years) : undefined,
+      count: used.length + (s.from?.length ?? 0),
+      path: s.brand ? brandPath(s.brand) : undefined,
+      tint: s.color ?? (s.brand ? brandHex(s.brand) : '#6b4c30'),
+    };
+  }),
+}));
+const total = pages.reduce((n, p) => n + p.skills.length, 0);
+
+// a pixel sprig, drawn on a 9×7 grid, for the page titles
+const sprig = ['....##...', '...#..#..', '.##....##', '#..#..#..', '....##...', '...#.....', '..#......'];
+const sprigRects = sprig.flatMap((row, y) => [...row].map((c, x) => (c === '#' ? { x, y } : null)).filter(Boolean)) as { x: number; y: number }[];
+---
+<div class="sbook" data-book data-reveal>
+  <div class="sbook__head">
+    <h3 class="mind__h3">Skill book</h3>
+    <p class="sbook__aside hand hand--blue" aria-hidden="true">every skill, and where I earned it</p>
+  </div>
+
+  <div class="sbook__frame">
+    <div class="sbook__tabs" role="tablist" aria-label="Skill book pages">
+      {pages.map((p, i) => (
+        <button class="sbook__tab" type="button" role="tab" id={`sb-tab-${p.id}`} aria-controls={`sb-page-${p.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} data-book-tab={i} title={p.title}>
+          <Icon name={p.icon} size={18} stroke={1.8} />
+          <span class="visually-hidden">{p.title}</span>
+        </button>
+      ))}
+    </div>
+
+    <div class="sbook__book">
+      <!-- scrapbook-meets-circuit-board trim -->
+      <svg class="sbook__traces" aria-hidden="true" preserveAspectRatio="none" viewBox="0 0 100 100">
+        <defs>
+          <pattern id="sb-trace" width="64" height="64" patternUnits="userSpaceOnUse">
+            <path d="M0 10 H18 L24 4 H40 M40 4 V0 M64 22 H46 L40 28 V40 M0 52 H12 L18 58 H34 M52 64 V54 L58 48 H64" fill="none" stroke="currentColor" stroke-width="1.2" />
+            <circle cx="40" cy="4" r="2" fill="currentColor" /><circle cx="40" cy="40" r="2.2" fill="none" stroke="currentColor" stroke-width="1.2" />
+            <circle cx="34" cy="58" r="2" fill="currentColor" /><rect x="22" y="30" width="6" height="6" fill="none" stroke="currentColor" stroke-width="1.2" />
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#sb-trace)" />
+      </svg>
+      <span class="sbook__tape sbook__tape--tl" aria-hidden="true"></span>
+      <span class="sbook__tape sbook__tape--br" aria-hidden="true"></span>
+      <span class="sbook__sticky" aria-hidden="true"></span>
+      <span class="sbook__ribbons" aria-hidden="true"><i></i><i></i></span>
+      {['tl', 'tr', 'bl', 'br'].map((c) => <span class:list={['sbook__screw', `sbook__screw--${c}`]} aria-hidden="true"></span>)}
+
+      <span class="sbook__date pixel" aria-hidden="true"><b>{total}</b><small>skills logged</small></span>
+      <span class="sbook__motto pixel" aria-hidden="true">The deal is in the detail</span>
+
+      {pages.map((p, pi) => (
+        <section class="sbook__spread" id={`sb-page-${p.id}`} role="tabpanel" aria-labelledby={`sb-tab-${p.id}`} data-book-page={pi} hidden={pi !== 0}>
+          <!-- left page: the slots -->
+          <div class="sbook__page sbook__page--left">
+            <h4 class="sbook__title pixel">
+              <svg class="sbook__sprig" viewBox="0 0 9 7" aria-hidden="true">{sprigRects.map((r) => <rect x={r.x} y={r.y} width="1" height="1" />)}</svg>
+              {p.title}
+              <svg class="sbook__sprig sbook__sprig--r" viewBox="0 0 9 7" aria-hidden="true">{sprigRects.map((r) => <rect x={r.x} y={r.y} width="1" height="1" />)}</svg>
+            </h4>
+            <ul class="sbook__grid" role="list" aria-label={`${p.title} skills. Drag one to the bin, or press Delete, if you dare.`}>
+              {p.skills.map((s, si) => (
+                <li>
+                  <button class="sbook__slot" type="button" aria-pressed={si === 0 ? 'true' : 'false'} data-skill={s.id} data-name={s.name} data-quip={s.quip} style={`--tint:${s.tint}`} aria-label={`${s.name}, used ${s.count} time${s.count === 1 ? '' : 's'}`}>
+                    <span class="sbook__icon">
+                      {s.path ? (
+                        <svg class="sbook__brand" width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d={s.path} /></svg>
+                      ) : (
+                        <Icon name={s.icon ?? 'sparkles'} size={28} stroke={2} />
+                      )}
+                    </span>
+                    <span class="sbook__qty pixel" aria-hidden="true">{s.count}</span>
+                    <span class="sbook__tip pixel" aria-hidden="true">{s.name}</span>
+                  </button>
+                </li>
+              ))}
+              {Array.from({ length: SLOTS - p.skills.length }, (_, k) => (
+                <li class:list={['sbook__slot', 'sbook__slot--empty']} aria-hidden="true">
+                  {(k === 2 || k === 7) && <Icon name="lock" size={16} stroke={1.8} />}
+                </li>
+              ))}
+            </ul>
+
+            <div class="sbook__discard">
+              <p class="sbook__hint pixel">Put your skills here to discard!</p>
+              <div class="sbook__binrow">
+                <svg class="sbook__arrowhint" viewBox="0 0 16 10" aria-hidden="true"><path d="M1 2 H9 V8 M6 5 L9 8 L12 5" fill="none" stroke="currentColor" stroke-width="1.6" /></svg>
+                <button class="sbook__bin" type="button" data-bin aria-label="Discard the selected skill">
+                  <Icon name="trash-2" size={24} stroke={2} />
+                  <span class="sbook__nope pixel" aria-hidden="true">✕</span>
+                </button>
+                <svg class="sbook__arrowhint sbook__arrowhint--r" viewBox="0 0 16 10" aria-hidden="true"><path d="M1 2 H9 V8 M6 5 L9 8 L12 5" fill="none" stroke="currentColor" stroke-width="1.6" /></svg>
+              </div>
+            </div>
+          </div>
+
+          <span class="sbook__spiral" aria-hidden="true"></span>
+
+          <!-- right page: the details -->
+          <div class="sbook__page sbook__page--right">
+            {p.skills.map((s, si) => (
+              <article class="sbook__detail" data-detail={s.id} hidden={si !== 0}>
+                <dl class="sbook__card">
+                  <span class="sbook__cardtape" aria-hidden="true"></span>
+                  <div><dt>Earned at:</dt><dd>{[...s.places, ...(s.from ?? [])].join(' · ') || '—'}</dd></div>
+                  <div><dt>First used:</dt><dd>{s.first ?? '—'}</dd></div>
+                  {s.used.length > 0 && (
+                    <div class="sbook__used">
+                      <dt>Used in:</dt>
+                      <dd>
+                        <ul role="list">
+                          {s.used.map((u) => <li><a href={url(`archive/projects/${u.id}/`)}>{u.title}</a> <span>{u.place}</span></li>)}
+                        </ul>
+                      </dd>
+                    </div>
+                  )}
+                  <span class="sbook__coffee" aria-hidden="true"></span>
+                </dl>
+                <div class="sbook__desc">
+                  <p class="sbook__name pixel"><span class="sbook__mini" style={`--tint:${s.tint}`} aria-hidden="true">{s.path ? <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d={s.path} /></svg> : <Icon name={s.icon ?? 'sparkles'} size={16} stroke={2.2} />}</span>“{s.name.toUpperCase()}”</p>
+                  <p>{s.note}</p>
+                  <p class="sbook__count pixel">Quantity: {s.count}</p>
+                </div>
+                <div class="sbook__stats pixel">
+                  <span><Icon name="map-pin" size={14} stroke={2} /> Places <b>{s.places.length + (s.from?.length ?? 0)}</b></span>
+                  <span><Icon name="folder" size={14} stroke={2} /> Projects <b>{s.used.length}</b></span>
+                </div>
+              </article>
+            ))}
+            <div class="sbook__foot">
+              <span class="sbook__barcode" aria-hidden="true"><i></i><small class="pixel">PSN-{String(pi + 1).padStart(2, '0')}</small></span>
+              <div class="sbook__nav">
+                <button class="sbook__arrow" type="button" data-book-step="-1" aria-label="Previous page"><Icon name="chevron-left" size={18} stroke={2} /></button>
+                <span class="pixel">{pi + 1} / {pages.length}</span>
+                <button class="sbook__arrow" type="button" data-book-step="1" aria-label="Next page"><Icon name="chevron-right" size={18} stroke={2} /></button>
+              </div>
+            </div>
+          </div>
+        </section>
+      ))}
+
+      <!-- the turning leaf, animated between pages -->
+      <span class="sbook__leaf" aria-hidden="true" data-book-leaf><i></i><i></i></span>
+
+      <!-- the skill talks back -->
+      <div class="sbook__pop" data-pop hidden role="status">
+        <span class="sbook__pop-icon" data-pop-icon aria-hidden="true"></span>
+        <p class="pixel"><b data-pop-name></b><span data-pop-text></span></p>
+        <button class="sbook__pop-ok pixel" type="button" data-pop-ok>ok fine, it stays</button>
+      </div>
+    </div>
+  </div>
+  <p class="visually-hidden" aria-live="polite" data-book-status></p>
+</div>
+
+<script>
+  // Said when a visitor keeps going after the skill's own protest
+  const MORE = [
+    "why bro? first only it's hard to find a job and you're so adamant on deleting my skills :)",
+    'the deal is in the detail. and this skill IS a detail.',
+    'error 418: this skill refuses to be binned.',
+    'ctrl+z. ctrl+z. CTRL+Z.',
+  ];
+
+  document.querySelectorAll<HTMLElement>('[data-book]').forEach((book) => {
+    const tabs = [...book.querySelectorAll<HTMLButtonElement>('[data-book-tab]')];
+    const pages = [...book.querySelectorAll<HTMLElement>('[data-book-page]')];
+    const leaf = book.querySelector<HTMLElement>('[data-book-leaf]')!;
+    const pop = book.querySelector<HTMLElement>('[data-pop]')!;
+    const status = book.querySelector<HTMLElement>('[data-book-status]')!;
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+    const tries = new Map<string, number>();
+    let current = 0;
+    let turning = false;
+    let more = 0;
+    let popTimer = 0;
+
+    /* ---------- pages ---------- */
+    const show = (i: number) => {
+      pages.forEach((p, k) => (p.hidden = k !== i));
+      tabs.forEach((t, k) => {
+        t.setAttribute('aria-selected', String(k === i));
+        t.tabIndex = k === i ? 0 : -1;
+      });
+      current = i;
+    };
+
+    const go = (i: number, focusTab = false) => {
+      const next = (i + pages.length) % pages.length;
+      if (next === current || turning) return;
+      hidePop();
+      if (focusTab) tabs[next].focus();
+      if (reduce.matches) return show(next);
+      turning = true;
+      // forward turns lift the right page over the spine; backward turns the left page back
+      leaf.dataset.dir = next > current ? 'fwd' : 'back';
+      leaf.classList.remove('is-turning');
+      void leaf.offsetWidth;
+      leaf.classList.add('is-turning');
+      setTimeout(() => show(next), 330);
+      setTimeout(() => { leaf.classList.remove('is-turning'); turning = false; }, 700);
+    };
+
+    tabs.forEach((t, k) => t.addEventListener('click', () => go(k)));
+    book.querySelector('[role="tablist"]')!.addEventListener('keydown', (e) => {
+      const k = (e as KeyboardEvent).key;
+      if (k === 'ArrowDown' || k === 'ArrowRight') { e.preventDefault(); go(current + 1, true); }
+      if (k === 'ArrowUp' || k === 'ArrowLeft') { e.preventDefault(); go(current - 1, true); }
+    });
+    book.querySelectorAll<HTMLButtonElement>('[data-book-step]').forEach((b) => b.addEventListener('click', () => go(current + Number(b.dataset.bookStep))));
+
+    /* ---------- the bin that says no ---------- */
+    const replay = (el: Element, cls: string, ms: number) => {
+      el.classList.remove(cls);
+      void (el as HTMLElement).offsetWidth;
+      el.classList.add(cls);
+      setTimeout(() => el.classList.remove(cls), ms);
+    };
+
+    function hidePop() {
+      clearTimeout(popTimer);
+      pop.hidden = true;
+    }
+
+    function refuse(slot: HTMLButtonElement, bin: HTMLElement) {
+      const id = slot.dataset.skill!;
+      const n = (tries.get(id) ?? 0) + 1;
+      tries.set(id, n);
+      replay(bin, 'is-nope', 650);
+      replay(slot, 'is-nope', 500);
+      status.textContent = `The bin refused ${slot.dataset.name}.`;
+      const text = n === 1 ? slot.dataset.quip! : MORE[more++ % MORE.length];
+      pop.querySelector('[data-pop-icon]')!.replaceChildren(slot.querySelector('.sbook__icon svg')!.cloneNode(true));
+      (pop.querySelector('[data-pop-icon]') as HTMLElement).style.setProperty('--tint', slot.style.getPropertyValue('--tint'));
+      pop.querySelector('[data-pop-name]')!.textContent = `${slot.dataset.name}: `;
+      pop.querySelector('[data-pop-text]')!.textContent = text;
+      const b = bin.getBoundingClientRect();
+      const host = book.querySelector('.sbook__book')!.getBoundingClientRect();
+      pop.style.setProperty('--px', `${b.left + b.width / 2 - host.left}px`);
+      pop.style.setProperty('--py', `${b.top - host.top}px`);
+      pop.hidden = false;
+      replay(pop, 'is-in', 400);
+      clearTimeout(popTimer);
+      popTimer = window.setTimeout(hidePop, 5200);
+    }
+    pop.querySelector('[data-pop-ok]')!.addEventListener('click', hidePop);
+
+    pages.forEach((page) => {
+      const slots = [...page.querySelectorAll<HTMLButtonElement>('[data-skill]')];
+      const details = [...page.querySelectorAll<HTMLElement>('[data-detail]')];
+      const bin = page.querySelector<HTMLButtonElement>('[data-bin]')!;
+      let dragged = false;
+
+      const select = (s: HTMLButtonElement) => {
+        slots.forEach((o) => o.setAttribute('aria-pressed', String(o === s)));
+        details.forEach((d) => (d.hidden = d.dataset.detail !== s.dataset.skill));
+        replay(s, 'is-picked', 500);
+      };
+
+      slots.forEach((s) => {
+        s.addEventListener('click', () => { if (!dragged) select(s); });
+        s.addEventListener('keydown', (e) => {
+          if (e.key === 'Delete' || e.key === 'Backspace') { e.preventDefault(); select(s); refuse(s, bin); }
+        });
+
+        // mouse and pen drag; touch uses tap-a-skill, then tap-the-bin
+        s.addEventListener('pointerdown', (e) => {
+          if (e.pointerType === 'touch' || e.button !== 0) return;
+          const x0 = e.clientX, y0 = e.clientY;
+          let ghost: HTMLElement | null = null;
+          dragged = false;
+          const over = (ev: PointerEvent) => {
+            const r = bin.getBoundingClientRect();
+            return ev.clientX > r.left - 12 && ev.clientX < r.right + 12 && ev.clientY > r.top - 12 && ev.clientY < r.bottom + 12;
+          };
+          const move = (ev: PointerEvent) => {
+            if (!ghost && Math.hypot(ev.clientX - x0, ev.clientY - y0) > 6) {
+              dragged = true;
+              ghost = document.createElement('span');
+              ghost.className = 'sbook-ghost';
+              ghost.style.setProperty('--tint', s.style.getPropertyValue('--tint'));
+              ghost.append(s.querySelector('.sbook__icon svg')!.cloneNode(true));
+              document.body.append(ghost);
+              s.classList.add('is-lifted');
+              select(s);
+            }
+            if (ghost) {
+              ghost.style.transform = `translate(${ev.clientX - 22}px, ${ev.clientY - 22}px) rotate(-8deg)`;
+              bin.classList.toggle('is-hover', over(ev));
+            }
+          };
+          const up = (ev: PointerEvent) => {
+            window.removeEventListener('pointermove', move);
+            window.removeEventListener('pointerup', up);
+            if (!ghost) return;
+            const hit = over(ev);
+            ghost.remove();
+            s.classList.remove('is-lifted');
+            bin.classList.remove('is-hover');
+            if (hit) refuse(s, bin);
+            setTimeout(() => (dragged = false), 0);
+          };
+          window.addEventListener('pointermove', move);
+          window.addEventListener('pointerup', up);
+        });
+      });
+
+      bin.addEventListener('click', () => {
+        const s = slots.find((o) => o.getAttribute('aria-pressed') === 'true') ?? slots[0];
+        refuse(s, bin);
+      });
+    });
+  });
+</script>
+
+<style>
+  .sbook { margin-top: clamp(3rem, 6vw, 5rem); }
+  .sbook__head { display: flex; align-items: baseline; gap: var(--s-4); flex-wrap: wrap; }
+  .sbook__aside { font-size: var(--t-hand); transform: rotate(-2deg); }
+
+  .sbook__frame { --line: #9c7a4e; --cream: #f4e4c1; --cream-2: #ead4a4; --cell: #dcbf8b; --cell-2: #e8d3a6; --red: #c0392b; --brown: #4a3520;
+    position: relative; margin-top: var(--s-7); padding-right: 3rem; padding-bottom: 2.5rem; }
+
+  /* ---------- the open book and its trim ---------- */
+  .sbook__book {
+    position: relative; perspective: 2200px;
+    background: var(--cream);
+    border: 3px solid var(--line); border-radius: 6px;
+    box-shadow:
+      0 0 0 4px #e3c793, 0 0 0 7px var(--line), 0 0 0 13px #cfae78, 0 0 0 16px var(--line),
+      0 26px 34px -14px rgb(40 26 10 / 0.5);
+  }
+  /* circuit traces etched into the cover margin, peeking out around the pages */
+  .sbook__traces { position: absolute; inset: -13px; width: calc(100% + 26px); height: calc(100% + 26px); color: #8a6a40; opacity: 0.8; pointer-events: none; z-index: -2; }
+  .sbook__book::before { /* page area sits above the traces */
+    content: ""; position: absolute; inset: 0; background: var(--cream); border-radius: 4px; z-index: -1;
+  }
+
+  /* washi tape with a tech grid print */
+  .sbook__tape { position: absolute; z-index: 4; width: 7.5rem; height: 1.6rem; pointer-events: none;
+    background:
+      linear-gradient(90deg, rgb(255 255 255 / 0.35) 1px, transparent 1px) 0 0 / 8px 8px,
+      linear-gradient(rgb(255 255 255 / 0.35) 1px, transparent 1px) 0 0 / 8px 8px,
+      #7fb3a8;
+    opacity: 0.88; box-shadow: 0 1px 2px rgb(0 0 0 / 0.15);
+  }
+  .sbook__tape--tl { top: -1.1rem; left: -2rem; transform: rotate(-32deg); }
+  .sbook__tape--br { bottom: -0.9rem; right: 3.5rem; transform: rotate(8deg); background-color: #e7a7a0; }
+
+  /* sticky flag on the left edge, ribbons hanging off the bottom */
+  .sbook__sticky { position: absolute; z-index: -3; left: -1.6rem; top: 3.5rem; width: 2rem; height: 1.4rem; background: var(--red); border: 2px solid #8e2a20; transform: rotate(-12deg); }
+  .sbook__ribbons { position: absolute; z-index: -3; left: 3rem; bottom: -2.4rem; display: flex; gap: 0.35rem; }
+  .sbook__ribbons i { width: 1.1rem; height: 2.8rem; background: #3d7cc9; clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 78%, 0 100%); }
+  .sbook__ribbons i + i { height: 2.1rem; background: var(--red); transform: rotate(8deg); }
+
+  /* hardware screws in the corners */
+  .sbook__screw { position: absolute; z-index: 3; width: 0.8rem; height: 0.8rem; border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #e8dcc4, #9a8a6c 70%); border: 1px solid #6b5a3e; }
+  .sbook__screw::after { content: ""; position: absolute; inset: 45% 15%; background: #5b4a30; transform: rotate(45deg); }
+  .sbook__screw--tl { top: 0.45rem; left: 0.45rem; } .sbook__screw--tr { top: 0.45rem; right: 0.45rem; }
+  .sbook__screw--bl { bottom: 0.45rem; left: 0.45rem; } .sbook__screw--br { bottom: 0.45rem; right: 0.45rem; }
+
+  .sbook__date {
+    position: absolute; z-index: 5; left: 50%; top: -2.2rem; transform: translateX(-50%);
+    display: grid; justify-items: center; padding: 0.2rem 0.9rem 0.3rem;
+    background: var(--cream); border: 3px solid var(--red); border-radius: 4px; color: var(--red);
+    box-shadow: 0 3px 0 var(--line); line-height: 1;
+  }
+  .sbook__date b { font-size: 1.9rem; font-weight: 400; }
+  .sbook__date small { font-size: 0.6rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--cream); background: var(--red); padding: 0.15rem 0.4rem; margin-top: 0.2rem; }
+  .sbook__motto {
+    position: absolute; z-index: 5; left: 50%; bottom: -1.35rem; transform: translateX(-50%) rotate(-1deg);
+    padding: 0.35rem 1rem; white-space: nowrap; font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase;
+    background: var(--brown); color: var(--cream); border: 2px solid var(--line); box-shadow: 0 3px 0 rgb(0 0 0 / 0.2);
+  }
+  .sbook__motto::before, .sbook__motto::after { content: "◆"; margin: 0 0.6em; color: #e8b45c; font-size: 0.6rem; vertical-align: 0.1em; }
+
+  .sbook__spread { display: grid; grid-template-columns: minmax(0, 1fr) 2.75rem minmax(0, 1fr); min-height: 32rem; }
+  .sbook__spread[hidden] { display: none; }
+  .sbook__page { position: relative; padding: clamp(1.5rem, 2.6vw, 2.2rem); }
+  .sbook__page::before { /* inner ruled frame */
+    content: ""; position: absolute; inset: 0.7rem; border: 2px solid var(--cream-2); border-radius: 3px; pointer-events: none;
+  }
+  .sbook__page::after { /* pixel corner brackets */
+    content: ""; position: absolute; inset: 0.7rem; pointer-events: none; --c: var(--line); --l: 1.1rem; --w: 3px;
+    background:
+      linear-gradient(var(--c), var(--c)) top left / var(--l) var(--w), linear-gradient(var(--c), var(--c)) top left / var(--w) var(--l),
+      linear-gradient(var(--c), var(--c)) top right / var(--l) var(--w), linear-gradient(var(--c), var(--c)) top right / var(--w) var(--l),
+      linear-gradient(var(--c), var(--c)) bottom left / var(--l) var(--w), linear-gradient(var(--c), var(--c)) bottom left / var(--w) var(--l),
+      linear-gradient(var(--c), var(--c)) bottom right / var(--l) var(--w), linear-gradient(var(--c), var(--c)) bottom right / var(--w) var(--l);
+    background-repeat: no-repeat;
+  }
+
+  .sbook__title { display: flex; justify-content: center; align-items: center; gap: 0.7rem; font-size: clamp(1.4rem, 1rem + 1.2vw, 2rem); color: var(--line); letter-spacing: 0.06em; text-transform: uppercase; margin: 0.5rem 0 1rem; }
+  .sbook__sprig { width: 2.2rem; height: auto; fill: #c9a56d; shape-rendering: crispEdges; }
+  .sbook__sprig--r { transform: scaleX(-1); }
+
+  /* ---------- slots ---------- */
+  .sbook__grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.45rem; max-width: 21rem; margin-inline: auto; padding: 0.6rem; border: 2px solid var(--cream-2); border-radius: 4px; background: repeating-linear-gradient(0deg, transparent 0 7px, rgb(156 122 78 / 0.06) 7px 8px); }
+  .sbook__grid > li { display: grid; }
+  .sbook__slot {
+    position: relative; width: 100%; aspect-ratio: 1; display: grid; place-items: center;
+    background: var(--cell); border: 0; border-radius: 2px; color: var(--tint, var(--brown));
+    box-shadow: inset 0 -3px 0 rgb(0 0 0 / 0.1), inset 0 2px 0 rgb(255 255 255 / 0.25);
+    cursor: grab; transition: transform 120ms ease, background-color 120ms ease; touch-action: manipulation;
+  }
+  .sbook__slot--empty { background: var(--cell-2); cursor: default; box-shadow: inset 0 0 0 2px rgb(156 122 78 / 0.18); color: var(--line); }
+  .sbook__slot[aria-pressed="true"] { background: #fff6e2; outline: 3px solid var(--line); outline-offset: -3px; }
+  .sbook__slot[aria-pressed="true"] .sbook__icon { animation: sb-idle 1.6s steps(2, jump-none) infinite; }
+  .sbook__slot:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+  .sbook__slot.is-lifted { opacity: 0.35; }
+
+  .sbook__icon { display: grid; place-items: center; }
+  /* a 1px dark outline turns each logo into a little game sprite */
+  .sbook__brand, .sbook__icon > :global(svg) {
+    filter: drop-shadow(1px 0 0 #3b2a19) drop-shadow(-1px 0 0 #3b2a19) drop-shadow(0 1px 0 #3b2a19) drop-shadow(0 -1px 0 #3b2a19) drop-shadow(0 2px 0 rgb(59 42 25 / 0.35));
+  }
+  .sbook__icon > :global(svg:not(.sbook__brand)) { fill: color-mix(in srgb, var(--tint) 22%, transparent); }
+
+  .sbook__qty { position: absolute; left: 0.2rem; bottom: 0.05rem; font-size: 0.7rem; color: var(--brown); }
+  .sbook__tip {
+    position: absolute; z-index: 6; left: 50%; bottom: calc(100% + 0.35rem); transform: translate(-50%, 4px);
+    padding: 0.2rem 0.5rem; white-space: nowrap; font-size: 0.7rem; color: var(--cream); background: var(--brown); border-radius: 2px;
+    opacity: 0; pointer-events: none; transition: opacity 120ms ease, transform 120ms ease;
+  }
+  .sbook__tip::after { content: ""; position: absolute; left: 50%; top: 100%; border: 4px solid transparent; border-top-color: var(--brown); transform: translateX(-50%); }
+  @media (hover: hover) {
+    button.sbook__slot:hover { background: #fff6e2; transform: translateY(-2px); }
+    button.sbook__slot:hover .sbook__icon { animation: sb-hop 420ms steps(3, jump-none); }
+    button.sbook__slot:hover .sbook__tip { opacity: 1; transform: translate(-50%, 0); }
+  }
+  .sbook__slot:focus-visible .sbook__tip { opacity: 1; transform: translate(-50%, 0); }
+  .sbook__slot.is-picked .sbook__icon { animation: sb-pick 420ms cubic-bezier(0.3, 1.6, 0.5, 1); }
+  .sbook__slot.is-nope { animation: sb-shake 420ms linear; }
+
+  @keyframes sb-idle { 50% { transform: translateY(-2px); } }
+  @keyframes sb-hop { 40% { transform: translateY(-5px) rotate(-6deg); } 80% { transform: translateY(0) rotate(4deg); } }
+  @keyframes sb-pick { 0% { transform: scale(0.7); } 70% { transform: scale(1.18) rotate(6deg); } 100% { transform: scale(1); } }
+  @keyframes sb-shake { 20%, 60% { transform: translateX(-4px) rotate(-2deg); } 40%, 80% { transform: translateX(4px) rotate(2deg); } }
+
+  /* ---------- the bin ---------- */
+  .sbook__discard { margin-top: 0.9rem; display: grid; justify-items: center; gap: 0.35rem; }
+  .sbook__hint { font-size: 0.75rem; color: var(--red); opacity: 0.85; }
+  .sbook__binrow { display: flex; align-items: center; gap: 0.6rem; color: var(--line); }
+  .sbook__arrowhint { width: 1.4rem; height: auto; }
+  .sbook__arrowhint--r { transform: scaleX(-1); }
+  .sbook__bin {
+    position: relative; display: grid; place-items: center; width: 3.2rem; height: 3.2rem;
+    background: var(--cell); border: 3px solid var(--line); border-radius: 4px; color: var(--brown); cursor: pointer;
+    box-shadow: inset 0 -3px 0 rgb(0 0 0 / 0.1);
+    transition: transform 140ms ease, background-color 140ms ease;
+  }
+  .sbook__bin.is-hover { background: #f6d0c8; transform: scale(1.12) rotate(-4deg); border-color: var(--red); color: var(--red); }
+  .sbook__bin:active { transform: scale(0.94); }
+  .sbook__bin:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+  .sbook__nope { position: absolute; inset: 0; display: grid; place-items: center; font-size: 2.2rem; color: var(--red); opacity: 0; text-shadow: 2px 2px 0 var(--cream); pointer-events: none; }
+  .sbook__bin.is-nope { animation: sb-shake 480ms linear; border-color: var(--red); }
+  .sbook__bin.is-nope .sbook__nope { animation: sb-x 650ms steps(1, end); }
+  @keyframes sb-x { 0%, 70% { opacity: 1; } 100% { opacity: 0; } }
+
+  :global(.sbook-ghost) {
+    position: fixed; z-index: 1000; left: 0; top: 0; width: 44px; height: 44px; display: grid; place-items: center; pointer-events: none;
+    background: #fff6e2; border: 3px solid #9c7a4e; border-radius: 3px; color: var(--tint); box-shadow: 4px 6px 0 rgb(59 42 25 / 0.3);
+  }
+  :global(.sbook-ghost svg) { width: 26px; height: 26px; }
+
+  /* ---------- the popup ---------- */
+  .sbook__pop {
+    position: absolute; z-index: 7; left: var(--px); top: var(--py); width: min(19rem, 80vw);
+    transform: translate(-50%, calc(-100% - 0.9rem));
+    display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0.6rem 0.7rem; align-items: start;
+    padding: 0.85rem 0.9rem 0.75rem; background: #fffaf0; border: 3px solid var(--brown); border-radius: 4px;
+    box-shadow: 4px 5px 0 rgb(59 42 25 / 0.35);
+  }
+  .sbook__pop[hidden] { display: none; }
+  .sbook__pop::after { content: ""; position: absolute; left: 50%; top: 100%; width: 0.9rem; height: 0.9rem; background: #fffaf0; border: 3px solid var(--brown); border-top: 0; border-left: 0; transform: translate(-50%, -55%) rotate(45deg); }
+  .sbook__pop.is-in { animation: sb-pop 360ms cubic-bezier(0.3, 1.5, 0.5, 1); }
+  @keyframes sb-pop { from { transform: translate(-50%, calc(-100% - 0.2rem)) scale(0.6); opacity: 0; } }
+  .sbook__pop-icon { display: grid; place-items: center; width: 2.4rem; height: 2.4rem; background: var(--cell); border-radius: 2px; color: var(--tint); animation: sb-sulk 1.2s steps(2, jump-none) infinite; }
+  .sbook__pop-icon :global(svg) { width: 22px; height: 22px; }
+  @keyframes sb-sulk { 50% { transform: rotate(-8deg) translateY(1px); } }
+  .sbook__pop p { font-size: 0.875rem; line-height: 1.45; color: #3b2a19; }
+  .sbook__pop b { font-weight: 400; color: var(--red); }
+  .sbook__pop-ok { grid-column: 1 / -1; justify-self: end; padding: 0.3rem 0.7rem; font-size: 0.7rem; background: var(--cream-2); color: var(--brown); border: 2px solid var(--line); border-radius: 3px; cursor: pointer; }
+  .sbook__pop-ok:active { transform: scale(0.95); }
+
+  /* ---------- spiral binding ---------- */
+  .sbook__spiral {
+    position: relative;
+    background: linear-gradient(90deg, rgb(156 122 78 / 0.22), transparent 30% 70%, rgb(156 122 78 / 0.22));
+  }
+  .sbook__spiral::before { /* the rings */
+    content: ""; position: absolute; inset: 0.8rem -0.5rem;
+    background: radial-gradient(ellipse 50% 0.24rem at 50% 50%, #3a2818 92%, transparent 100%) center top / 100% 1.6rem repeat-y;
+    filter: drop-shadow(0 2px 0 rgb(0 0 0 / 0.18));
+  }
+  .sbook__spiral::after { /* punched holes on both page edges */
+    content: ""; position: absolute; inset: 0.8rem -0.85rem;
+    background:
+      radial-gradient(circle at 0.3rem 50%, #6b4c30 0.18rem, transparent 0.2rem) left top / 0.6rem 1.6rem repeat-y,
+      radial-gradient(circle at 0.3rem 50%, #6b4c30 0.18rem, transparent 0.2rem) right top / 0.6rem 1.6rem repeat-y;
+    z-index: -1;
+  }
+
+  /* ---------- right page: details ---------- */
+  .sbook__page--right { display: grid; grid-template-rows: 1fr auto; gap: var(--s-4); }
+  .sbook__detail { display: grid; gap: var(--s-4); align-content: start; }
+  .sbook__detail[hidden] { display: none; }
+  .sbook__card {
+    position: relative; margin: 0.9rem auto 0; width: min(100%, 22rem); padding: 1.3rem 1.2rem 1rem;
+    background:
+      linear-gradient(rgb(61 124 201 / 0.12) 1px, transparent 1px) 0 0.4rem / 100% 1.45rem,
+      #fbf3e0;
+    border: 2px solid var(--line); transform: rotate(1.2deg);
+    font-family: var(--font-pixel); font-size: 0.8125rem; color: var(--brown); display: grid; gap: 0.55rem;
+    box-shadow: 3px 4px 0 rgb(156 122 78 / 0.35);
+  }
+  .sbook__card > div { display: grid; grid-template-columns: 6.5rem minmax(0, 1fr); gap: 0.5rem; }
+  .sbook__card dd { color: var(--red); }
+  .sbook__used ul { display: grid; gap: 0.3rem; }
+  .sbook__used a { color: var(--red); text-decoration: underline; text-underline-offset: 2px; }
+  .sbook__used span { color: #8a7050; font-size: 0.7rem; }
+  .sbook__cardtape { position: absolute; top: -0.7rem; left: 50%; width: 3rem; height: 1.2rem; transform: translateX(-50%) rotate(-3deg); background: rgb(255 255 255 / 0.6); border: 1px solid rgb(156 122 78 / 0.25); }
+  .sbook__coffee { position: absolute; right: -0.6rem; bottom: -0.7rem; width: 2.6rem; height: 2.6rem; border-radius: 50%; border: 3px solid rgb(139 94 52 / 0.18); border-right-color: transparent; transform: rotate(30deg); pointer-events: none; }
+
+  .sbook__desc { border: 2px solid var(--line); background: #fbf3e0; padding: 0.9rem 1rem 0.7rem; font-family: var(--font-pixel); font-size: 0.875rem; line-height: 1.5; color: #3b2a19; display: grid; gap: 0.5rem; }
+  .sbook__name { display: flex; align-items: center; gap: 0.5rem; font-size: 1rem; }
+  .sbook__mini { display: grid; place-items: center; color: var(--tint); }
+  .sbook__count { justify-self: end; font-size: 0.7rem; color: #6b5236; }
+
+  .sbook__stats { display: flex; gap: 0.6rem; justify-content: center; font-size: 0.7rem; color: var(--brown); text-transform: uppercase; letter-spacing: 0.04em; }
+  .sbook__stats span { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.35rem 0.7rem; background: var(--cream-2); border: 2px solid var(--line); border-radius: 999px; }
+  .sbook__stats b { font-weight: 400; color: var(--cream); background: var(--line); padding: 0.05rem 0.45rem; border-radius: 999px; }
+
+  .sbook__foot { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); }
+  .sbook__barcode { display: grid; gap: 0.1rem; justify-items: center; padding: 0.3rem 0.5rem 0.2rem; background: #fffaf0; border: 1px solid var(--cream-2); transform: rotate(-3deg); }
+  .sbook__barcode i { width: 4.5rem; height: 1.3rem; background: repeating-linear-gradient(90deg, #3b2a19 0 1px, transparent 1px 3px, #3b2a19 3px 5px, transparent 5px 6px, #3b2a19 6px 7px, transparent 7px 9px); }
+  .sbook__barcode small { font-size: 0.55rem; letter-spacing: 0.12em; color: #6b5236; }
+  .sbook__nav { display: flex; justify-content: center; align-items: center; gap: var(--s-4); font-size: 0.75rem; color: var(--line); }
+  .sbook__arrow { display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border: 2px solid var(--line); border-radius: 4px; background: var(--cream-2); color: var(--brown); cursor: pointer; }
+  .sbook__arrow:active { transform: scale(0.94); }
+
+  /* ---------- fore-edge tabs ---------- */
+  .sbook__tabs { position: absolute; z-index: 0; right: 0; top: 2.5rem; display: grid; gap: 0.45rem; }
+  .sbook__tab {
+    display: grid; place-items: center; width: 3.1rem; height: 3rem; padding-left: 0.3rem;
+    background: var(--cream-2); border: 3px solid var(--line); border-left: 0; border-radius: 0 6px 6px 0;
+    color: #6b4c30; cursor: pointer; transition: transform 160ms var(--ease-out, ease), background-color 160ms ease;
+  }
+  .sbook__tab[aria-selected="true"] { background: var(--cream); color: var(--red); transform: translateX(0.35rem); }
+  .sbook__tab:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+  @media (hover: hover) { .sbook__tab:hover { transform: translateX(0.25rem); } }
+
+  /* ---------- the page turn ---------- */
+  .sbook__leaf { position: absolute; z-index: 2; top: 0; bottom: 0; width: calc(50% - 1.375rem); pointer-events: none; visibility: hidden; transform-style: preserve-3d; }
+  .sbook__leaf i { position: absolute; inset: 0; background: var(--cream); backface-visibility: hidden; border: 2px solid var(--cream-2); box-shadow: inset 0 0 40px rgb(156 122 78 / 0.25); }
+  .sbook__leaf i + i { transform: rotateY(180deg); }
+  .sbook__leaf[data-dir="fwd"] { left: calc(50% + 1.375rem); transform-origin: left center; }
+  .sbook__leaf[data-dir="back"] { right: calc(50% + 1.375rem); transform-origin: right center; }
+  .sbook__leaf.is-turning { visibility: visible; animation: sb-turn-fwd 700ms cubic-bezier(0.45, 0.05, 0.3, 1) both; }
+  .sbook__leaf.is-turning[data-dir="back"] { animation-name: sb-turn-back; }
+  @keyframes sb-turn-fwd { from { transform: rotateY(0); } to { transform: rotateY(-180deg); } }
+  @keyframes sb-turn-back { from { transform: rotateY(0); } to { transform: rotateY(180deg); } }
+
+  /* ---------- phones: one page above the other, tabs along the top ---------- */
+  @media (max-width: 760px) {
+    .sbook__frame { padding-right: 0; padding-top: 3.2rem; }
+    .sbook__tabs { top: 0; right: auto; left: 0.75rem; display: flex; }
+    .sbook__tab { width: 3rem; height: 3.2rem; padding: 0 0 0.3rem; border: 3px solid var(--line); border-bottom: 0; border-radius: 6px 6px 0 0; }
+    .sbook__tab[aria-selected="true"] { transform: translateY(0.3rem); }
+    @media (hover: hover) { .sbook__tab:hover { transform: translateY(0.2rem); } }
+    .sbook__spread { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1.6rem auto; }
+    .sbook__spiral { background: linear-gradient(rgb(156 122 78 / 0.22), transparent 30% 70%, rgb(156 122 78 / 0.22)); }
+    .sbook__spiral::before { inset: -0.5rem 0.8rem; background: radial-gradient(ellipse 0.24rem 50% at 50% 50%, #3a2818 92%, transparent 100%) left center / 1.6rem 100% repeat-x; }
+    .sbook__spiral::after { display: none; }
+    .sbook__date, .sbook__sticky { display: none; }
+    .sbook__tape--tl { top: 2.4rem; left: -1.2rem; width: 5rem; }
+    .sbook__motto { font-size: 0.625rem; letter-spacing: 0.08em; }
+    .sbook__leaf, .sbook__leaf[data-dir] { left: 0; right: 0; width: auto; top: 0; bottom: auto; height: 100%; transform-origin: center top; }
+    @keyframes sb-turn-fwd { from { transform: rotateX(0); } to { transform: rotateX(180deg); } }
+    @keyframes sb-turn-back { from { transform: rotateX(0); } to { transform: rotateX(-180deg); } }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sbook__leaf { display: none; }
+    .sbook__slot .sbook__icon, .sbook__pop-icon, .sbook__pop.is-in { animation: none !important; }
+  }
+</style>

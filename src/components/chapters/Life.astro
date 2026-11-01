@@ -4,6 +4,7 @@ import Brand from '../Brand.astro';
 import Placeholder from '../Placeholder.astro';
 import PaperClip from '../ui/PaperClip.astro';
 import DemoNote from '../ui/DemoNote.astro';
+import Locker from '../locker/Locker.astro';
 import { vibes, topics, moments, journal, playlist, links, photos } from '@/data/site';
 const featured = journal[0];
 // How each topic is pinned on the board: kind of paper, tack colour, tilt, grid area, and whether the red string runs through it.
@@ -100,6 +101,9 @@ const boardKinds = [
       </ul>
     </div>
   </div>
+
+  <!-- ───────── the locker (key is in chapter 04) ───────── -->
+  <Locker />
 
   <!-- ───────── moments + latest entries ───────── -->
   <div class="life__bottom">

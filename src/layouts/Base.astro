@@ -53,5 +53,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
   </head>
   <body class={bodyClass} data-current={current}>
     <slot />
+    <!-- preview-only "try photos" mode (off unless ?try); remove this line and the file to drop it -->
+    <script>import '@/scripts/trypics';</script>
   </body>
 </html>

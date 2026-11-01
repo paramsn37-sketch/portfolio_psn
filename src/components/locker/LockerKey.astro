@@ -1,0 +1,115 @@
+---
+/**
+ * The locker key, hanging on a nail. Clicking it drops it into the visitor's sack
+ * (bottom-right), which the locker in chapter 05 checks before opening.
+ */
+---
+<div class="lkey" data-lkey>
+  <span class="lkey__nail" aria-hidden="true"></span>
+  <button class="lkey__btn" type="button" data-lkey-btn aria-label="Pick up the small brass key">
+    <svg class="lkey__svg" data-key-art viewBox="0 0 64 24" aria-hidden="true">
+      <circle cx="12" cy="12" r="9" fill="#d9a93b" stroke="#7a5a12" stroke-width="2" />
+      <circle cx="12" cy="12" r="3.6" fill="var(--paper)" stroke="#7a5a12" stroke-width="1.5" />
+      <path d="M20 10.5h38v3H54v5h-3.5v-5H47v3.5h-3.5V13.5H20z" fill="#d9a93b" stroke="#7a5a12" stroke-width="1.6" stroke-linejoin="round" />
+      <path d="M7 7.5a6 6 0 0 1 5-2" stroke="#fff3c4" stroke-width="1.6" fill="none" stroke-linecap="round" />
+    </svg>
+  </button>
+  <span class="lkey__tag" aria-hidden="true">spare key<br /><small>(chapter 05?)</small></span>
+</div>
+
+<div class="sack" data-sack aria-live="polite">
+  <button class="sack__btn" type="button" data-sack-btn aria-label="Your sack: empty" aria-expanded="false" aria-controls="sack-pop">
+    <svg viewBox="0 0 48 48" aria-hidden="true">
+      <path d="M17 9c2-3 12-3 14 0l-3 5h-8z" fill="#9c7a45" stroke="#4b3618" stroke-width="2" stroke-linejoin="round" />
+      <path d="M19 14h10c9 4 14 13 13 21-1 7-7 9-18 9S7 42 6 35c-1-8 4-17 13-21z" fill="#c8a979" stroke="#4b3618" stroke-width="2" stroke-linejoin="round" />
+      <path d="M17 14.5c3 1.4 11 1.4 14 0" stroke="#a3352b" stroke-width="2.4" fill="none" stroke-linecap="round" />
+      <path d="M13 30c2 5 6 7 10 7" stroke="#b8955f" stroke-width="1.6" fill="none" stroke-linecap="round" />
+    </svg>
+    <span class="sack__count" data-sack-count hidden>1</span>
+  </button>
+  <div class="sack__pop" id="sack-pop" data-sack-pop hidden>
+    <p class="sack__title">Your sack</p>
+    <p class="sack__empty" data-sack-empty>Empty. Something on this page is worth picking up.</p>
+    <div class="sack__item" data-sack-key hidden>
+      <svg viewBox="0 0 64 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="#d9a93b" stroke="#7a5a12" stroke-width="2" /><circle cx="12" cy="12" r="3.6" fill="var(--card)" stroke="#7a5a12" stroke-width="1.5" /><path d="M20 10.5h38v3H54v5h-3.5v-5H47v3.5h-3.5V13.5H20z" fill="#d9a93b" stroke="#7a5a12" stroke-width="1.6" /></svg>
+      <span>Small brass key. Fits a locker, maybe?</span>
+      <a href="#locker">Go to the locker</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { has, add, fly } from '@/scripts/inventory';
+
+  const wrap = document.querySelector<HTMLElement>('[data-lkey]');
+  const btn = document.querySelector<HTMLButtonElement>('[data-lkey-btn]');
+  const sack = document.querySelector<HTMLElement>('[data-sack]');
+  const sackBtn = document.querySelector<HTMLButtonElement>('[data-sack-btn]');
+  const pop = document.querySelector<HTMLElement>('[data-sack-pop]');
+  // fixed-position UI must not live inside a transformed (revealing) ancestor
+  if (sack) document.body.append(sack);
+
+  const render = () => {
+    const got = has('key');
+    wrap?.classList.toggle('is-taken', got);
+    if (btn) btn.disabled = got;
+    document.querySelector('[data-sack-count]')?.toggleAttribute('hidden', !got);
+    document.querySelector('[data-sack-empty]')?.toggleAttribute('hidden', got);
+    document.querySelector('[data-sack-key]')?.toggleAttribute('hidden', !got);
+    sackBtn?.setAttribute('aria-label', got ? 'Your sack: 1 item, a small brass key' : 'Your sack: empty');
+  };
+  render();
+
+  btn?.addEventListener('click', async () => {
+    if (has('key') || !sackBtn) return;
+    const art = btn.querySelector('[data-key-art]')!;
+    const from = art.getBoundingClientRect();
+    wrap?.classList.add('is-taken');
+    await fly(art, from, sackBtn.getBoundingClientRect(), 800);
+    add('key');
+    sack?.classList.remove('is-gulp'); void sack?.offsetWidth; sack?.classList.add('is-gulp');
+  });
+
+  window.addEventListener('pa:inventory', render);
+
+  sackBtn?.addEventListener('click', () => {
+    const open = pop!.hidden;
+    pop!.hidden = !open;
+    sackBtn.setAttribute('aria-expanded', String(open));
+  });
+  document.addEventListener('click', (e) => {
+    if (!pop || pop.hidden || sack?.contains(e.target as Node)) return;
+    pop.hidden = true; sackBtn?.setAttribute('aria-expanded', 'false');
+  });
+  pop?.querySelector('a')?.addEventListener('click', () => { pop.hidden = true; sackBtn?.setAttribute('aria-expanded', 'false'); });
+</script>
+
+<style>
+  .lkey { position: relative; display: inline-flex; align-items: flex-start; gap: 0.6rem; margin-top: 1.1rem; padding-top: 0.4rem; }
+  .lkey__nail { position: absolute; left: 10px; top: 0; width: 8px; height: 8px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #d8d1c0, #6b685e 70%); box-shadow: 0 1px 1px rgb(0 0 0 / 0.35); z-index: 2; }
+  .lkey__btn { all: unset; cursor: grab; display: block; transform-origin: 14px 4px; animation: lkey-sway 3.6s ease-in-out infinite; padding: 0.15rem; border-radius: 6px; }
+  .lkey__btn:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+  .lkey__btn:hover { animation-duration: 0.9s; }
+  .lkey__svg { display: block; width: 4.2rem; height: auto; transform: rotate(78deg) translate(4px, -2px); transform-origin: 12px 12px; filter: drop-shadow(1px 2px 1px rgb(0 0 0 / 0.25)); }
+  .lkey__tag { font-family: var(--font-hand); font-size: 1.35rem; line-height: 0.95; color: var(--blue); transform: rotate(-4deg); margin-top: 0.8rem; margin-left: -1.6rem; }
+  .lkey__tag small { font-size: 1.05rem; color: var(--ink-3); }
+  .lkey.is-taken .lkey__btn { visibility: hidden; animation: none; }
+  .lkey.is-taken .lkey__tag { text-decoration: line-through; opacity: 0.55; }
+  @keyframes lkey-sway { 0%, 100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
+
+  .sack { position: fixed; right: max(1rem, env(safe-area-inset-right)); bottom: max(1rem, env(safe-area-inset-bottom)); z-index: 90; }
+  .sack__btn { all: unset; cursor: pointer; position: relative; display: grid; place-items: center; width: 3.4rem; height: 3.4rem; border-radius: 50%; background: var(--card); border: 1.5px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); transition: transform 0.15s; }
+  .sack__btn:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--ink); }
+  .sack__btn:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+  .sack__btn svg { width: 2.3rem; height: 2.3rem; }
+  .sack__count { position: absolute; top: -4px; right: -4px; min-width: 1.15rem; height: 1.15rem; border-radius: 999px; background: var(--red-string); color: #fff; font: 600 0.7rem/1.15rem var(--font-mono); text-align: center; }
+  .sack.is-gulp .sack__btn { animation: sack-gulp 0.5s ease; }
+  @keyframes sack-gulp { 0% { transform: scale(1); } 35% { transform: scale(1.22, 0.86); } 70% { transform: scale(0.94, 1.08); } 100% { transform: scale(1); } }
+  .sack__pop { position: absolute; right: 0; bottom: calc(100% + 0.7rem); width: min(16rem, calc(100vw - 2rem)); background: var(--card); border: 1.5px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); border-radius: 8px; padding: 0.8rem 0.9rem; font-size: var(--t-small); }
+  .sack__title { font-family: var(--font-pixel); font-size: 0.85rem; letter-spacing: 0.06em; text-transform: uppercase; margin: 0 0 0.4rem; }
+  .sack__empty { color: var(--ink-3); margin: 0; }
+  .sack__item { display: grid; grid-template-columns: 3rem 1fr; gap: 0.2rem 0.6rem; align-items: center; }
+  .sack__item svg { width: 3rem; grid-row: span 2; }
+  .sack__item a { color: var(--blue); font-family: var(--font-mono); font-size: var(--t-meta); }
+  @media (prefers-reduced-motion: reduce) { .lkey__btn, .sack.is-gulp .sack__btn { animation: none; } }
+</style>
