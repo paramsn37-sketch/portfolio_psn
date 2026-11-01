@@ -297,18 +297,14 @@ export const locker = {
   /** The big sticker on the inside of the door (matches the one on the front). */
   sticker: { big: 'PSN', small: 'Your growing space' },
   /**
-   * The battleship in the void. Until `model` is set, the void shows these photos of the real
-   * one. Put a .glb in /public (e.g. /portfolio_psn/models/battleship.glb) and set `model` to it.
+   * The battleship in the void. Until `model` is set, the void shows a 360° turntable of the
+   * Tripo render (120 frames, drag to spin). Put a .glb in /public (e.g.
+   * /portfolio_psn/models/battleship.glb) and set `model` to switch to the real 3D viewer.
    */
   ship: {
     model: undefined as string | undefined,
     title: 'Battleship',
     facts: ['4 ft scale model', 'Built from dismantled toys, gadgets and scrap', 'Working lights', 'Made during COVID'],
-    photos: [
-      { src: '/portfolio_psn/images/locker/ship-side.webp', alt: 'The battleship from the side, hull number 030' },
-      { src: '/portfolio_psn/images/locker/ship-bow.webp', alt: 'Close-up of the bow turrets with star-capped barrels and the helipad' },
-      { src: '/portfolio_psn/images/locker/ship-lights.webp', alt: 'The ship at night with its deck lights on' },
-      { src: '/portfolio_psn/images/locker/ship-top.webp', alt: 'The whole ship from above' },
-    ],
+    spin: { frames: 120, base: '/portfolio_psn/images/ship/f', ext: '.webp', alt: 'A 3D render of the grey battleship, hull number 030, turning slowly' },
   },
 };

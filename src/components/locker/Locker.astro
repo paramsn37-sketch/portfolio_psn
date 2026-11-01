@@ -137,20 +137,19 @@ const rightClip = `polygon(100% 0, ${tearPts.join(', ')}, 100% 100%)`;
 </div>
 
 <!-- the void -->
-<div class="void" data-void hidden role="dialog" aria-modal="true" aria-labelledby="void-title" data-model={ship.model ?? ''} data-photos={JSON.stringify(ship.photos)}>
+<div class="void" data-void hidden role="dialog" aria-modal="true" aria-labelledby="void-title" data-model={ship.model ?? ''} data-spin={JSON.stringify(ship.spin)}>
   <div class="void__grid" aria-hidden="true"></div>
-  <canvas class="void__canvas" data-void-canvas aria-label={ship.model ? '3D model of the battleship. Drag to rotate, scroll or pinch to zoom.' : 'Photos of the battleship floating in space. Drag to look around, scroll or pinch to zoom, click a photo to focus it.'}></canvas>
+  <canvas class="void__canvas" data-void-canvas role="img" aria-label={ship.model ? '3D model of the battleship. Drag to rotate, scroll or pinch to zoom.' : `${ship.spin.alt}. Drag sideways or use the arrow keys to spin it, scroll to zoom.`}></canvas>
   <span class="void__glow" aria-hidden="true"></span>
   <div class="void__hud">
     <div class="void__meta">
       <p class="void__kicker">Behind the poster</p>
       <h2 class="void__title" id="void-title">{ship.title}</h2>
       <ul class="void__facts" role="list">{ship.facts.map((f) => <li>{f}</li>)}</ul>
-      {!ship.model && <p class="void__tag">Photos of the real one. The 3D scan is on its way.</p>}
     </div>
     <button class="void__exit" type="button" data-void-exit>Exit <kbd>Esc</kbd></button>
   </div>
-  <p class="void__help" data-void-help>{ship.model ? 'Drag to rotate · scroll or pinch to zoom' : 'Drag to look around · scroll to zoom · click a photo'}</p>
+  <p class="void__help" data-void-help>{ship.model ? 'Drag to rotate · scroll or pinch to zoom' : 'Drag to spin · scroll to zoom · ← → keys'}</p>
   <p class="void__loading" data-void-loading>loading…</p>
 </div>
 
@@ -297,7 +296,7 @@ const rightClip = `polygon(100% 0, ${tearPts.join(', ')}, 100% 100%)`;
     closeBtn.addEventListener('click', close);
 
     /* ---------- pull the tag: tear, glow, zoom, morph into the void ---------- */
-    let ship: { dispose(): void } | null = null;
+    let ship: { dispose(): void; nudge?(by: number): void } | null = null;
     const exitBtn = voidEl.querySelector<HTMLButtonElement>('[data-void-exit]')!;
 
     const toVoid = async () => {
@@ -320,9 +319,17 @@ const rightClip = `polygon(100% 0, ${tearPts.join(', ')}, 100% 100%)`;
       voidEl.classList.add('is-open');
       exitBtn.focus({ preventScroll: true });
       busy = false;
+      const canvas = voidEl.querySelector('canvas')!;
+      const loading = voidEl.querySelector('[data-void-loading]');
       try {
-        const { mountShip } = await import('@/scripts/ship');
-        ship = await mountShip(voidEl.querySelector('canvas')!, voidEl.dataset.model || undefined, JSON.parse(voidEl.dataset.photos || '[]'));
+        if (voidEl.dataset.model) {
+          const { mountShip } = await import('@/scripts/ship');
+          ship = await mountShip(canvas, voidEl.dataset.model);
+        } else {
+          const { mountSpin } = await import('@/scripts/turntable');
+          ship = mountSpin(canvas, JSON.parse(voidEl.dataset.spin || '{}'), () => loading?.setAttribute('hidden', ''));
+          return;
+        }
       } catch (e) {
         console.error(e);
         voidEl.querySelector('[data-void-help]')!.textContent = 'The 3D view could not start in this browser.';
@@ -370,6 +377,7 @@ const rightClip = `polygon(100% 0, ${tearPts.join(', ')}, 100% 100%)`;
     document.addEventListener('keydown', (e) => {
       if (!voidEl.hidden) {
         if (e.key === 'Escape') closeVoid();
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { e.preventDefault(); ship?.nudge?.(e.key === 'ArrowLeft' ? -3 : 3); }
         if (e.key === 'Tab') { e.preventDefault(); exitBtn.focus(); }
         return;
       }
@@ -570,7 +578,6 @@ const rightClip = `polygon(100% 0, ${tearPts.join(', ')}, 100% 100%)`;
   .void__title { font-family: var(--font-display); font-size: clamp(2.2rem, 1.6rem + 3vw, 4.5rem); line-height: 0.9; text-transform: uppercase; margin: 0 0 0.6rem; }
   .void__facts { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.2rem; font: 0.75rem/1.4 var(--font-mono); color: #bdb8aa; }
   .void__facts li::before { content: '› '; color: #f5c84a; }
-  .void__tag { margin: 0.7rem 0 0; font-family: Caveat, var(--font-hand); font-weight: 700; font-size: 1.2rem; line-height: 1.1; color: #e7cd97; }
   .void__exit {
     all: unset; pointer-events: auto; cursor: pointer; display: inline-flex; gap: 0.5rem; align-items: center;
     padding: 0.55rem 0.9rem; border: 1.5px solid #f3efe3; border-radius: 999px; font: 600 0.8rem/1 var(--font-mono); letter-spacing: 0.06em; background: rgb(0 0 0 / 0.5);
