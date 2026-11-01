@@ -282,22 +282,33 @@ export const next = {
 
 /* ---------- 05 · The locker (unlocked with the key hidden in chapter 04) ---------- */
 export const locker = {
+  /** Closed view: the row of lockers, with the middle (sticker) one being Param's. */
+  front: { src: '/portfolio_psn/images/locker/front.webp', door: '/portfolio_psn/images/locker/front-door.webp', alt: 'A row of grey school lockers. The middle one is covered in stickers: a photo, an SSN sticker, an NCC crest, "The deal is in the detail" and a Last Ship poster.' },
+  /** Open view: the inside of the locker (Param's reference image, cleaned up). */
+  inside: '/portfolio_psn/images/locker/inside.webp',
+  posterPaper: '/portfolio_psn/images/locker/poster-paper.webp',
   portrait: { src: '/portfolio_psn/images/pixel-portrait.png', alt: 'Pixel-art portrait of Param' } as Img,
   /** Yellow hand lettering on the poster and the wall. */
   posterTag: ['Maker', 'Param'],
   script: ['Creative', 'Builder'],
-  about: 'Param builds AI products by day and battleships out of scrap by night.',
-  hereTo: 'turn wild ideas into real things you can hold and click.',
+  explore: { title: 'Pull to explore..', text: "There's a whole ship hiding behind this poster." },
+  shipNote: { title: 'The ship:-', text: '4 ft, built during COVID from dismantled toys, gadgets and scrap. With working lights!' },
   note: 'During COVID I took apart old toys and gadgets, kept every reusable part, and built a 4-foot battleship with working lights from them. Pull the tag on the poster to see it.',
-  /** The sticker that plays the role of a brand logo on the inside of the door. */
-  sticker: { big: 'PSN', small: 'The deal is in the detail' },
+  /** The big sticker on the inside of the door (matches the one on the front). */
+  sticker: { big: 'SSN', small: 'Your growing space' },
   /**
-   * The 3D battleship. Leave `model` undefined to show the built-in stand-in ship;
-   * set it to a .glb in /public (e.g. '/portfolio_psn/models/battleship.glb') to show the real one.
+   * The battleship in the void. Until `model` is set, the void shows these photos of the real
+   * one. Put a .glb in /public (e.g. /portfolio_psn/models/battleship.glb) and set `model` to it.
    */
   ship: {
     model: undefined as string | undefined,
     title: 'Battleship',
     facts: ['4 ft scale model', 'Built from dismantled toys, gadgets and scrap', 'Working lights', 'Made during COVID'],
+    photos: [
+      { src: '/portfolio_psn/images/locker/ship-side.webp', alt: 'The battleship from the side, hull number 030' },
+      { src: '/portfolio_psn/images/locker/ship-bow.webp', alt: 'Close-up of the bow turrets with star-capped barrels and the helipad' },
+      { src: '/portfolio_psn/images/locker/ship-lights.webp', alt: 'The ship at night with its deck lights on' },
+      { src: '/portfolio_psn/images/locker/ship-top.webp', alt: 'The whole ship from above' },
+    ],
   },
 };
