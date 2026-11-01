@@ -26,7 +26,7 @@ const linkList = [
 ].filter((l) => l.href !== undefined);
 const isReal = (h?: string) => !!h && h !== '#';
 ---
-<Archive current="projects" title={`${p.title} — case study · Param S N`} description={p.summary} railNote="One project, one chapter.">
+<Archive current="projects" title={`${p.title} — case study · Param S N`} description={p.summary}>
   <article class="cs">
     <nav class="cs__crumbs" aria-label="Breadcrumb">
       <a class="cs__back" href={url('archive/#projects')}><Icon name="arrow-left" size={16} /> Back to projects</a>

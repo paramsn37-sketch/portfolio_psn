@@ -1,0 +1,408 @@
+---
+/**
+ * The locker. Locked until the visitor has picked up the key (chapter 04) — then the key
+ * flies over, the lock turns and the door swings open. Inside: pixel portrait poster with
+ * the yellow sketchy creative bits, mini art tools, and a pull tab that drops the poster
+ * into an endless black grid where the battleship lives in 3D.
+ */
+import { locker } from '@/data/site';
+const { portrait, doodles, note, stickers, ship } = locker;
+---
+<div class="lk" id="locker" data-locker>
+  <div class="lk__copy" data-reveal>
+    <p class="lk__kicker">Staff only</p>
+    <h3 class="lk__title">The locker</h3>
+    <p class="lk__lede" data-lk-locked-copy>This is where I keep the creative side of me. It's locked, and only the person with the key gets in.</p>
+    <div class="lk__story" data-lk-story hidden>
+      <p>{note}</p>
+      <ul class="lk__facts" role="list">{ship.facts.map((f) => <li>{f}</li>)}</ul>
+    </div>
+  </div>
+
+  <div class="lk__unit" data-reveal>
+    <div class="lk__cab">
+      <span class="lk__top" aria-hidden="true"></span>
+
+      <!-- interior -->
+      <div class="lk__in" data-lk-in inert>
+        <span class="lk__light" aria-hidden="true"></span>
+
+        <div class="lk__poster-slot">
+          <figure class="lk__poster" data-lk-poster>
+            <img src={portrait.src} alt={portrait.alt} width="48" height="57" loading="lazy" decoding="async" />
+            <svg class="lk__doodles" viewBox="0 0 200 240" aria-hidden="true">
+              <g fill="none" stroke="#f5c84a" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+                <!-- crown -->
+                <path d="M74 40 l8 -16 l10 12 l8 -16 l8 16 l10 -12 l8 16 z" />
+                <!-- spark lines -->
+                <path d="M28 70 l10 6 M24 88 h12 M30 106 l9 -5" />
+                <path d="M172 70 l-10 6 M176 88 h-12 M170 106 l-9 -5" />
+                <!-- star -->
+                <path d="M160 28 l4 9 l10 1 l-7 7 l2 10 l-9 -5 l-9 5 l2 -10 l-7 -7 l10 -1 z" />
+                <!-- lightning -->
+                <path d="M30 140 l-8 16 h10 l-8 18" />
+                <!-- arrow to face -->
+                <path d="M168 150 c-10 -8 -22 -10 -30 -4 M138 146 l3 -8 M138 146 l8 2" />
+                <!-- underline scribble -->
+                <path d="M40 214 c20 -6 40 4 60 -2 s40 4 62 -3" />
+                <!-- tiny gear -->
+                <circle cx="34" cy="38" r="7" />
+                <path d="M34 26 v5 M34 45 v5 M22 38 h5 M41 38 h5 M26 30 l3 3 M39 43 l3 3 M26 46 l3 -3 M39 33 l3 -3" />
+              </g>
+              <g fill="#f5c84a" font-family="Reenie Beanie, cursive">
+                <text x="100" y="200" font-size="26" text-anchor="middle" transform="rotate(-3 100 200)">{doodles[0]}</text>
+                <text x="18" y="196" font-size="17" transform="rotate(-14 18 196)">{doodles[1]}</text>
+                <text x="136" y="186" font-size="15" transform="rotate(10 136 186)">{doodles[2]}</text>
+              </g>
+            </svg>
+            <figcaption class="visually-hidden">Pixel portrait of Param with hand-drawn yellow doodles: {doodles.join(', ')}.</figcaption>
+          </figure>
+          <button class="lk__pull" type="button" data-lk-pull aria-label="Pull the poster down to see the battleship">
+            <span>PULL</span><span aria-hidden="true">↓</span>
+          </button>
+        </div>
+
+        <div class="lk__shelf" aria-label="Art tools on the shelf" role="img">
+          <!-- foam board -->
+          <svg viewBox="0 0 30 44" class="t t--foam" aria-hidden="true"><rect x="3" y="2" width="24" height="40" rx="1" fill="#f7f6f0" stroke="#9b978b" stroke-width="1.4"/><path d="M3 6h24" stroke="#d9d5c8"/><path d="M8 14l12 0M8 18l9 0" stroke="#c9c0ab" stroke-width="1.2"/></svg>
+          <!-- scalpel -->
+          <svg viewBox="0 0 12 44" class="t t--scalpel" aria-hidden="true"><rect x="4" y="12" width="4" height="30" rx="1.5" fill="#9aa3ad" stroke="#4a4840"/><path d="M4.5 12 L6 1 L8 12z" fill="#e8ecef" stroke="#4a4840" stroke-width="0.8"/><path d="M5 20h2M5 23h2M5 26h2" stroke="#4a4840" stroke-width="0.6"/></svg>
+          <!-- box cutter -->
+          <svg viewBox="0 0 14 44" class="t t--cutter" aria-hidden="true"><rect x="2" y="10" width="10" height="32" rx="2.5" fill="#f2c230" stroke="#4a4840"/><path d="M5 10 L7 1 L9 10z" fill="#d6dbe0" stroke="#4a4840" stroke-width="0.8"/><rect x="5" y="18" width="4" height="8" rx="1" fill="#252522"/></svg>
+          <!-- scissors -->
+          <svg viewBox="0 0 26 44" class="t t--scissors" aria-hidden="true"><path d="M11 22 L9 2 M15 22 L17 2" stroke="#b9c0c7" stroke-width="2.4" stroke-linecap="round"/><circle cx="13" cy="22" r="1.4" fill="#4a4840"/><ellipse cx="8" cy="34" rx="5" ry="7" fill="none" stroke="#a3352b" stroke-width="3"/><ellipse cx="18" cy="34" rx="5" ry="7" fill="none" stroke="#a3352b" stroke-width="3"/></svg>
+          <!-- glue -->
+          <svg viewBox="0 0 18 44" class="t t--glue" aria-hidden="true"><path d="M7 2h4l1 8H6z" fill="#f08a24" stroke="#4a4840" stroke-width="0.8"/><rect x="2" y="10" width="14" height="32" rx="3" fill="#fbfaf5" stroke="#4a4840"/><rect x="2" y="20" width="14" height="10" fill="#315d86"/><text x="9" y="27.5" font-size="5.5" fill="#fff" text-anchor="middle" font-family="monospace" font-weight="700">GLUE</text></svg>
+          <!-- electronics: breadboard + LED + battery -->
+          <svg viewBox="0 0 44 44" class="t t--elec" aria-hidden="true"><rect x="2" y="22" width="40" height="20" rx="1.5" fill="#2f6b45" stroke="#1b3d27"/><g fill="#d9a93b">{[0,1,2,3,4,5,6].map((i) => <circle cx={7 + i * 5} cy="28" r="1"/>)}{[0,1,2,3,4,5,6].map((i) => <circle cx={7 + i * 5} cy="36" r="1"/>)}</g><rect x="14" y="30" width="10" height="5" fill="#252522"/><path d="M30 22 v-8 M34 22 v-8" stroke="#9aa3ad" stroke-width="1.2"/><path d="M28 14 a4 4 0 0 1 8 0 v-4 a4 4 0 0 0 -8 0z" class="t__led" fill="#ff5a4a"/><rect x="4" y="8" width="8" height="14" rx="1.5" fill="#252522"/><rect x="4" y="8" width="8" height="4" fill="#d9a93b"/></svg>
+        </div>
+        <span class="lk__shelfboard" aria-hidden="true"></span>
+      </div>
+
+      <!-- door -->
+      <div class="lk__door" data-lk-door>
+        <button class="lk__front" type="button" data-lk-lock aria-label="Locked locker. Open it with the key." aria-describedby="lk-hint">
+          <span class="lk__plate" aria-hidden="true">P · S · N</span>
+          <span class="lk__vents" aria-hidden="true">{Array.from({ length: 6 }, () => <i></i>)}</span>
+          <span class="lk__handle" aria-hidden="true">
+            <span class="lk__lock" data-lk-padlock>
+              <span class="lk__shackle"></span>
+              <span class="lk__lbody"><span class="lk__keyhole"></span></span>
+            </span>
+          </span>
+          <span class="lk__vents lk__vents--low" aria-hidden="true">{Array.from({ length: 6 }, () => <i></i>)}</span>
+          <span class="lk__num" aria-hidden="true">05</span>
+        </button>
+        <div class="lk__back" aria-hidden="true">
+          {stickers.map((s, i) => <span class={`lk__sticker lk__sticker--${i}`}>{s}</span>)}
+          <span class="lk__mirror"></span>
+        </div>
+      </div>
+    </div>
+    <span class="lk__feet" aria-hidden="true"></span>
+
+    <p class="lk__hint" id="lk-hint" data-lk-hint role="status" aria-live="polite"></p>
+  </div>
+</div>
+
+<!-- the void -->
+<div class="void" data-void hidden role="dialog" aria-modal="true" aria-labelledby="void-title" data-model={ship.model ?? ''}>
+  <div class="void__grid" aria-hidden="true"></div>
+  <canvas class="void__canvas" data-void-canvas aria-label="3D model of the battleship. Drag to rotate, scroll or pinch to zoom."></canvas>
+  <div class="void__hud">
+    <div class="void__meta">
+      <p class="void__kicker">Behind the poster</p>
+      <h2 class="void__title" id="void-title">{ship.title}</h2>
+      <ul class="void__facts" role="list">{ship.facts.map((f) => <li>{f}</li>)}</ul>
+      {!ship.model && <p class="void__tag">Stand-in model. The real scan is coming soon.</p>}
+    </div>
+    <button class="void__exit" type="button" data-void-exit>Exit <kbd>Esc</kbd></button>
+  </div>
+  <p class="void__help" data-void-help>Drag to rotate · scroll or pinch to zoom</p>
+  <p class="void__loading" data-void-loading>loading the ship…</p>
+</div>
+
+<script>
+  import { has, fly } from '@/scripts/inventory';
+
+  const root = document.querySelector<HTMLElement>('[data-locker]');
+  if (root) {
+    const lockBtn = root.querySelector<HTMLButtonElement>('[data-lk-lock]')!;
+    const door = root.querySelector<HTMLElement>('[data-lk-door]')!;
+    const padlock = root.querySelector<HTMLElement>('[data-lk-padlock]')!;
+    const hint = root.querySelector<HTMLElement>('[data-lk-hint]')!;
+    const inside = root.querySelector<HTMLElement>('[data-lk-in]')!;
+    const story = root.querySelector<HTMLElement>('[data-lk-story]')!;
+    const lockedCopy = root.querySelector<HTMLElement>('[data-lk-locked-copy]')!;
+    const poster = root.querySelector<HTMLElement>('[data-lk-poster]')!;
+    const pull = root.querySelector<HTMLButtonElement>('[data-lk-pull]')!;
+    const voidEl = document.querySelector<HTMLElement>('[data-void]')!;
+    const reduce = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const misses = [
+      "Psst. You haven't found the key yet. Did you miss it? ;)",
+      'Still locked. I keep spare keys where I keep my tools…',
+      'Hint: chapter 04, hanging on a nail. Go on, I’ll wait. :)',
+    ];
+    let tries = 0;
+    let hintTimer = 0;
+    const say = (msg: string) => {
+      hint.textContent = msg;
+      hint.classList.add('is-on');
+      clearTimeout(hintTimer);
+      hintTimer = window.setTimeout(() => hint.classList.remove('is-on'), 3800);
+    };
+
+    let busy = false;
+    const open = () => {
+      root.classList.add('is-open');
+      inside.inert = false;
+      story.hidden = false;
+      lockedCopy.textContent = 'You found the key. Welcome in. Mind the glue.';
+      lockBtn.setAttribute('aria-label', 'Locker is open');
+      lockBtn.tabIndex = -1;
+      hint.classList.remove('is-on');
+      setTimeout(() => pull.focus({ preventScroll: true }), reduce() ? 0 : 900);
+    };
+
+    lockBtn.addEventListener('click', async () => {
+      if (busy || root.classList.contains('is-open')) return;
+      if (!has('key')) {
+        padlock.classList.remove('is-shake'); void padlock.offsetWidth; padlock.classList.add('is-shake');
+        door.classList.remove('is-rattle'); void door.offsetWidth; door.classList.add('is-rattle');
+        say(misses[Math.min(tries++, misses.length - 1)]);
+        return;
+      }
+      busy = true;
+      const sackBtn = document.querySelector<HTMLElement>('[data-sack-btn]');
+      const keyArt = document.querySelector<SVGElement>('[data-sack-key] svg') ?? document.querySelector<SVGElement>('[data-key-art]');
+      if (sackBtn && keyArt) {
+        const s = sackBtn.getBoundingClientRect();
+        const from = new DOMRect(s.left - 10, s.top + s.height / 2 - 12, 64, 24);
+        const kh = padlock.getBoundingClientRect();
+        const to = new DOMRect(kh.left + kh.width / 2 - 20, kh.top + kh.height * 0.62 - 7, 40, 15);
+        await fly(keyArt, from, to, 900);
+      }
+      padlock.classList.add('is-unlocking');
+      await new Promise((r) => setTimeout(r, reduce() ? 0 : 650));
+      open();
+      busy = false;
+    });
+
+    /* ---------- the void ---------- */
+    let ship: { dispose(): void } | null = null;
+    let lastFocus: HTMLElement | null = null;
+    const exitBtn = voidEl.querySelector<HTMLButtonElement>('[data-void-exit]')!;
+
+    const openVoid = async () => {
+      lastFocus = document.activeElement as HTMLElement;
+      root.classList.add('is-pulled');
+      await new Promise((r) => setTimeout(r, reduce() ? 0 : 550));
+      const r = poster.getBoundingClientRect();
+      voidEl.style.setProperty('--x', `${r.left}px`);
+      voidEl.style.setProperty('--y', `${r.top}px`);
+      voidEl.style.setProperty('--r', `${innerWidth - r.right}px`);
+      voidEl.style.setProperty('--b', `${innerHeight - r.bottom}px`);
+      voidEl.hidden = false;
+      void voidEl.offsetWidth;
+      voidEl.classList.add('is-open');
+      document.documentElement.classList.add('void-lock');
+      exitBtn.focus({ preventScroll: true });
+      try {
+        const { mountShip } = await import('@/scripts/ship');
+        ship = await mountShip(voidEl.querySelector('canvas')!, voidEl.dataset.model || undefined);
+      } catch (e) {
+        console.error(e);
+        voidEl.querySelector('[data-void-help]')!.textContent = 'The 3D view could not start in this browser.';
+      }
+      voidEl.querySelector('[data-void-loading]')?.setAttribute('hidden', '');
+    };
+
+    const closeVoid = () => {
+      if (voidEl.hidden) return;
+      voidEl.classList.remove('is-open');
+      document.documentElement.classList.remove('void-lock');
+      const done = () => {
+        voidEl.hidden = true;
+        ship?.dispose(); ship = null;
+        voidEl.querySelector('[data-void-loading]')?.removeAttribute('hidden');
+        root.classList.remove('is-pulled');
+        (lastFocus ?? pull).focus({ preventScroll: true });
+      };
+      reduce() ? done() : setTimeout(done, 450);
+    };
+
+    pull.addEventListener('click', openVoid);
+    exitBtn.addEventListener('click', closeVoid);
+    document.addEventListener('keydown', (e) => {
+      if (voidEl.hidden) return;
+      if (e.key === 'Escape') closeVoid();
+      if (e.key === 'Tab') { e.preventDefault(); exitBtn.focus(); }
+    });
+  }
+</script>
+
+<style>
+  .lk {
+    --steel: #9ca3a8; --steel-2: #858d93; --steel-3: #6c7378; --steel-hi: #c4cacd; --steel-ink: #3d4347;
+    display: grid; grid-template-columns: minmax(0, 30rem) minmax(0, 19rem); justify-content: center; gap: clamp(1.5rem, 7vw, 7rem);
+    align-items: center; margin-block: clamp(3rem, 7vw, 5.5rem); overflow-x: clip;
+  }
+  .lk__kicker { font-family: var(--font-mono); font-size: var(--t-meta); letter-spacing: 0.14em; text-transform: uppercase; color: var(--red-string); margin: 0 0 0.4rem; }
+  .lk__title { font-family: var(--font-display); font-size: var(--t-h3); line-height: var(--lh-tight); text-transform: uppercase; margin: 0 0 0.8rem; }
+  .lk__lede { color: var(--ink-2); max-width: 40ch; margin: 0; }
+  .lk__story { margin-top: 1rem; max-width: 46ch; animation: lk-in 0.6s ease both 0.5s; }
+  .lk__story p { margin: 0 0 0.8rem; }
+  .lk__facts { display: flex; flex-wrap: wrap; gap: 0.4rem; padding: 0; margin: 0; }
+  .lk__facts li { font-family: var(--font-mono); font-size: var(--t-meta); padding: 0.25rem 0.55rem; border: 1px solid var(--ink-3); border-radius: 999px; background: var(--card); }
+  @keyframes lk-in { from { opacity: 0; transform: translateY(8px); } }
+
+  /* ---------- cabinet ---------- */
+  .lk__unit { position: relative; width: 100%; max-width: 19rem; justify-self: center; perspective: 1400px; }
+  .lk__cab {
+    position: relative; aspect-ratio: 3 / 5; max-height: 32rem; border-radius: 6px 6px 3px 3px;
+    background: linear-gradient(90deg, var(--steel-2), var(--steel) 12%, var(--steel) 88%, var(--steel-3));
+    padding: 1.1rem 0.75rem 0.75rem; box-shadow: 0 18px 30px -18px rgb(0 0 0 / 0.55), inset 0 0 0 1px var(--steel-3);
+    transform-style: preserve-3d;
+  }
+  .lk__top { position: absolute; inset: 0.3rem 0.6rem auto; height: 0.45rem; border-radius: 2px; background: repeating-linear-gradient(90deg, var(--steel-3) 0 6px, transparent 6px 10px); opacity: 0.6; }
+  .lk__feet { display: block; height: 0.5rem; margin: 0 0.8rem; background: linear-gradient(90deg, var(--steel-ink) 0 1.4rem, transparent 1.4rem calc(100% - 1.4rem), var(--steel-ink) 0); border-radius: 0 0 3px 3px; }
+
+  /* interior */
+  .lk__in {
+    position: absolute; inset: 1.1rem 0.75rem 0.75rem; border-radius: 2px; overflow: hidden;
+    background: linear-gradient(180deg, #5d6468, #4b5155 60%, #3e4447); box-shadow: inset 0 0 0 2px var(--steel-ink), inset 0 10px 18px rgb(0 0 0 / 0.45);
+    display: grid; grid-template-rows: auto 1fr auto auto; padding: 0.9rem 0.7rem 0.5rem; gap: 0.4rem;
+  }
+  .lk__light { height: 5px; border-radius: 3px; margin: -0.4rem 0.4rem 0.2rem; background: #fff7d6; box-shadow: 0 0 10px 3px rgb(255 240 190 / 0.8), 0 18px 40px 14px rgb(255 240 190 / 0.18); opacity: 0.25; transition: opacity 0.4s 0.6s; }
+  .lk.is-open .lk__light { opacity: 1; animation: lk-flicker 0.6s steps(2) 0.6s; }
+  @keyframes lk-flicker { 0% { opacity: 0.2; } 30% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+
+  .lk__poster-slot { position: relative; min-height: 0; overflow: hidden; border-radius: 2px; background: #050505;
+    background-image: linear-gradient(rgb(255 255 255 / 0.12) 1px, transparent 1px), linear-gradient(90deg, rgb(255 255 255 / 0.12) 1px, transparent 1px); background-size: 14px 14px; }
+  .lk__poster {
+    position: absolute; inset: 0 0 1.4rem; margin: 0; display: grid; place-items: center; background: #1f2433;
+    border: 3px solid #f3efe3; box-shadow: 0 3px 8px rgb(0 0 0 / 0.5); transition: transform 0.55s cubic-bezier(0.6, 0, 0.8, 0.4);
+  }
+  .lk__poster img { width: 58%; height: auto; image-rendering: pixelated; margin-top: 8%; }
+  .lk__doodles { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .lk__doodles g:first-child { stroke-dasharray: 340; stroke-dashoffset: 340; }
+  .lk.is-open .lk__doodles g:first-child { animation: lk-draw 1.6s ease forwards 0.9s; }
+  @keyframes lk-draw { to { stroke-dashoffset: 0; } }
+  .lk__pull {
+    all: unset; cursor: pointer; position: absolute; left: 50%; bottom: 0; translate: -50% 0; z-index: 2;
+    display: inline-flex; gap: 0.25rem; align-items: center; padding: 0.15rem 0.6rem 0.25rem; border-radius: 0 0 6px 6px;
+    background: #f5c84a; color: #252522; font: 700 0.62rem/1 var(--font-mono); letter-spacing: 0.12em; box-shadow: 0 2px 0 #9c7a12;
+    transition: padding 0.2s;
+  }
+  .lk__pull:hover { padding-bottom: 0.55rem; }
+  .lk__pull:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+  .lk.is-pulled .lk__poster { transform: translateY(110%); }
+  .lk.is-pulled .lk__pull { opacity: 0; }
+
+  .lk__shelf { position: relative; display: flex; align-items: flex-end; justify-content: center; gap: 0.35rem; height: 3.3rem; padding: 0 0.2rem; }
+  .lk__shelf .t { height: 2.7rem; width: auto; flex: none; filter: drop-shadow(1px 1px 0 rgb(0 0 0 / 0.35)); }
+  .lk__shelf .t--foam { transform: rotate(-6deg); height: 3.1rem; }
+  .lk__shelf .t--scissors { transform: rotate(8deg); }
+  .lk__shelf .t--elec { height: 2.5rem; }
+  .t__led { animation: lk-led 1.4s steps(2) infinite; }
+  @keyframes lk-led { 50% { fill: #5a1a14; } }
+  .lk__shelfboard { display: block; height: 0.45rem; margin: 0 -0.7rem; background: linear-gradient(var(--steel-hi), var(--steel-2)); box-shadow: 0 3px 4px rgb(0 0 0 / 0.4); }
+
+  /* door */
+  .lk__door {
+    position: absolute; inset: 0; transform-origin: right center; transform-style: preserve-3d;
+    transition: transform 0.95s cubic-bezier(0.3, 0.1, 0.25, 1); z-index: 3;
+  }
+  .lk.is-open .lk__door { transform: rotateY(-112deg); }
+  .lk__front, .lk__back { position: absolute; inset: 0; border-radius: 6px 6px 3px 3px; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+  .lk__front {
+    all: unset; position: absolute; inset: 0; border-radius: 6px 6px 3px 3px; backface-visibility: hidden; -webkit-backface-visibility: hidden;
+    cursor: pointer; box-sizing: border-box; display: grid; grid-template-rows: auto auto 1fr auto auto; justify-items: center; padding: 1.4rem 1rem 1.1rem; gap: 0.9rem;
+    background: linear-gradient(100deg, var(--steel-hi) 0%, var(--steel) 22%, var(--steel) 70%, var(--steel-2) 100%);
+    box-shadow: inset 0 0 0 1.5px var(--steel-3), inset 3px 0 0 rgb(255 255 255 / 0.35), inset -6px 0 10px -6px rgb(0 0 0 / 0.35);
+  }
+  .lk__front:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+  .lk__plate { font: 600 0.72rem/1 var(--font-mono); letter-spacing: 0.15em; padding: 0.35rem 0.7rem; background: var(--card); color: var(--ink); border: 1px solid var(--steel-3); box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.2); }
+  .lk__vents { display: grid; gap: 5px; width: 62%; }
+  .lk__vents i { display: block; height: 5px; border-radius: 3px; background: var(--steel-ink); box-shadow: 0 1px 0 var(--steel-hi); }
+  .lk__handle { align-self: center; justify-self: start; margin-left: 0.2rem; width: 1.6rem; height: 5.5rem; border-radius: 4px; background: linear-gradient(90deg, var(--steel-3), var(--steel-2)); box-shadow: inset 0 0 0 1px var(--steel-ink); display: grid; place-items: center; position: relative; }
+  .lk__lock { position: absolute; left: 50%; top: 52%; translate: -50% 0; width: 2rem; display: grid; justify-items: center; transform-origin: 50% 20%; }
+  .lk__shackle { width: 1.25rem; height: 1.2rem; border: 4px solid #b9c0c7; border-bottom: 0; border-radius: 0.7rem 0.7rem 0 0; margin-bottom: -2px; transition: transform 0.35s ease; transform-origin: right bottom; }
+  .lk__lbody { width: 2rem; height: 1.7rem; border-radius: 4px; background: linear-gradient(160deg, #e8b84a, #b88a1e); box-shadow: inset 0 0 0 1.5px #7a5a12, 0 2px 3px rgb(0 0 0 / 0.35); display: grid; place-items: center; }
+  .lk__keyhole { width: 6px; height: 10px; background: #3b2a06; border-radius: 3px 3px 1px 1px; clip-path: polygon(0 0, 100% 0, 100% 45%, 75% 45%, 85% 100%, 15% 100%, 25% 45%, 0 45%); transition: transform 0.4s; }
+  .lk__lock.is-unlocking .lk__keyhole { transform: rotate(90deg); }
+  .lk__lock.is-unlocking .lk__shackle { transform: translateY(-6px) rotate(-25deg); transition-delay: 0.3s; }
+  .lk__lock.is-shake { animation: lk-shake 0.5s ease; }
+  .lk__door.is-rattle { animation: lk-rattle 0.35s ease; }
+  @keyframes lk-shake { 0%, 100% { transform: rotate(0); } 20% { transform: rotate(-16deg); } 40% { transform: rotate(13deg); } 60% { transform: rotate(-9deg); } 80% { transform: rotate(5deg); } }
+  @keyframes lk-rattle { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-2px); } 75% { transform: translateX(2px); } }
+  .lk__num { font: 700 1.6rem/1 var(--font-display); color: var(--steel-ink); opacity: 0.55; justify-self: end; }
+
+  .lk__back {
+    transform: rotateY(180deg); background: linear-gradient(90deg, var(--steel-2), var(--steel-3)); box-shadow: inset 0 0 0 1.5px var(--steel-ink);
+    display: grid; align-content: start; justify-items: center; gap: 0.7rem; padding: 1.4rem 0.8rem; overflow: hidden;
+  }
+  .lk__sticker { font: 700 0.62rem/1 var(--font-mono); padding: 0.35rem 0.5rem; border-radius: 4px; letter-spacing: 0.06em; text-transform: uppercase; box-shadow: 1px 1px 0 rgb(0 0 0 / 0.3); }
+  .lk__sticker--0 { background: #f5c84a; transform: rotate(-8deg); }
+  .lk__sticker--1 { background: var(--card); border-radius: 50%; padding: 0.8rem 0.5rem; transform: rotate(6deg); }
+  .lk__sticker--2 { background: var(--red-string); color: #fff; transform: rotate(-3deg); }
+  .lk__sticker--3 { background: var(--blue); color: #fff; transform: rotate(9deg); }
+  .lk__mirror { width: 70%; height: 4.5rem; border-radius: 4px; border: 2px solid var(--steel-ink); background: linear-gradient(135deg, #cfe0e8, #9fb6c2 50%, #d9e6ec 55%, #a7bcc7); }
+
+  /* hint bubble */
+  .lk__hint {
+    position: absolute; left: 50%; top: 42%; width: max-content; max-width: min(15rem, 80vw); margin: 0; z-index: 5;
+    padding: 0.6rem 0.8rem; background: var(--note); color: var(--ink); border: 1.5px solid var(--ink); border-radius: 10px; box-shadow: 3px 3px 0 var(--ink);
+    font-family: var(--font-hand); font-size: 1.4rem; line-height: 1; translate: -50% 0; opacity: 0; scale: 0.8; pointer-events: none;
+    transition: opacity 0.2s, scale 0.25s cubic-bezier(0.3, 1.6, 0.5, 1);
+  }
+  .lk__hint::after { content: ''; position: absolute; left: 22%; bottom: -9px; width: 14px; height: 14px; background: var(--note); border: 1.5px solid var(--ink); border-top: 0; border-left: 0; transform: rotate(45deg); }
+  .lk__hint.is-on { opacity: 1; scale: 1; }
+
+  @media (max-width: 860px) {
+    .lk { grid-template-columns: minmax(0, 1fr); }
+    .lk__unit { max-width: 12.5rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .lk__door, .lk__poster { transition: none; }
+    .lk__lock.is-shake, .lk__door.is-rattle, .t__led, .lk.is-open .lk__light { animation: none; }
+    .lk__doodles g:first-child { stroke-dasharray: none; }
+    .lk.is-open .lk__doodles g:first-child { animation: none; }
+  }
+
+  /* ---------- the void ---------- */
+  .void {
+    position: fixed; inset: 0; z-index: 1100; background: #000; color: #f3efe3;
+    clip-path: inset(var(--y, 40%) var(--r, 40%) var(--b, 40%) var(--x, 40%)); transition: clip-path 0.6s cubic-bezier(0.7, 0, 0.2, 1);
+  }
+  .void.is-open { clip-path: inset(0 0 0 0); }
+  .void[hidden] { display: none; }
+  .void__grid {
+    position: absolute; inset: 0;
+    background-image: linear-gradient(rgb(255 255 255 / 0.09) 1px, transparent 1px), linear-gradient(90deg, rgb(255 255 255 / 0.09) 1px, transparent 1px);
+    background-size: 40px 40px; mask-image: radial-gradient(ellipse at center, #000 30%, transparent 80%);
+  }
+  .void__canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; cursor: grab; }
+  .void__canvas:active { cursor: grabbing; }
+  .void__hud { position: absolute; inset: 0 0 auto; display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; padding: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) 0 max(1rem, env(safe-area-inset-left)); pointer-events: none; }
+  .void__meta { max-width: 22rem; }
+  .void__kicker { font: 0.7rem/1 var(--font-mono); letter-spacing: 0.16em; text-transform: uppercase; color: #f5c84a; margin: 0 0 0.4rem; }
+  .void__title { font-family: var(--font-display); font-size: clamp(2.2rem, 1.6rem + 3vw, 4.5rem); line-height: 0.9; text-transform: uppercase; margin: 0 0 0.6rem; }
+  .void__facts { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.2rem; font: 0.75rem/1.4 var(--font-mono); color: #bdb8aa; }
+  .void__facts li::before { content: '› '; color: #f5c84a; }
+  .void__tag { margin: 0.7rem 0 0; font-family: var(--font-hand); font-size: 1.3rem; line-height: 1.05; color: #f5c84a; }
+  .void__exit {
+    pointer-events: auto; all: unset; pointer-events: auto; cursor: pointer; display: inline-flex; gap: 0.5rem; align-items: center;
+    padding: 0.55rem 0.9rem; border: 1.5px solid #f3efe3; border-radius: 999px; font: 600 0.8rem/1 var(--font-mono); letter-spacing: 0.06em; background: rgb(0 0 0 / 0.5);
+  }
+  .void__exit:hover { background: #f3efe3; color: #000; }
+  .void__exit:focus-visible { outline: 2px solid #f5c84a; outline-offset: 3px; }
+  .void__exit kbd { font: inherit; font-size: 0.65rem; opacity: 0.6; border: 1px solid currentColor; border-radius: 4px; padding: 0.1rem 0.3rem; }
+  .void__help { position: absolute; left: 50%; bottom: max(1.2rem, env(safe-area-inset-bottom)); translate: -50% 0; margin: 0; font: 0.72rem/1 var(--font-mono); color: #8d897d; white-space: nowrap; }
+  .void__loading { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; font: 0.8rem/1 var(--font-pixel); color: #f5c84a; pointer-events: none; }
+  .void__loading[hidden] { display: none; }
+  @media (max-width: 560px) { .void__exit kbd { display: none; } .void__facts { display: none; } }
+  @media (prefers-reduced-motion: reduce) { .void { transition: none; } }
+  :global(html.void-lock) { overflow: hidden; }
+</style>
