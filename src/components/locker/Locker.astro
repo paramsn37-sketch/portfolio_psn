@@ -17,10 +17,9 @@
  */
 import '@fontsource/caveat/latin-700.css';
 import '@fontsource/patrick-hand/latin.css';
-import '@fontsource/fraunces/latin-900.css';
 import { locker } from '@/data/site';
 import extent from '@/data/ship-extent.json';
-const { front, inside, posterPaper, portrait, posterTag, script, explore, shipNote, note, sticker, ship } = locker;
+const { front, inside, posterPaper, portrait, posterTag, script, explore, shipNote, note, ship } = locker;
 
 /** Break text into lines of about `n` characters for SVG <text>. */
 const wrap = (t: string, n: number) =>
@@ -100,7 +99,7 @@ const rightClip = `polygon(100% 0, ${tearPts.join(', ')}, 100% 100%)`;
       </div>
     ))}
 
-    <!-- lettering and notes on the wall, sticker on the door, tape on the poster -->
+    <!-- lettering and notes on the wall (the door stickers and PSN badge are baked into the image) -->
     <svg class="lki__ink" viewBox="0 0 1122 1402" aria-hidden="true">
       <g fill={gold} font-family="Caveat, cursive" font-weight="700">
         <text x="168" y="738" font-size="84" transform="rotate(-4 168 738)">{script[0]}</text>
@@ -117,14 +116,6 @@ const rightClip = `polygon(100% 0, ${tearPts.join(', ')}, 100% 100%)`;
       <g fill="none" stroke="#dcc49c" stroke-width="2.6" stroke-linecap="round">
         <path d="M636 790c24 14 28 48 8 76m0 0l0-15m0 15l-14-5" />
         <path d="M352 1034c8-24 3-46-13-62m0 0l2 15m-2-15l14 5" />
-      </g>
-      <!-- my sticker where the reference's logo sticker was -->
-      <g transform="translate(890 326) rotate(-9) skewY(-4)">
-        <rect x="-106" y="-64" width="224" height="146" rx="34" fill="#000" fill-opacity="0.4" />
-        <rect x="-112" y="-70" width="224" height="146" rx="34" fill="#ddd3c0" />
-        <rect x="-105" y="-63" width="210" height="132" rx="28" fill="#141414" />
-        <text x="0" y="26" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-weight="900" font-size="90" fill="#ddd3c0" letter-spacing="-1">{sticker.big}</text>
-        <text x="0" y="55" text-anchor="middle" font-family="'Hanken Grotesk Variable', sans-serif" font-weight="700" font-size="13.5" fill="#ddd3c0" letter-spacing="1.2">{sticker.small.toUpperCase()}</text>
       </g>
     </svg>
 
@@ -231,7 +222,7 @@ const rightClip = `polygon(100% 0, ${tearPts.join(', ')}, 100% 100%)`;
       // then, quietly, everything the open locker needs, including its fonts
       idle(() => {
         [...insideEl.querySelectorAll<HTMLImageElement>('img')].forEach((i) => loadImg(i.src));
-        document.fonts?.load('700 1em Caveat'); document.fonts?.load('1em "Patrick Hand"'); document.fonts?.load('900 1em Fraunces');
+        document.fonts?.load('700 1em Caveat'); document.fonts?.load('1em "Patrick Hand"');
       });
     };
     if ('IntersectionObserver' in window) {

@@ -283,7 +283,7 @@ export const next = {
 /* ---------- 05 · The locker (unlocked with the key hidden in chapter 04) ---------- */
 export const locker = {
   /** Closed view: the row of lockers, with the middle (sticker) one being Param's. */
-  front: { src: '/portfolio_psn/images/locker/front.webp', door: '/portfolio_psn/images/locker/front-door.webp', padlock: '/portfolio_psn/images/locker/padlock-body.webp', shackle: '/portfolio_psn/images/locker/padlock-shackle.webp', alt: 'A row of five grey school lockers. The middle one is padlocked, with warm light leaking from its vents, and is covered in stickers: a photo, an SSN sticker, an NCC crest, "The deal is in the detail" and a Last Ship poster.' },
+  front: { src: '/portfolio_psn/images/locker/front.webp', door: '/portfolio_psn/images/locker/front-door.webp', padlock: '/portfolio_psn/images/locker/padlock-body.webp', shackle: '/portfolio_psn/images/locker/padlock-shackle.webp', alt: 'A row of five grey school lockers. The middle one is padlocked, with warm light leaking from its vents, and is covered in stickers: a photo, a worn PSN badge, an NCC crest, "The deal is in the detail" and a Last Ship poster.' },
   /** Open view: the inside of the locker (Param's reference image, cleaned up). */
   inside: '/portfolio_psn/images/locker/inside.webp',
   posterPaper: '/portfolio_psn/images/locker/poster-paper.webp',
@@ -294,8 +294,6 @@ export const locker = {
   explore: { title: 'Pull to explore..', text: "There's a whole ship hiding behind this poster." },
   shipNote: { title: 'The ship:-', text: '5 ft long, built during COVID from dismantled toys, gadgets and scrap. With working lights!' },
   note: 'During COVID I took apart old toys and gadgets, kept every reusable part, and built a 5-foot battleship with working lights from them. Pull the tag on the poster to see it.',
-  /** The big sticker on the inside of the door (matches the one on the front). */
-  sticker: { big: 'PSN', small: 'Your growing space' },
   /**
    * The battleship in the void. Until `model` is set, the void shows a 360° turntable of the
    * Tripo render (120 frames, drag to spin). Put a .glb in /public (e.g.
