@@ -283,7 +283,7 @@ export const next = {
 /* ---------- 05 · The locker (unlocked with the key hidden in chapter 04) ---------- */
 export const locker = {
   /** Closed view: the row of lockers, with the middle (sticker) one being Param's. */
-  front: { src: '/portfolio_psn/images/locker/front.webp', door: '/portfolio_psn/images/locker/front-door.webp', padlock: '/portfolio_psn/images/locker/padlock-body.webp', shackle: '/portfolio_psn/images/locker/padlock-shackle.webp', alt: 'A row of five grey school lockers. The middle one is padlocked, with warm light leaking from its vents, and is covered in stickers: a photo, a worn PSN badge, an NCC crest, "The deal is in the detail" and a Last Ship poster.' },
+  front: { src: '/portfolio_psn/images/locker/front.webp', door: '/portfolio_psn/images/locker/front-door.webp', padlock: '/portfolio_psn/images/locker/padlock-body.webp', shackle: '/portfolio_psn/images/locker/padlock-shackle.webp', alt: 'A row of five grey school lockers. The middle one is padlocked, with warm light leaking from its vents, and is covered in stickers: a photo, psn lettering, an NCC crest, "The deal is in the detail" and a Last Ship poster.' },
   /** Open view: the inside of the locker (Param's reference image, cleaned up). */
   inside: '/portfolio_psn/images/locker/inside.webp',
   posterPaper: '/portfolio_psn/images/locker/poster-paper.webp',
