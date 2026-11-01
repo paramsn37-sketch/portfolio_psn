@@ -41,7 +41,7 @@ export const profile = {
     { label: 'Founder', note: 'Building BotView, an AI mock-interview platform.' },
     { label: 'Engineer', note: 'AI and automation solutions at Unisys.' },
     { label: 'Leader', note: 'Junior Under Officer in my college NCC unit.' },
-    { label: 'Maker', note: 'Models big and small, including a 4-foot ship from reused materials.' },
+    { label: 'Maker', note: 'Models big and small, including a 5-foot ship from reused materials.' },
   ],
   longStory: [
     'I grew up in Bengaluru, finished school at Vidyaniketan Public School in 2021, and joined SJB Institute of Technology in 2023 to study Artificial Intelligence and Machine Learning. Alongside my degree I joined the National Cadet Corps, where I now serve as a Junior Under Officer and earned a Grade A in the B Certificate exam with the top marks in my unit.',
@@ -216,7 +216,7 @@ export const topics = [
   { id: 'photography', label: 'Photography', icon: 'camera', blurb: 'Moments, people, places & everyday beauty.', items: ['DEMO: a favourite shot', 'DEMO: what you shoot on', 'DEMO: a series'], cover: { alt: 'Photography photo', ratio: '4 / 3' } as Img, photos: [] as Img[] },
   { id: 'books', label: 'Books', icon: 'book', blurb: 'Stories, ideas, thoughts & recommendations.', items: ['DEMO: reading now', 'DEMO: re-read every year', 'DEMO: recommend to everyone'], cover: { alt: 'Books photo', ratio: '4 / 3' } as Img, photos: [] as Img[] },
   { id: 'food', label: 'Food', icon: 'utensils', blurb: 'Local flavours, new tastes & guilty pleasures.', items: ['DEMO: a place', 'DEMO: a dish', 'DEMO: a recipe'], cover: { alt: 'Food photo', ratio: '4 / 3' } as Img, photos: [] as Img[] },
-  { id: 'hobbies', label: 'Hobbies', icon: 'gamepad-2', blurb: 'Build, create, tinker, repeat.', items: ['Miniature and large-scale models', 'A 4-foot ship made entirely from reused materials', 'Art (Alabama Art Academy, USA)'], cover: { alt: 'Hobbies photo', ratio: '4 / 3' } as Img, photos: [] as Img[] },
+  { id: 'hobbies', label: 'Hobbies', icon: 'gamepad-2', blurb: 'Build, create, tinker, repeat.', items: ['Miniature and large-scale models', 'A 5-foot ship made entirely from reused materials', 'Art (Alabama Art Academy, USA)'], cover: { alt: 'Hobbies photo', ratio: '4 / 3' } as Img, photos: [] as Img[] },
   { id: 'communities', label: 'Communities', icon: 'users', blurb: 'People, groups, shared passions.', items: ['National Cadet Corps, SJBIT unit (Junior Under Officer)', 'Organised a college coding event end to end', 'Colleagues across Unisys offices in India, the US and the UK'], cover: { alt: 'Communities photo', ratio: '4 / 3' } as Img, photos: [] as Img[] },
   { id: 'experiments', label: 'Side quests', icon: 'flask-conical', blurb: 'Side projects, learning & random ideas.', items: ['Smart lake detox robot', 'Unisys Innovation Program semi-finals', 'Led our team at Unisys Hack Horizon 2026'], cover: { alt: 'Side quests photo', ratio: '4 / 3' } as Img, photos: [] as Img[] },
 ]; // topic list from your mockup — keep only the ones that are true for you
@@ -292,8 +292,8 @@ export const locker = {
   posterTag: ['Maker', 'Param'],
   script: ['Creative', 'Builder'],
   explore: { title: 'Pull to explore..', text: "There's a whole ship hiding behind this poster." },
-  shipNote: { title: 'The ship:-', text: '4 ft, built during COVID from dismantled toys, gadgets and scrap. With working lights!' },
-  note: 'During COVID I took apart old toys and gadgets, kept every reusable part, and built a 4-foot battleship with working lights from them. Pull the tag on the poster to see it.',
+  shipNote: { title: 'The ship:-', text: '5 ft long, built during COVID from dismantled toys, gadgets and scrap. With working lights!' },
+  note: 'During COVID I took apart old toys and gadgets, kept every reusable part, and built a 5-foot battleship with working lights from them. Pull the tag on the poster to see it.',
   /** The big sticker on the inside of the door (matches the one on the front). */
   sticker: { big: 'PSN', small: 'Your growing space' },
   /**
@@ -304,7 +304,17 @@ export const locker = {
   ship: {
     model: undefined as string | undefined,
     title: 'Battleship',
-    facts: ['4 ft scale model', 'Built from dismantled toys, gadgets and scrap', 'Working lights', 'Made during COVID'],
+    sub: 'Built from scrap, one part at a time',
+    /** 5 ft long and 1 ft tall: a 5 : 1 ratio. */
+    specs: [['Length', '5 ft'], ['Height', '1 ft'], ['Ratio', '5 : 1'], ['Built', 'During COVID'], ['Made of', 'Toys, gadgets, scrap'], ['Lights', 'Working']] as [string, string][],
+    /** Photos of the real one, shown only inside the void as scrapbook clippings. */
+    clips: [
+      { src: '/portfolio_psn/images/ship/clips/guns.webp', alt: 'Close-up of the bow: twin gun turrets and a yellow helipad', caption: 'guns + helipad' },
+      { src: '/portfolio_psn/images/ship/clips/full.webp', alt: 'The whole ship, hull number 030, on a stand', caption: 'all 5 ft of her' },
+      { src: '/portfolio_psn/images/ship/clips/lights.webp', alt: 'The deck at night with its small lights on', caption: 'deck lights on' },
+      { src: '/portfolio_psn/images/ship/clips/night.webp', alt: 'The superstructure lit up in the dark', caption: 'after dark' },
+      { src: '/portfolio_psn/images/ship/clips/silhouette.webp', alt: 'The ship as a silhouette against warm light', caption: 'lights out' },
+    ],
     spin: { frames: 120, base: '/portfolio_psn/images/ship/f', ext: '.webp', alt: 'A 3D render of the grey battleship, hull number 030, turning slowly' },
   },
 };
