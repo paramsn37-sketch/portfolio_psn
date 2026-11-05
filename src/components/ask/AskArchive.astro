@@ -1,0 +1,402 @@
+---
+/**
+ * Ask the archive — a card-catalogue drawer that answers questions about Param by quoting
+ * the archive itself. The retrieval engine (src/scripts/ask/engine.ts) runs in the browser;
+ * the catalogue is built from site.ts and the case studies at build time (src/pages/ask-index.json.ts).
+ */
+import Icon from '../Icon.astro';
+import { url } from '@/lib/url';
+
+const starters = [
+  'Can he do computer vision?',
+  'What does he do at Unisys?',
+  'Has he shipped to real users?',
+  'Experience with LLMs and RAG?',
+  'Has he led a team?',
+  'Should I hire him?',
+  'What is the ship?',
+];
+---
+<dialog id="ask" class="modal ask" aria-labelledby="ask-title" data-ask data-src={url('ask-index.json')}>
+  <div class="ask__drawer">
+    <header class="ask__front">
+      <span class="ask__screw" aria-hidden="true"></span>
+      <div class="ask__plate">
+        <h2 id="ask-title" class="ask__title">Ask the archive</h2>
+        <p class="ask__sub"><span data-ask-count>…</span> cards on file</p>
+      </div>
+      <span class="ask__pull" aria-hidden="true"></span>
+      <button class="ask__x" type="button" data-close aria-label="Close"><Icon name="x" size={18} stroke={2} /></button>
+      <span class="ask__screw ask__screw--r" aria-hidden="true"></span>
+    </header>
+
+    <div class="ask__well">
+      <span class="ask__tabs" aria-hidden="true"><i>A–F</i><i>G–M</i><i>N–S</i><i>T–Z</i></span>
+
+      <form class="ask__form" data-ask-form autocomplete="off">
+        <label class="ask__q" for="ask-input">Q.</label>
+        <input id="ask-input" class="ask__input" name="q" type="text" maxlength="160" enterkeyhint="search" spellcheck="false"
+          placeholder="Ask about his work, skills or story…" data-ask-input />
+        <button class="ask__go" type="submit" aria-label="Look it up"><Icon name="corner-down-left" size={17} stroke={2} /></button>
+      </form>
+
+      <ul class="ask__starters" role="list" data-ask-starters aria-label="Try a question">
+        {starters.map((s) => <li><button class="ask__starter" type="button" data-ask-q={s}>{s}</button></li>)}
+      </ul>
+
+      <div class="acard" data-ask-card hidden>
+        <div class="acard__faces">
+          <!-- front: the answer -->
+          <section class="acard__face acard__front" aria-live="polite" data-ask-front>
+            <header class="acard__head">
+              <span class="acard__no" data-ask-no>No. ———</span>
+              <span class="acard__filed" data-ask-filed></span>
+            </header>
+            <p class="acard__question" data-ask-question></p>
+            <div class="acard__body" data-ask-body></div>
+            <span class="acard__stamp" data-ask-stamp hidden></span>
+            <footer class="acard__foot">
+              <ol class="acard__sources" role="list" data-ask-sources></ol>
+              <div class="acard__actions">
+                <button class="acard__flip" type="button" data-ask-flip aria-pressed="false">
+                  <Icon name="rotate-3d" size={15} /> <span>Show the working</span>
+                </button>
+                <span class="acard__time" data-ask-time></span>
+              </div>
+            </footer>
+          </section>
+
+          <!-- back: how it got there -->
+          <section class="acard__face acard__back" aria-label="How this answer was found" data-ask-back>
+            <header class="acard__head acard__head--back">
+              <span class="acard__no">The working</span>
+              <button class="acard__flip acard__flip--back" type="button" data-ask-flip><Icon name="rotate-3d" size={15} /> <span>Back to the answer</span></button>
+            </header>
+            <div class="trace" data-ask-trace></div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <p class="ask__foot">
+      Runs in your browser: no server, no API key. Every line is quoted from this archive with its source, and if nothing fits, it says so.
+      <span class="k"><kbd>/</kbd> opens this drawer from anywhere.</span>
+    </p>
+  </div>
+</dialog>
+
+<script>
+  import '@/scripts/ask/ui';
+</script>
+
+<style>
+  .ask {
+    width: min(46rem, calc(100vw - 2 * var(--gutter)));
+    max-height: calc(100dvh - 2rem);
+    overflow: visible;
+  }
+  .ask__drawer {
+    position: relative;
+    display: flex; flex-direction: column;
+    max-height: calc(100dvh - 2rem);
+    border-radius: 6px;
+    background: #2b1b0f var(--walnut, none) center / cover;
+    background-image:
+      linear-gradient(180deg, rgb(255 220 170 / 0.08), transparent 30%),
+      repeating-linear-gradient(92deg, rgb(0 0 0 / 0.06) 0 2px, transparent 2px 9px),
+      linear-gradient(180deg, #4a2f1a, #2e1c0f);
+    box-shadow: var(--shadow-desk), inset 0 1px 0 rgb(255 225 180 / 0.2);
+    padding: 0.7rem;
+  }
+
+  /* ---- drawer front: brass label plate + pull ---- */
+  .ask__front {
+    position: relative;
+    display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+    gap: 0.75rem;
+    padding: 0.55rem 0.6rem 0.75rem;
+  }
+  .ask__plate {
+    grid-column: 2;
+    padding: 0.45rem 1.4rem 0.5rem;
+    text-align: center;
+    border-radius: 3px;
+    background: linear-gradient(180deg, #e7c77e, #b98c3f 55%, #a07531);
+    box-shadow: inset 0 1px 0 rgb(255 245 210 / 0.7), inset 0 -1px 0 rgb(80 50 10 / 0.5), 0 2px 3px rgb(0 0 0 / 0.45);
+  }
+  .ask__title {
+    font-family: var(--font-display); font-weight: 900; font-size: 1.45rem; line-height: 1; letter-spacing: 0.04em; text-transform: uppercase;
+    color: #3a2608; text-shadow: 0 1px 0 rgb(255 240 200 / 0.5);
+  }
+  .ask__sub { margin-top: 0.15rem; font-family: var(--font-mono); font-size: 0.625rem; letter-spacing: 0.08em; text-transform: uppercase; color: #5b3d12; }
+  .ask__pull {
+    position: absolute; left: 50%; bottom: -0.15rem; translate: -50% 0;
+    width: 4.2rem; height: 0.55rem; border-radius: 0 0 1.2rem 1.2rem;
+    background: linear-gradient(180deg, #caa055, #8a6326);
+    box-shadow: 0 2px 2px rgb(0 0 0 / 0.5);
+    display: none;
+  }
+  .ask__screw { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #e2c487, #7b5a24); box-shadow: 0 1px 1px rgb(0 0 0 / 0.5); justify-self: start; }
+  .ask__screw--r { display: none; }
+  .ask__x {
+    grid-column: 3; justify-self: end;
+    display: grid; place-items: center; width: 2.5rem; height: 2.5rem;
+    border-radius: var(--r-2); color: rgb(243 230 204 / 0.8);
+    transition: background-color var(--d-fast) ease, transform var(--d-press) var(--ease-out);
+  }
+  .ask__x:active { transform: scale(0.94); }
+  @media (hover: hover) { .ask__x:hover { background: rgb(255 255 255 / 0.08); color: var(--lamp); } }
+  .ask__x:focus-visible { outline-color: var(--lamp); }
+
+  /* ---- the well: inside of the drawer ---- */
+  .ask__well {
+    position: relative;
+    flex: 1 1 auto; min-height: 0;
+    overflow: hidden auto; overscroll-behavior: contain;
+    padding: 1.6rem 1.1rem 1.2rem;
+    border-radius: 3px;
+    background: linear-gradient(180deg, #1c120a, #2a1b10 2.2rem, #3a2818);
+    box-shadow: inset 0 8px 16px rgb(0 0 0 / 0.65), inset 0 0 0 1px rgb(0 0 0 / 0.4);
+    scrollbar-width: thin; scrollbar-color: #6b4c2c transparent;
+  }
+  .ask__tabs {
+    position: absolute; left: 1.1rem; right: 1.1rem; top: 0.35rem;
+    display: flex; gap: 0.5rem; justify-content: flex-end;
+    pointer-events: none;
+  }
+  .ask__tabs i {
+    font-style: normal; font-family: var(--font-mono); font-size: 0.5625rem; letter-spacing: 0.06em;
+    padding: 0.2rem 0.55rem 0.5rem; border-radius: 3px 3px 0 0;
+    background: #d9cfb6; color: var(--ink-3);
+    box-shadow: 0 -1px 0 rgb(255 255 255 / 0.4) inset;
+    opacity: 0.85;
+  }
+  .ask__tabs i:nth-child(2) { background: #cfd7d6; }
+  .ask__tabs i:nth-child(3) { background: #e3d6a6; }
+
+  /* ---- the question card ---- */
+  .ask__form {
+    position: relative;
+    display: flex; align-items: center; gap: 0.6rem;
+    padding: 0.55rem 0.55rem 0.55rem 0.9rem;
+    background: var(--card);
+    border-radius: 2px;
+    box-shadow: 0 1px 0 rgb(255 255 255 / 0.6) inset, 0 6px 14px -6px rgb(0 0 0 / 0.7);
+    background-image: linear-gradient(to bottom, transparent calc(100% - 4px), rgb(163 53 43 / 0.55) calc(100% - 4px), rgb(163 53 43 / 0.55) calc(100% - 3px), transparent calc(100% - 3px));
+  }
+  .ask__q { font-family: var(--font-display); font-weight: 900; font-size: 1.5rem; color: var(--red-string); line-height: 1; }
+  .ask__input {
+    flex: 1; min-width: 0; height: 2.6rem;
+    border: 0; background: transparent; outline: none;
+    font-family: var(--font-mono); font-size: 0.875rem; color: var(--ink);
+    caret-color: var(--red-string);
+  }
+  .ask__input::placeholder { color: var(--ink-3); opacity: 0.8; }
+  .ask__form:focus-within { box-shadow: 0 1px 0 rgb(255 255 255 / 0.6) inset, 0 6px 14px -6px rgb(0 0 0 / 0.7), 0 0 0 2px var(--lamp); }
+  .ask__go {
+    display: grid; place-items: center; width: 2.6rem; height: 2.6rem; flex: none;
+    border-radius: var(--r-2); background: var(--olive-deep); color: var(--paper);
+    transition: transform var(--d-press) var(--ease-out), background-color var(--d-fast) ease;
+  }
+  .ask__go:active { transform: scale(0.94); }
+  @media (hover: hover) { .ask__go:hover { background: var(--olive-ink); } }
+
+  .ask__starters { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.85rem; }
+  .ask__starter {
+    min-height: 2rem; padding: 0.3rem 0.7rem;
+    font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.01em; text-align: left;
+    color: rgb(243 230 204 / 0.85);
+    border-radius: 2px;
+    box-shadow: inset 0 0 0 1px rgb(243 230 204 / 0.22);
+    transition: background-color var(--d-fast) ease, color var(--d-fast) ease, transform var(--d-press) var(--ease-out);
+  }
+  .ask__starter:active { transform: scale(0.97); }
+  @media (hover: hover) { .ask__starter:hover { background: rgb(243 230 204 / 0.1); color: var(--lamp); } }
+  .ask__starter:focus-visible { outline-color: var(--lamp); }
+
+  .ask__foot {
+    padding: 0.7rem 0.5rem 0.2rem;
+    font-family: var(--font-mono); font-size: 0.625rem; line-height: 1.6; letter-spacing: 0.02em;
+    color: rgb(243 230 204 / 0.62);
+  }
+  .ask__foot kbd {
+    display: inline-block; min-width: 1.3em; padding: 0 0.35em; margin-right: 0.2em; text-align: center;
+    border-radius: 3px; box-shadow: inset 0 0 0 1px rgb(243 230 204 / 0.4); color: var(--lamp-ink);
+    font-family: inherit;
+  }
+
+  /* ---- the answer card: an index card with a front and a back ---- */
+  .acard { margin-top: 1.1rem; perspective: 1600px; }
+  .acard[hidden] { display: none; }
+  .acard__faces {
+    display: grid;
+    transform-style: preserve-3d;
+    transition: transform 700ms var(--ease-paper);
+  }
+  .acard.is-flipped .acard__faces { transform: rotateY(180deg); }
+  .acard__face {
+    grid-area: 1 / 1;
+    position: relative;
+    backface-visibility: hidden; -webkit-backface-visibility: hidden;
+    padding: 0.95rem 1.15rem 1rem;
+    border-radius: 2px;
+    color: var(--ink);
+    background-color: #fbf8ef;
+    background-image:
+      linear-gradient(to bottom, transparent 2.55rem, rgb(163 53 43 / 0.5) 2.55rem, rgb(163 53 43 / 0.5) calc(2.55rem + 1.5px), transparent calc(2.55rem + 1.5px)),
+      repeating-linear-gradient(to bottom, transparent 0 calc(1.6rem - 1px), rgb(49 93 134 / 0.16) calc(1.6rem - 1px) 1.6rem);
+    background-position: 0 0, 0 2.6rem;
+    background-repeat: no-repeat, repeat;
+    background-size: 100% 100%, 100% calc(100% - 2.6rem);
+    box-shadow: 0 1px 0 rgb(255 255 255 / 0.7) inset, 0 10px 24px -10px rgb(0 0 0 / 0.8);
+  }
+  .acard__face::before { /* punched catalogue hole */
+    content: ""; position: absolute; left: 50%; bottom: 0.45rem; translate: -50% 0;
+    width: 0.8rem; height: 0.8rem; border-radius: 50%;
+    background: #2e1f12; box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.8);
+  }
+  .acard__back { transform: rotateY(180deg); background-color: #f5f0e2; }
+  .acard:not(.is-flipped) .acard__back, .acard.is-flipped .acard__front { pointer-events: none; }
+  .acard:not(.is-flipped) .acard__back { visibility: hidden; transition: visibility 0s 350ms; }
+  .acard.is-flipped .acard__front { visibility: hidden; transition: visibility 0s 350ms; }
+
+  .acard__head {
+    display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+    height: 1.6rem; margin-bottom: 0.9rem;
+    font-family: var(--font-mono); font-size: 0.625rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3);
+  }
+  .acard__no { color: var(--red-string); font-weight: 500; white-space: nowrap; }
+  .acard__filed { text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .acard__question {
+    font-family: var(--font-hand); font-size: 1.75rem; line-height: 1.6rem; color: var(--blue);
+    transform: rotate(-0.6deg); transform-origin: 0 50%;
+    min-height: 1.6rem; padding-right: 7rem;
+  }
+  .acard__body { margin-top: 0.4rem; font-size: 0.9375rem; line-height: 1.6rem; }
+  .acard__body :global(.lead) {
+    font-family: var(--font-mono); font-size: 0.75rem; line-height: 1.6rem; color: var(--ink-2); max-width: none;
+  }
+  .acard__body :global(.quotes) { margin-top: 0.1rem; display: grid; gap: 0; }
+  .acard__body :global(.quote) {
+    position: relative; padding-left: 1.6rem;
+    opacity: 0; translate: 0 4px;
+    transition: opacity 360ms var(--ease-out), translate 360ms var(--ease-out);
+  }
+  .acard__body :global(.quote.is-in) { opacity: 1; translate: 0 0; }
+  .acard__body :global(.quote__n) {
+    position: absolute; left: 0; top: 0.3rem;
+    display: grid; place-items: center; width: 1.05rem; height: 1.05rem; border-radius: 50%;
+    font-family: var(--font-mono); font-size: 0.5625rem; font-weight: 500; line-height: 1;
+    color: var(--paper); background: var(--olive-deep);
+    text-decoration: none;
+  }
+  .acard__body :global(.quote mark) { background: linear-gradient(transparent 55%, rgb(241 220 143 / 0.9) 55%); color: inherit; padding: 0 0.05em; }
+  .acard__body :global(.caret) { display: inline-block; width: 0.5ch; height: 1em; translate: 0 0.15em; background: var(--red-string); animation: ask-blink 900ms steps(1) infinite; }
+  @keyframes ask-blink { 50% { opacity: 0; } }
+  .acard__body :global(.retry) { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.6rem; }
+  .acard__body :global(.retry button) {
+    min-height: 1.9rem; padding: 0 0.65rem; border-radius: 2px;
+    font-family: var(--font-mono); font-size: 0.6875rem; color: var(--blue);
+    box-shadow: inset 0 0 0 1px rgb(49 93 134 / 0.35);
+    background: rgb(255 255 255 / 0.4);
+  }
+  @media (hover: hover) { .acard__body :global(.retry button:hover) { background: var(--blue-wash); } }
+
+  .acard__stamp {
+    position: absolute; right: 1rem; top: 3.2rem;
+    padding: 0.25rem 0.6rem 0.2rem;
+    font-family: var(--font-display); font-weight: 900; font-size: 1.05rem; letter-spacing: 0.08em; text-transform: uppercase;
+    color: rgb(163 53 43 / 0.78); border: 2.5px solid currentColor; border-radius: 4px;
+    transform: rotate(-9deg);
+    mix-blend-mode: multiply;
+    mask-image: radial-gradient(circle at 30% 40%, #000 60%, rgb(0 0 0 / 0.55) 100%);
+    animation: ask-stamp 380ms var(--ease-out) both;
+    pointer-events: none;
+  }
+  .acard__stamp[hidden] { display: none; }
+  .acard__stamp.is-ok { color: rgb(90 98 64 / 0.85); }
+  @keyframes ask-stamp { from { opacity: 0; transform: rotate(-9deg) scale(1.6); } to { opacity: 1; transform: rotate(-9deg) scale(1); } }
+
+  .acard__foot { margin-top: 1.1rem; padding-bottom: 0.9rem; }
+  .acard__sources { display: grid; gap: 0.25rem; }
+  .acard__sources:empty { display: none; }
+  .acard__sources :global(a) {
+    display: flex; align-items: baseline; gap: 0.5rem;
+    font-family: var(--font-mono); font-size: 0.6875rem; line-height: 1.4; color: var(--ink-2); text-decoration: none;
+    padding: 0.2rem 0;
+  }
+  .acard__sources :global(a b) { color: var(--ink); font-weight: 500; text-decoration: underline; text-decoration-color: rgb(37 37 34 / 0.3); text-underline-offset: 0.25em; }
+  .acard__sources :global(a span.n) { color: var(--olive-ink); font-weight: 500; }
+  @media (hover: hover) { .acard__sources :global(a:hover b) { text-decoration-color: currentColor; } }
+  .acard__actions { display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; margin-top: 0.75rem; flex-wrap: wrap; }
+  .acard__flip {
+    display: inline-flex; align-items: center; gap: 0.45rem; min-height: 2.25rem; padding: 0 0.8rem;
+    font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.02em; color: var(--ink);
+    border-radius: var(--r-2); box-shadow: inset 0 0 0 1px var(--ink-3);
+    transition: background-color var(--d-fast) ease, transform var(--d-press) var(--ease-out);
+  }
+  .acard__flip:active { transform: scale(0.97); }
+  @media (hover: hover) { .acard__flip:hover { background: var(--paper-2); } }
+  .acard__flip--back { min-height: 1.9rem; text-transform: none; letter-spacing: 0.02em; }
+  .acard__time { font-family: var(--font-mono); font-size: 0.625rem; color: var(--ink-3); letter-spacing: 0.04em; }
+  .acard__head--back { margin-bottom: 0.6rem; }
+
+  /* ---- the back: retrieval trace ---- */
+  .trace { display: grid; gap: 0.9rem; padding-bottom: 1rem; font-family: var(--font-mono); font-size: 0.6875rem; line-height: 1.5; color: var(--ink-2); }
+  .trace :global(h4) {
+    display: flex; align-items: baseline; gap: 0.5rem;
+    font-family: var(--font-mono); font-size: 0.625rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink);
+    margin-bottom: 0.35rem;
+  }
+  .trace :global(h4 i) { font-style: normal; color: var(--red-string); }
+  .trace :global(h4 small) { font-size: inherit; font-weight: 400; letter-spacing: 0.02em; text-transform: none; color: var(--ink-3); }
+  .trace :global(.toks) { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+  .trace :global(.tok) { padding: 0.1rem 0.45rem; border-radius: 2px; background: var(--paper-2); color: var(--ink); box-shadow: inset 0 0 0 1px var(--linen-2); }
+  .trace :global(.tok--expanded) { background: var(--olive-wash); color: var(--olive-ink); box-shadow: none; }
+  .trace :global(.tok--repaired) { background: var(--blue-wash); color: var(--blue-deep); box-shadow: none; }
+  .trace :global(.tok s) { color: var(--ink-3); }
+  .trace :global(.legend) { margin-top: 0.3rem; color: var(--ink-3); font-size: 0.625rem; }
+  .trace :global(.cols) { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; }
+  .trace :global(.rank) { display: grid; gap: 0.2rem; }
+  .trace :global(.rank li) { display: grid; grid-template-columns: minmax(0, 1fr) 3.2rem; align-items: center; gap: 0.5rem; }
+  .trace :global(.rank .lbl) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .trace :global(.rank .lbl b) { font-weight: 500; color: var(--ink); }
+  .trace :global(.rank .bar) { position: relative; height: 0.5rem; background: var(--paper-3); border-radius: 1px; }
+  .trace :global(.rank .bar i) { position: absolute; inset: 0 auto 0 0; background: var(--ink-3); border-radius: 1px; transform-origin: 0 50%; animation: ask-bar 700ms var(--ease-out) both; }
+  .trace :global(.rank li.is-picked .bar i) { background: var(--olive-deep); }
+  .trace :global(.rank li.is-picked .lbl b::after) { content: " ✓"; color: var(--olive-deep); }
+  .trace :global(.rank .sc) { display: none; }
+  @keyframes ask-bar { from { transform: scaleX(0); } }
+  .trace :global(.gate) { position: relative; height: 0.7rem; margin: 0.55rem 0 0.35rem; background: var(--paper-3); border-radius: 1px; }
+  .trace :global(.gate i) { position: absolute; inset: 0 auto 0 0; background: var(--olive-deep); animation: ask-bar 900ms var(--ease-out) both; transform-origin: 0 50%; }
+  .trace :global(.gate.is-low i) { background: var(--red-string); }
+  .trace :global(.gate b) { position: absolute; top: -0.3rem; bottom: -0.3rem; width: 2px; background: var(--ink); }
+  .trace :global(.stats) { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; padding-top: 0.6rem; border-top: 1px dashed var(--linen-2); color: var(--ink-3); font-size: 0.625rem; }
+  .trace :global(.stats b) { color: var(--ink); font-weight: 500; }
+  .trace :global(.note) { font-family: var(--font-hand); font-size: 1.35rem; line-height: 1.05; color: var(--blue); transform: rotate(-1deg); }
+
+  @media (max-width: 640px) {
+    .ask { width: calc(100vw - 1rem); }
+    .ask__drawer { padding: 0.5rem; max-height: calc(100dvh - 1rem); }
+    .ask__front { grid-template-columns: auto 1fr auto; padding-inline: 0.3rem; }
+    .ask__plate { grid-column: 2; padding-inline: 0.8rem; }
+    .ask__title { font-size: 1.25rem; }
+    .ask__well { padding: 1.5rem 0.65rem 1rem; }
+    .ask__input { font-size: 1rem; } /* no iOS zoom */
+    .acard__face { padding-inline: 0.85rem; }
+    .acard__question { font-size: 1.55rem; }
+    .trace :global(.cols) { grid-template-columns: 1fr; }
+    .ask__foot .k { display: none; }
+    .ask__starters { flex-wrap: nowrap; overflow-x: auto; margin-inline: -0.65rem; padding: 0 0.65rem 0.2rem; scrollbar-width: none; scroll-snap-type: x proximity; }
+    .ask__starters::-webkit-scrollbar { display: none; }
+    .ask__starters li { flex: none; scroll-snap-align: start; }
+    .ask__starter { white-space: nowrap; }
+    .acard__stamp { top: 3rem; right: 0.6rem; font-size: 0.9rem; }
+    .acard__question { padding-right: 5.5rem; }
+    .acard__head { font-size: 0.5625rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .acard__faces { transition: none; }
+    .acard__body :global(.quote) { transition: none; }
+  }
+</style>

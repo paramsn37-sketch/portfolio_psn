@@ -25,7 +25,10 @@ import grain from '@/assets/textures/grain.webp';
   <main class="desk" data-desk style={`--walnut:url(${walnut.src});--walnut-sm:url(${walnutSm.src});--grain:url(${grain.src})`}>
     <header class="desk__top">
       <span class="desk__mark">The Personal Archive</span>
+      <span class="desk__links">
+      <a class="desk__skip desk__ask" href={url('archive/#ask')}><Icon name="library" size={14} /> Ask the archive</a>
       <a class="desk__skip" href={url('archive/')} data-travel="enter">Skip to the archive <Icon name="arrow-right" size={14} /></a>
+      </span>
     </header>
 
     <div class="desk__scene" data-scene>
@@ -94,6 +97,8 @@ import grain from '@/assets/textures/grain.webp';
     font-family: var(--font-mono); font-size: var(--t-meta); letter-spacing: 0.08em; text-transform: uppercase;
   }
   .desk__mark { color: rgb(243 230 204 / 0.82); }
+  .desk__links { display: flex; align-items: center; gap: clamp(0.75rem, 2vw, 2rem); }
+  @media (max-width: 760px) { .desk__ask { display: none !important; } }
   .desk__skip {
     display: inline-flex; align-items: center; gap: 0.45rem; min-height: 2.75rem; padding: 0 0.25rem;
     color: rgb(243 230 204 / 0.82); text-decoration: none;
