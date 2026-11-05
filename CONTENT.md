@@ -81,6 +81,14 @@ Every `##` heading becomes a tab in the case study's sticky section bar. To add 
 
 **Only write outcomes that really happened.** If a project has no measured results yet, delete the Results section rather than inventing numbers.
 
+## Ask the archive
+
+The **Ask the archive** drawer (top bar, or press `/`) answers visitors' questions by quoting your own content. It indexes `site.ts` and every case study at build time, so it updates itself when you edit them. Lines that still say `DEMO` are never quoted.
+
+- If a common question gets no answer, add the wording to `CONCEPTS` in `src/scripts/ask/engine.ts` (for example `kubernetes: 'docker aws deploy'`), or write the fact into your content.
+- The confidence bar is `threshold` in `ask()` (default 0.45). Lower it to answer more loosely, raise it to decline more often.
+- The suggested questions are at the top of `src/components/ask/AskArchive.astro`.
+
 ## 4. Run it locally
 
 ```bash

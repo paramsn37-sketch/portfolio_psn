@@ -25,6 +25,10 @@ const year = new Date().getFullYear();
         <h3 class="next__h3">Open to</h3>
         <ul class="next__chips" role="list">{next.openTo.map((o) => <li class="chip">{o}</li>)}</ul>
       </div>
+      <div class="next__block next__ask" data-reveal>
+        <p class="hand next__ask-q">Still have a question?</p>
+        <button class="btn btn--ghost next__ask-btn" type="button" data-open="ask"><Icon name="library" size={16} /> Ask the archive</button>
+      </div>
     </div>
 
     <!-- correspondence console -->
@@ -135,6 +139,10 @@ const year = new Date().getFullYear();
   .next__in { max-width: 80rem; margin-inline: auto; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: clamp(3rem, 6vw, 6rem); align-items: start; }
   .next :global(.ch-note) { color: var(--note); }
   .next__block { margin-top: var(--s-7); }
+  .next__ask { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; }
+  .next__ask-q { font-size: 1.75rem; color: var(--note); transform: rotate(-2deg); }
+  .next__ask-btn { --btn-fg: var(--paper); box-shadow: inset 0 0 0 1px rgb(243 239 227 / 0.45); }
+  @media (hover: hover) and (pointer: fine) { .next__ask-btn:hover { --btn-bg: rgb(243 239 227 / 0.08); box-shadow: inset 0 0 0 1px var(--paper); } }
   .next__h3 { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 400; color: rgb(243 239 227 / 0.7); }
   .next__list { margin-top: var(--s-4); display: grid; gap: 0.8rem; }
   .next__list li { display: grid; grid-template-columns: 1.2rem 1fr; gap: 0.6rem; align-items: start; font-size: var(--t-lead); line-height: 1.45; }
